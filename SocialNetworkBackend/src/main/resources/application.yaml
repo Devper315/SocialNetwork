@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/social_network
+    username: admin
+    password: 1
+  jpa:
+    hibernate:
+      ddl-auto: update 
+    show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: phanvanthi315.1@gmail.com
+    password: ubwawlbchisuixdj
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    fromName: "Mạng xã hội PTIT 2024"
+    booking:
+      subject: "Xác nhận email đăng ký"
+
+jwt:
+  signerKey: "bj0hKxleZxWk8mHcrceJBce84L5qniIsLM3UcEw6NZWiyTXXN3zTVFoBRB0BScPz"
+  validDuration: 9999
+  refreshableDuration: 9999
+
+firebase:
+  bucket: "social-network-d428b.appspot.com"
+  userPath: "user/"
+  roomPath: "room/"
+  hotelPath: "hotel/"
+
+frontend:
+  url: "http://localhost:3000"
+
