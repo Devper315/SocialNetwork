@@ -10,6 +10,5 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     User toUser(UserCreateRequest request);
-    UserResponse toUserResponse(User user);
 
 }

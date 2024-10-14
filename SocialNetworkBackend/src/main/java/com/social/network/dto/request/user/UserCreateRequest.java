@@ -30,8 +30,6 @@ public class UserCreateRequest {
     @Size(min = 3, message = "Mật khẩu phải có ít nhất 3 ký tự")
     String password;
 
-    String avatarUrl;
-
     @NotNull(message = "Ngày sinh là bắt buộc")
     LocalDate dateOfBirth;
 }

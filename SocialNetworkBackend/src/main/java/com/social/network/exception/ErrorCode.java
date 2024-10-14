@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatusCode;
 
 public enum ErrorCode {
 	USER_EXISTED(409, "Tên đăng nhập đã được sử dụng", HttpStatus.CONFLICT),
-	EMAIL_USED(404, "Tên đăng nhập đã được sử dụng", HttpStatus.CONFLICT),
+	EMAIL_USED(409, "Email đã được sử dụng", HttpStatus.CONFLICT),
 	WRONG_CURRENT_PASSWORD(404, "Mật khẩu hiện tại không chính xác", HttpStatus.CONFLICT),
 	USER_NOT_EXIST(400, "User không tồn tại", HttpStatus.BAD_REQUEST),
 	UNKNOWN_EXCEPTION(999, "uncategorized exception", HttpStatus.BAD_REQUEST),

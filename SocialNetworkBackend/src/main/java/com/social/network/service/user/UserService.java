@@ -37,13 +37,12 @@ public class UserService {
     RoleService roleService;
     UserConversationService userConversationService;
 
-
     public List<User> getAll() {
         return userRepo.findAll();
     }
 
     public User getById(Long id) {
-        return userRepo.findById(id).orElse(null);
+        return userRepo.findById(id).orElseThrow();
     }
 
     public UserResponse createUser(UserCreateRequest request) {
@@ -56,12 +55,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         List<Role> roles = new ArrayList<>();
         roles.add(roleService.getByName("USER"));
-        Image avatar = Image.builder().url(request.getAvatarUrl()).build();
-        user.setAvatar(avatar);
         user = userRepo.save(user);
-        UserResponse response = userMapper.toUserResponse(user);
-        response.setAvatarUrl(request.getAvatarUrl());
-        return response;
+        return new UserResponse(user);
     }
 
 
@@ -110,4 +105,5 @@ public class UserService {
         }
         return users;
     }
+
 }

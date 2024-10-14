@@ -1,4 +1,4 @@
-package com.social.network.controller.user;
+package com.social.network.controller.user.message;
 
 
 import com.social.network.dto.request.MessageCreateRequest;
