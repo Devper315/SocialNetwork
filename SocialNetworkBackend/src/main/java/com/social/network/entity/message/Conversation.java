@@ -20,8 +20,15 @@ public class Conversation {
 
     String name;
 
+    // dùng cho cuộc trò chuyện nhóm
     @Transient
     List<User> memberList;
+
+    @ManyToOne
+    User user1;
+
+    @ManyToOne
+    User user2;
 
     @Transient
     List<MessageCustom> messageList;

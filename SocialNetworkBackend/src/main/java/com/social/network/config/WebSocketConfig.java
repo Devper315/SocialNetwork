@@ -30,7 +30,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
     JWTDecoder jwtDecoder;
 
     @NonFinal

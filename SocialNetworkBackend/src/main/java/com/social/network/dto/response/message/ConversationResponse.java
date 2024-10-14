@@ -28,8 +28,8 @@ public class ConversationResponse {
         this.type = conversation.getType();
         if (this.type.equals(ConversationType.PRIVATE)){
             String requestorUsername = requestor.getUsername();
-            String username1 = conversation.getMemberList().get(0).getUsername();
-            String username2 = conversation.getMemberList().get(1).getUsername();
+            String username1 = conversation.getUser1().getUsername();
+            String username2 = conversation.getUser2().getUsername();
             this.sender = requestorUsername.equals(username1) ? username1 : username2;
             this.recipient = requestorUsername.equals(username1) ? username2 : username1;
         }

@@ -19,11 +19,6 @@ public class ChatSocketController {
     ConversationService conversationService;
     SimpMessagingTemplate messagingTemplate;
 
-    @MessageMapping("/chat/message")
-    @SendTo("/topic/messages")
-    public String sendMessage(String message) {
-        return message;
-    }
 
     @MessageMapping("/private/send")
     public void send(MessageCreateRequest request) {
@@ -33,6 +28,5 @@ public class ChatSocketController {
                 "/private/reply",
                 request);
     }
-
 
 }
