@@ -5,7 +5,6 @@ import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.user.FriendRequest;
 import com.social.network.service.friend.FriendRequestService;
 import com.social.network.service.friend.FriendshipService;
-import com.social.network.service.user.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

@@ -8,7 +8,9 @@ import com.social.network.utils.DateUtils;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
@@ -32,6 +34,10 @@ public class MessageResponse {
         this.content = messageCustom.getContent();
         this.time = DateUtils.reFormatDateTime(messageCustom.getTime());
         this.status = messageCustom.getStatus();
-        this.imageUrls = messageCustom.getImageList().stream().map(Image::getUrl).collect(Collectors.toList());
+        this.imageUrls = Optional.ofNullable(messageCustom.getImageList())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(Image::getUrl)
+                .collect(Collectors.toList());
     }
 }

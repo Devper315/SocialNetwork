@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -59,16 +60,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     String bearerToken = accessor.getFirstNativeHeader("Authorization");
                     if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
                         String token = bearerToken.substring(7);
-                        Map<String, Object> claims = jwtDecoder.decode(token).getClaims();
-                        String username = String.valueOf(claims.get("sub"));
-                        String role = String.valueOf(claims.get("scope"));
-                        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                                username,
-                                null,
-                                List.of(new SimpleGrantedAuthority(role))
-                        );
-                        accessor.setUser(authentication);
-//                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        jwtDecoder.decode(token);
                     } else
                         throw new RuntimeException("Chưa xác thực");
                 }

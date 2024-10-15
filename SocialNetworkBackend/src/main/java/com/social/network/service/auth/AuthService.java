@@ -96,7 +96,7 @@ public class AuthService {
         Map<String, Object> customClaims = new HashMap<>();
         customClaims.put("fullName", user.getFullname());
         customClaims.put("role", user.getRoles());
-        customClaims.put("email", user.getEmail());
+        customClaims.put("username", user.getUsername());
         customClaims.put("id", user.getId());
         return customClaims;
     }

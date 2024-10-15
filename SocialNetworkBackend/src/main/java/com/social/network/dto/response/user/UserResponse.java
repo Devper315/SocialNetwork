@@ -18,6 +18,7 @@ public class UserResponse {
     Long id;
     String firstName;
     String lastName;
+    String username;
     String email;
     String avatarUrl;
     LocalDate dateOfBirth;
@@ -26,6 +27,7 @@ public class UserResponse {
         this.id = user.getId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
+        this.username = user.getUsername();
         this.email = user.getEmail();
         if (user.getAvatar() != null)
             this.avatarUrl = user.getAvatar().getUrl();
