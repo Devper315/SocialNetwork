@@ -55,6 +55,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         List<Role> roles = new ArrayList<>();
         roles.add(roleService.getByName("USER"));
+        user.setRoles(roles);
         user = userRepo.save(user);
         return new UserResponse(user);
     }
