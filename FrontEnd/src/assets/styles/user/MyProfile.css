@@ -1,0 +1,21 @@
+/* src/components/ProfilePage.css */
+.profile-page {
+    max-width: 600px; /* Độ rộng tối đa của trang */
+    margin: 20px auto; /* Căn giữa trang */
+    padding: 20px;
+    border: 1px solid #ccc; /* Đường viền cho trang */
+    border-radius: 10px; /* Bo góc */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+  }
+  
+  .profile-info {
+    text-align: center; /* Căn giữa nội dung */
+  }
+  
+  .avatar {
+    width: 150px; /* Kích thước ảnh đại diện */
+    height: 150px; /* Kích thước ảnh đại diện */
+    border-radius: 50%; /* Bo tròn ảnh */
+    margin-bottom: 20px; /* Khoảng cách dưới ảnh */
+  }
+  

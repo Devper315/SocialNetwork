@@ -1,0 +1,59 @@
+/* src/components/Header.css */
+header {
+    background-color: #4a90e2;
+    /* Màu xanh dương */
+}
+
+.navbar-nav {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 10px 20px;
+}
+
+.nav-link:hover {
+    background-color: #357ABD;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.menu-text {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.nav-item:hover .menu-text {
+    display: block;
+}
+
+.nav-link i {
+    margin-right: 10px;
+}
+
+.menu-logo {
+    width: 30px;
+    height: 30px;
+}
