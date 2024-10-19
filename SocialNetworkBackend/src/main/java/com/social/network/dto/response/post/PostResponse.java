@@ -24,6 +24,6 @@ public class PostResponse {
         this.content = post.getContent();
         this.imageUrls = post.getImageList().stream()
                 .map(Image::getUrl).collect(Collectors.toList());
-        this.time = DateUtils.reFormatDateTime(post.getTime());
+        this.time = DateUtils.reFormatDateTime(post.getCreatedTime());
     }
 }

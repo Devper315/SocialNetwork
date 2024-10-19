@@ -25,6 +25,8 @@ public class Post {
 
     @ManyToOne
     User author;
-    LocalDateTime time;
+    LocalDateTime createdTime;
+    LocalDateTime updatedTime;
+    String status;
 
 }
