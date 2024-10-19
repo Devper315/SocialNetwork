@@ -4,6 +4,7 @@ import httpClient from "../configs/httpClient"
 export const fetchFriend = async () => {
     try{
         const response = await httpClient.get(API.FRIEND)
+        console.log("response", response)
         const friends = response.data.result.map(friend => 
             ({
                 ...friend,
@@ -13,6 +14,6 @@ export const fetchFriend = async () => {
         return friends
     }
     catch(error){
-        console.log("Lỗi khi lấy danh sách bạn bè: ", error.response)
+        console.log("Lỗi khi lấy danh sách bạn bè: ", error)
     }
 }

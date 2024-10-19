@@ -6,7 +6,6 @@ import { AuthContext } from "../../contexts/AuthContext";
 const Login = () => {
     const { loginSuccess } = useContext(AuthContext);
     
-    // State để lưu lỗi và trạng thái đăng nhập
     const [form, setForm] = useState({
         username: '',
         password: ''
@@ -30,7 +29,7 @@ const Login = () => {
             const token = response.data.result.token;
             loginSuccess(token);
         } catch (error) {
-            // Hiển thị lỗi khi có lỗi xảy ra
+            console.log(error.response)
             setErrorMessage(error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
         } finally {
             setIsLoading(false); // Hoàn thành đăng nhập, bỏ trạng thái loading

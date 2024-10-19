@@ -1,7 +1,7 @@
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 
-const SOCKET_URL = 'http://localhost:8080/ws';
+const SOCKET_URL = 'https://754e-1-54-7-90.ngrok-free.app/ws';
 const CHAT_ENDPOINT = '/app/private/send';
 
 let stompClient = null;
@@ -15,7 +15,7 @@ const getHeaders = () => {
 };
 
 export const connectWebSocket = (handleMessageReceived, username) => {
-    const socket = new SockJS(SOCKET_URL);
+    const socket = new WebSocket(SOCKET_URL);
     stompClient = Stomp.over(socket);
     const headers = getHeaders();
     const chatTopic = `/user/${username}/private/reply`;
