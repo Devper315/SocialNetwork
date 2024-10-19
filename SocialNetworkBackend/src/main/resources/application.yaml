@@ -1,5 +1,10 @@
 server:
   port: 8080
+  ssl:
+    key-store: classpath:mykeystore.jks
+    key-store-password: password
+    keyStoreType: JKS
+    keyAlias: mycert
 
 spring:
   datasource:
@@ -37,5 +42,5 @@ firebase:
   hotelPath: "hotel/"
 
 frontend:
-  url: "http://localhost:3000"
+  url: "https://bcea-1-54-7-90.ngrok-free.app"
 

@@ -32,7 +32,6 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     JWTDecoder jwtDecoder;
-
     @NonFinal
     @Value("${frontend.url}")
     String frontEndUrl;
@@ -46,8 +45,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOrigins(frontEndUrl)
-                .withSockJS();
+                .setAllowedOrigins("*");
     }
 
     @Override
