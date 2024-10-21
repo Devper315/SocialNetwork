@@ -5,6 +5,7 @@ import Homepage from './components/common/Homepage';
 import FriendList from './components/user/FriendList';
 import MyProfile from './components/user/MyProfile';
 import Register from './components/common/Register';
+import PostPage from './components/post/PostPage';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path='/notifications' element={<Homepage />} />
         <Route path='/my-profile' element={<MyProfile />} />
         <Route path='/register' element={<Register />} />
+        <Route path='/postpage' element={<PostPage />} />
       </Routes>
     </div>
   );

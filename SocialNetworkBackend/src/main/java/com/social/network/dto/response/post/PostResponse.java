@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,10 +21,15 @@ public class PostResponse {
     List<String> imageUrls;
     String time;
 
-    public PostResponse(Post post){
+    public PostResponse(Post post) {
         this.content = post.getContent();
-        this.imageUrls = post.getImageList().stream()
-                .map(Image::getUrl).collect(Collectors.toList());
+        this.imageUrls = (post.getImageList() != null) ?
+                post.getImageList().stream()
+                        .map(Image::getUrl)
+                        .collect(Collectors.toList())
+                : new ArrayList<>();
+
         this.time = DateUtils.reFormatDateTime(post.getCreatedTime());
     }
+
 }

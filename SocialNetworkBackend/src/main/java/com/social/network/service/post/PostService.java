@@ -14,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,25 +50,36 @@ public class PostService {
         if (existingPost == null) {
             throw new RuntimeException("Bài viết không tìm thấy");
         }
+
         existingPost.setContent(request.getContent());
 
         if (request.getStatus() != null) {
             existingPost.setStatus(request.getStatus());
         }
 
+        List<Image> imageList = existingPost.getImageList();
         if (request.getImageUrls() != null) {
-            List<Image> imagesToRemove = existingPost.getImageList().stream()
-                    .filter(image -> !request.getImageUrls().contains(image.getUrl()))
-                    .collect(Collectors.toList());
-            existingPost.getImageList().removeAll(imagesToRemove);
-            List<Image> newImages = request.getImageUrls().stream()
-                    .filter(url -> existingPost.getImageList().stream().noneMatch(image -> image.getUrl().equals(url)))
-                    .map(url -> Image.builder().url(url).post(existingPost).build())
-                    .collect(Collectors.toList());
-            existingPost.getImageList().addAll(newImages);
+            if (imageList == null) {
+                imageList = new ArrayList<>();
+                existingPost.setImageList(imageList);
+            }
+            List<Image> imagesToRemove = new ArrayList<>();
+            for (Image image : imageList) {
+                if (!request.getImageUrls().contains(image.getUrl())) {
+                    imagesToRemove.add(image);
+                }
+            }
+            imageList.removeAll(imagesToRemove);
+            for (String url : request.getImageUrls()) {
+                boolean exists = imageList.stream().anyMatch(image -> image.getUrl().equals(url));
+                if (!exists) {
+                    imageList.add(Image.builder().url(url).post(existingPost).build());
+                }
+            }
         }
         return new PostResponse(postRepo.save(existingPost));
     }
+
 
     public void deletePost(Long id) {
         postRepo.deleteById(id);
