@@ -27,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
-    String[] PUBLIC_GET_ENPOINTS = {"/api/post/**", "/ws/**"};
+    String[] PUBLIC_GET_ENPOINTS = {"/api/post/**", "/ws/**", "/video-call/**"};
     String[] PUBLIC_POST_ENPOINTS = {"/api/auth/login", "/api/auth/register", "/ws/**"};
     JWTDecoder jwtDecoder;
 
@@ -56,7 +56,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(frontEndUrl));
+        configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
 //        configuration.setAllowCredentials(true);

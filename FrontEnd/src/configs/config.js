@@ -1,11 +1,11 @@
 export const CONFIG = {
-    API_BASE_URL: "https://754e-1-54-7-90.ngrok-free.app/api"
+    BASE_URL: "https://7baf-1-54-7-90.ngrok-free.app"
 }
 
 export const API = {
-    LOGIN: "/auth/login",
-    REGISTER: "/auth/register",
-    FRIEND: "/friend",
-    FRIEND_REQUEST: "/friend-request",
-    CONVERSATION: "/conversation"
+    LOGIN: "/api/auth/login",
+    REGISTER: "/api/auth/register",
+    FRIEND: "/api/friend",
+    FRIEND_REQUEST: "/api/friend-request",
+    CONVERSATION: "/api/conversation"
 }

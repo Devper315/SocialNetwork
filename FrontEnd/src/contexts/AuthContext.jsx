@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 
 export const AuthContext = createContext()
 
@@ -23,7 +24,7 @@ export const AuthProvider = ({ children }) => {
         getInfoFromToken(token)
     }
 
-    const getInfoFromToken = async (token) => {
+    const getInfoFromToken = (token) => {
         const payload = jwtDecode(token)
         const claim = payload.customClaim
         let loggedInUser = {
@@ -31,7 +32,6 @@ export const AuthProvider = ({ children }) => {
             fullName: claim.fullName,
             username: claim.username,
         }
-        console.log("loggedInUser", loggedInUser)
         setUser(loggedInUser)
         setIsLoggedIn(true)
     }
@@ -43,7 +43,8 @@ export const AuthProvider = ({ children }) => {
         navigate("/")
     }
 
-    const PROVIDER_VALUE = {isLoggedIn, user, setUser, loginSuccess, logout}
+
+    const PROVIDER_VALUE = { isLoggedIn, user, setUser, loginSuccess, logout }
     return (
         <AuthContext.Provider value={PROVIDER_VALUE}>
             {children}
