@@ -18,7 +18,6 @@ import java.util.List;
 @RequestMapping("/api/user/post")
 public class PostController {
     PostService postService;
-
     @GetMapping
     public ApiResponse<List<PostResponse>> getMyPost(){
         return ApiResponse.<List<PostResponse>>builder()

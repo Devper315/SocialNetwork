@@ -1,7 +1,5 @@
-/* src/components/Header.css */
 header {
     background-color: #4a90e2;
-    /* Màu xanh dương */
 }
 
 .navbar-nav {
@@ -14,6 +12,7 @@ header {
 
 .nav-item {
     position: relative;
+    margin: 0 50px;
 }
 
 .nav-link {

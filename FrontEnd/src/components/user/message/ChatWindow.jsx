@@ -1,32 +1,33 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import '../../../assets/styles/user/message/ChatWindow.css';
 import iconSend from '../../../assets/images/iconSend.png'
+import iconCall from "../../../assets/images/iconCall.png"
 import { AuthContext } from '../../../contexts/AuthContext';
 import { MessageStatusTranslation } from '../../../translations/MessageStatusTranslation';
 import { format } from 'date-fns';
-import { connectWebSocket, disconnectWebSocket, sendMessageWebSocket } from '../../../configs/webSocket';
+import { ChatSocketContext } from '../../../contexts/ChatSocketContext';
+import { VideoCallSocketContext } from '../../../contexts/VideoCallSocketContext';
 
 
-const ChatWindow = ({conversation, onClose, recipient }) => {
+const ChatWindow = ({ conversation, onClose, recipient }) => {
     const { user } = useContext(AuthContext)
-    console.log(user.username)
-    const [message, setMessage] = useState('')
+    const { subscribeToChat, sendMessageWebSocket } = useContext(ChatSocketContext)
+    const { startCall } = useContext(VideoCallSocketContext)
     const [messageList, setMessageList] = useState(conversation.messageList)
+    const [message, setMessage] = useState('')
     const chatBodyRef = useRef(null)
 
     useEffect(() => {
-        const connectAndDisconnectWebSocket = () => {
-            connectWebSocket(newMessage => {
-                setMessageList(prevMessages => [...prevMessages, newMessage]);
-            }, user.username);
-    
-            return () => {
-                disconnectWebSocket();
-            };
-        };
-        const cleanup = connectAndDisconnectWebSocket();
-        return cleanup;
-    }, [user.username]);
+        console.log(recipient)
+        const handleMessageReceived = (newMessage) => {
+            setMessageList(prevMessages => [...prevMessages, newMessage])
+        }
+        subscribeToChat(handleMessageReceived, user.username)
+        const chatBody = chatBodyRef.current
+        if (chatBody) {
+            chatBody.scrollTop = chatBody.scrollHeight
+        }
+    }, [])
 
     useEffect(() => {
         const chatBody = chatBodyRef.current
@@ -34,13 +35,6 @@ const ChatWindow = ({conversation, onClose, recipient }) => {
             chatBody.scrollTop = chatBody.scrollHeight
         }
     }, [messageList])
-
-    useEffect(() => {
-        const chatBody = chatBodyRef.current
-        if (chatBody) {
-            chatBody.scrollTop = chatBody.scrollHeight
-        }
-    }, [])
 
 
     const handleKeyDown = (e) => {
@@ -65,10 +59,18 @@ const ChatWindow = ({conversation, onClose, recipient }) => {
         }
     }
 
+    const handleStartCall = () => {
+        startCall(recipient.username)
+    }
+
     return (
         <div className="chat-window">
             <div className="chat-header">
-                <h>{recipient.fullName}</h>
+                <h4 className="recipient-name">{recipient.fullName}</h4>
+                <button className="send-button"
+                    onClick={handleStartCall}>
+                    <img src={iconCall} alt="Icon" className="call-icon" />
+                </button>
                 <button className="close-button" onClick={onClose}>×</button>
             </div>
             <div className="chat-body" ref={chatBodyRef}>
