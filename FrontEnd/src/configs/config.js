@@ -7,5 +7,6 @@ export const API = {
     REGISTER: "/api/auth/register",
     FRIEND: "/api/friend",
     FRIEND_REQUEST: "/api/friend-request",
-    CONVERSATION: "/api/conversation"
+    CONVERSATION: "/api/conversation",
+    POST: "api/user/post"
 }

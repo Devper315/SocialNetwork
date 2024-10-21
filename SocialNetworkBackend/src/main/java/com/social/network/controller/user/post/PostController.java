@@ -48,9 +48,8 @@ public class PostController {
     @PutMapping("/{id}")
     public ApiResponse<PostResponse> updatePost(@PathVariable Long id, @RequestBody PostUpdateRequest request) {
         request.setId(id);
-        PostResponse updatedPostResponse = postService.updatePost(request);
         return ApiResponse.<PostResponse>builder()
-                .result(updatedPostResponse)
+                .result(postService.updatePost(request))
                 .build();
     }
 }

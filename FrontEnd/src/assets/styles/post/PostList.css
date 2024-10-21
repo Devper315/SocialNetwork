@@ -1,0 +1,29 @@
+.post-list-container {
+    padding: 20px;
+  }
+  
+  .post-item {
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .post-item:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .post-image {
+    max-height: 200px;
+    object-fit: cover;
+  }
+  
+  .post-images {
+    margin-top: 10px;
+  }
+  
+  p {
+    margin: 5px 0;
+  }
+  

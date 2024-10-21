@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
 import ReactDOM from 'react-dom';
-import 'bootstrap/dist/css/bootstrap.min.css'; 
 import '../../../assets/styles/user/video-call/VideoCallModal.css';
 
 const VideoCallPortal = ({ localVideoRef, remoteVideoRef, handleCloseVideoCall, 

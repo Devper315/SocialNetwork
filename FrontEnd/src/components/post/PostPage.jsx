@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getPostById, updatePost } from '../../services/postService';
-import '../../assets/styles/post/PostPage.css';
+// import '../../assets/styles/post/PostPage.css';
 import { useParams } from 'react-router-dom';
 
 const PostPage = () => {
@@ -10,16 +10,18 @@ const PostPage = () => {
     const [imageFiles, setImageFiles] = useState([]);
     const [status, setStatus] = useState('');
     const [message, setMessage] = useState('');
-    const postId = 10;
+    const {id} = useParams()
 
     useEffect(() => {
-        getPostById(postId, (data) => {
-            setPost(data)
-            setEditedContent(data.conten)
-            setImageFiles(data, imageUrls || [])
-            setStatus(data.status)
-        });
-    }, [postId]);
+        const getPost = async () => {
+            const postData = await getPostById(id)
+            setEditedContent(postData.content)
+            setImageFiles(postData.imageUrls || [])
+            setStatus(postData.status)
+            setPost(postData)
+        }
+        getPost()
+    }, [id]);
 
     const handleEdit = () => {
         setEditMode(true);
@@ -28,7 +30,7 @@ const PostPage = () => {
     const handleSave = async () => {
         try {
             const currentPost = {
-                id: postId,
+                id: id,
                 content: editedContent,
                 imageUrls: imageFiles,
                 status: status
@@ -90,7 +92,7 @@ const PostPage = () => {
                 <div className="post-images">
                     {imageFiles.map((url, index) => (
                         <div key={index} className="post-image-container">
-                            <img src={url} alt={`Image ${index}`} className="post-image" />
+                            <img src={url} alt={`ảnh ${index}`} className="post-image" />
                             {editMode && (
                                 <button onClick={() => handleRemoveImage(index)} className="remove-image-button">Xóa</button>
                             )}
