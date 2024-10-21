@@ -17,11 +17,13 @@ import java.util.stream.Collectors;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostResponse {
+    Long id;
     String content;
     List<String> imageUrls;
     String time;
 
     public PostResponse(Post post) {
+        this.id = post.getId();
         this.content = post.getContent();
         this.imageUrls = (post.getImageList() != null) ?
                 post.getImageList().stream()

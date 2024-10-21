@@ -6,6 +6,9 @@ import FriendList from './components/user/FriendList';
 import MyProfile from './components/user/MyProfile';
 import Register from './components/common/Register';
 import PostPage from './components/post/PostPage';
+import PostList from './components/post/PostList';
+import 'bootstrap/dist/css/bootstrap.min.css'; 
+
 
 function App() {
   return (
@@ -19,7 +22,8 @@ function App() {
         <Route path='/notifications' element={<Homepage />} />
         <Route path='/my-profile' element={<MyProfile />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/postpage' element={<PostPage />} />
+        <Route path='/post-list' element={<PostList />} />
+        <Route path='/postpage/:id' element={<PostPage />} />
       </Routes>
     </div>
   );

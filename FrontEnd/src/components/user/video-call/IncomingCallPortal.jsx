@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Modal, Button } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 const IncomingCallPortal = ({ incoming, callFrom, handleAcceptCall, handleRejectCall }) => {
 

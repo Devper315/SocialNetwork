@@ -11,11 +11,11 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
         <AuthProvider>
-            <ChatSocketProvider>
-                <VideoCallProvider>
+            {/* <ChatSocketProvider> */}
+                {/* <VideoCallProvider> */}
                     <App />
-                </VideoCallProvider>
-            </ChatSocketProvider>
+                {/* </VideoCallProvider> */}
+            {/* </ChatSocketProvider> */}
         </AuthProvider>
     </BrowserRouter>
 );

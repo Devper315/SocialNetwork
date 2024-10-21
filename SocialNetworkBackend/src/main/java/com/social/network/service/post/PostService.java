@@ -7,6 +7,7 @@ import com.social.network.entity.post.Image;
 import com.social.network.entity.post.Post;
 import com.social.network.entity.user.User;
 import com.social.network.repository.post.PostRepo;
+import com.social.network.service.message.ImageService;
 import com.social.network.service.user.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class PostService {
     PostRepo postRepo;
     UserService userService;
+    ImageService imageService;
 
     public Post getById(Long id){
         return postRepo.findById(id).orElse(null);
@@ -42,7 +44,9 @@ public class PostService {
                 .author(userService.getCurrentUser())
                 .createdTime(LocalDateTime.now())
                 .build();
-        return new PostResponse(postRepo.save(post));
+        post = postRepo.save(post);
+        imageService.createForPost(post, request.getImageUrls());
+        return new PostResponse(post);
     }
 
     public PostResponse updatePost(PostUpdateRequest request) {
@@ -50,34 +54,13 @@ public class PostService {
         if (existingPost == null) {
             throw new RuntimeException("Bài viết không tìm thấy");
         }
-
         existingPost.setContent(request.getContent());
-
         if (request.getStatus() != null) {
             existingPost.setStatus(request.getStatus());
         }
-
-        List<Image> imageList = existingPost.getImageList();
-        if (request.getImageUrls() != null) {
-            if (imageList == null) {
-                imageList = new ArrayList<>();
-                existingPost.setImageList(imageList);
-            }
-            List<Image> imagesToRemove = new ArrayList<>();
-            for (Image image : imageList) {
-                if (!request.getImageUrls().contains(image.getUrl())) {
-                    imagesToRemove.add(image);
-                }
-            }
-            imageList.removeAll(imagesToRemove);
-            for (String url : request.getImageUrls()) {
-                boolean exists = imageList.stream().anyMatch(image -> image.getUrl().equals(url));
-                if (!exists) {
-                    imageList.add(Image.builder().url(url).post(existingPost).build());
-                }
-            }
-        }
-        return new PostResponse(postRepo.save(existingPost));
+        postRepo.save(existingPost);
+        imageService.updatePostImages(request.getImageUrls(), existingPost);
+        return new PostResponse(existingPost);
     }
 
 

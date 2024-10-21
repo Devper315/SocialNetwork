@@ -20,7 +20,7 @@ public class Post {
     Long id;
     String content;
 
-    @Transient
+    @OneToMany (mappedBy = "post")
     List<Image> imageList;
 
     @ManyToOne
