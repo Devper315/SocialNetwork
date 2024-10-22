@@ -94,7 +94,7 @@ public class AuthService {
 
     public Map<String, Object> buildCustomClaim(User user) {
         Map<String, Object> customClaims = new HashMap<>();
-        customClaims.put("fullName", user.getFullname());
+        customClaims.put("fullName", user.getFullName());
         customClaims.put("role", user.getRoles());
         customClaims.put("username", user.getUsername());
         customClaims.put("id", user.getId());

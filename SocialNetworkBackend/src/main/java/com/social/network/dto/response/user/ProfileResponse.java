@@ -14,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
+public class ProfileResponse {
     Long id;
     String firstName;
     String lastName;
@@ -23,16 +23,10 @@ public class UserResponse {
     String email;
     String avatarUrl;
     LocalDate dateOfBirth;
+    boolean myProfile;
+    boolean friend;
+    boolean hasFriendRequest;
+    Long friendRequestId;
+    boolean sentFriendRequest;
 
-    public UserResponse(User user) {
-        this.id = user.getId();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.username = user.getUsername();
-        this.fullName = user.getFullName();
-        this.email = user.getEmail();
-        if (user.getAvatar() != null)
-            this.avatarUrl = user.getAvatar().getUrl();
-        this.dateOfBirth = user.getDateOfBirth();
-    }
 }

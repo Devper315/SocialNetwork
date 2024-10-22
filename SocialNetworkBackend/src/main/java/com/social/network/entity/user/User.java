@@ -23,6 +23,7 @@ public class User {
     Long id;
     String firstName;
     String lastName;
+    String fullName;
     String username;
     String password;
     String email;
@@ -34,8 +35,5 @@ public class User {
     @ManyToMany
     List<Role> roles;
 
-    public String getFullname(){
-        return this.firstName + " " + this.lastName;
-    }
 
 }

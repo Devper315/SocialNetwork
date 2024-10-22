@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import "../../assets/styles/common/Register.css";
 import { register } from '../../services/authService';
+import RegisterSuccessModal from './RegisterSuccessModal';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+    const [success, setSuccess] = useState(false)
+    const navigate = useNavigate()
     const formFields = {
         firstName: { label: 'Họ và tên đệm', type: 'text' },
         lastName: { label: 'Tên', type: 'text' },
@@ -30,16 +34,16 @@ const Register = () => {
         let tempErrors = {};
         if (!form.firstName) tempErrors.firstName = 'Họ và tên đệm không được trống';
         if (!form.lastName) tempErrors.lastName = 'Tên không được trống';
-        if (!form.username || form.username.length <3) 
+        if (!form.username || form.username.length < 3)
             tempErrors.username = 'Tên đăng nhập có độ dài tối thiểu là 3';
         if (!form.email) {
             tempErrors.email = 'Email không được trống';
         } else if (!/\S+@\S+\.\S+/.test(form.email)) {
             tempErrors.email = 'Email không hợp lệ';
         }
-        if (!form.password || form.password.length <3) 
+        if (!form.password || form.password.length < 3)
             tempErrors.password = 'Mật khẩu có độ dài tối thiểu là 3';
-        else{
+        else {
             if (form.password !== form.confirmPassword)
                 tempErrors.confirmPassword = 'Mật khẩu xác nhận không khớp'
         }
@@ -49,11 +53,12 @@ const Register = () => {
     };
 
     const handleSubmit = async (e) => {
+        setRegisterError(null)
         e.preventDefault();
         if (validateForm()) {
             try {
-                const response = await register(form)
-                console.log(response)
+                await register(form)
+                setSuccess(true)
             } catch (error) {
                 const errorCode = error.response.status
                 if (errorCode === 400) setErrors(error.response.data)
@@ -61,7 +66,16 @@ const Register = () => {
                 console.log(error.response.data)
             }
         }
-    };
+    }
+
+    const handleNavigateLogin = () => {
+        setSuccess(false)
+        navigate("/")
+    }
+
+    const handleCloseModal = () => {
+        setSuccess(false)
+    }
 
     return (
         <div className="register-container">
@@ -78,8 +92,11 @@ const Register = () => {
                     </div>
                 ))}
                 {registerError && <p className="register-error">{registerError}</p>}
-                <button type="submit" className="submit-btn">Register</button>
+                <button type="submit" className="submit-btn">Đăng ký</button>
             </form>
+            <RegisterSuccessModal 
+                show={success} handleCloseModal={handleCloseModal}
+                handleNavigateLogin={handleNavigateLogin}/>
         </div>
     );
 };

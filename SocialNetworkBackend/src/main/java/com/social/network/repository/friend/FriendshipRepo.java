@@ -1,8 +1,11 @@
 package com.social.network.repository.friend;
 
+import com.social.network.entity.user.FriendRequest;
 import com.social.network.entity.user.Friendship;
 import com.social.network.entity.user.FriendshipId;
 import com.social.network.entity.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +16,12 @@ import java.util.List;
 @Repository
 public interface FriendshipRepo extends JpaRepository<Friendship, FriendshipId> {
     @Query(value = "SELECT f FROM Friendship f WHERE f.user1 = :requestor OR f.user2 = :requestor")
-    List<Friendship> findMyFriendships(User requestor);
+    Page<Friendship> findMyFriendships(User requestor, Pageable pageable);
+
+    @Query("SELECT CASE WHEN COUNT(f) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM Friendship f " +
+            "WHERE (f.user1 = :user1 AND f.user2 = :user2) " +
+            "   OR (f.user1 = :user2 AND f.user2 = :user1)")
+    boolean existsByUsers(User user1, User user2);
 
 }

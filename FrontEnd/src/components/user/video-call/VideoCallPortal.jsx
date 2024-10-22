@@ -7,7 +7,6 @@ const VideoCallPortal = ({ localVideoRef, remoteVideoRef, handleCloseVideoCall,
     sendSignal, action, recipientRef, startVideoStream, show }) => {
     useEffect(() => {
         const startVideo = async () => {
-            console.log("Đang chạy ở video call portal")
             if (localVideoRef.current && show) {
                 await startVideoStream();
                 sendSignal({ type: action, recipient: recipientRef.current });
