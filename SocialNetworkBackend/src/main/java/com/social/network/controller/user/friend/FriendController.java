@@ -48,6 +48,13 @@ public class FriendController {
                 .build();
     }
 
+    @DeleteMapping("/{friendId}")
+    public ApiResponse<String> unfriend(@PathVariable Long friendId){
+        return ApiResponse.<String>builder()
+                .result(friendshipService.unfriend(friendId))
+                .build();
+    }
+
     @GetMapping("/request")
     public ApiResponse<List<FriendRequestResponse>> getMyFriendRequest(@RequestParam int page ){
         Page<FriendRequestResponse> resultPage = friendRequestService.getMyRequest(page);
@@ -65,9 +72,18 @@ public class FriendController {
     }
 
     @DeleteMapping("/request/{requestId}")
-    public ApiResponse<String> actionFriendRequest(@PathVariable Long requestId, @RequestParam boolean accept){
+    public ApiResponse<String> actionFriendRequestById(
+            @PathVariable Long requestId, @RequestParam boolean accept){
         return ApiResponse.<String>builder()
-                .result(friendRequestService.actionRequest(requestId, accept))
+                .result(friendRequestService.actionRequestById(requestId, accept))
+                .build();
+    }
+
+    @DeleteMapping("/request")
+    public ApiResponse<String> actionFriendRequestByUserId(
+            @RequestParam Long userId, @RequestParam boolean accept){
+        return ApiResponse.<String>builder()
+                .result(friendRequestService.actionRequestByUserId(userId, accept))
                 .build();
     }
 }

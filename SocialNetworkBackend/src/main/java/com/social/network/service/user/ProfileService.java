@@ -1,5 +1,6 @@
 package com.social.network.service.user;
 
+import com.social.network.dto.request.user.ProfileUpdateRequest;
 import com.social.network.dto.response.user.ProfileResponse;
 import com.social.network.entity.user.FriendRequest;
 import com.social.network.entity.user.User;
@@ -26,14 +27,9 @@ public class ProfileService {
         ProfileResponse response = userMapper.toProfileResponse(result);
         response.setMyProfile(requestor.getId().equals(result.getId()));
         response.setFriend(friendshipService.existsByUsers(requestor, result));
-        FriendRequest requestOfResult = friendRequestService.getRequestByUsers(result, requestor);
-        if (requestOfResult != null){
-            response.setHasFriendRequest(true);
-            response.setFriendRequestId(requestOfResult.getId());
-        }
-        else{
-            response.setSentFriendRequest(friendRequestService.getRequestByUsers(requestor, result) != null);
-        }
+        response.setHasFriendRequest(friendRequestService.getRequestByUsers(result, requestor) != null);
+        response.setSentFriendRequest(friendRequestService.getRequestByUsers(requestor, result) != null);
         return response;
     }
+
 }

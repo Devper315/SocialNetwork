@@ -1,29 +1,24 @@
 package com.social.network.service.friend;
 
-import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.user.FriendRequest;
 import com.social.network.entity.user.Friendship;
 import com.social.network.entity.user.User;
 import com.social.network.repository.friend.FriendshipRepo;
 import com.social.network.service.user.UserService;
 import com.social.network.utils.PageableUtils;
-import com.social.network.utils.UserUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FriendshipService {
     FriendshipRepo friendshipRepo;
+    UserService userService;
 
     public void createFriendShip (FriendRequest request){
         Friendship friendship = Friendship.builder()
@@ -42,4 +37,10 @@ public class FriendshipService {
         return friendshipRepo.existsByUsers(user1, user2);
     }
 
+    public String unfriend(Long friendId) {
+        User requestor = userService.getCurrentUser();
+        User friend = userService.getById(friendId);
+        friendshipRepo.deleteByUsers(requestor, friend);
+        return "Hủy kết bạn thành công";
+    }
 }

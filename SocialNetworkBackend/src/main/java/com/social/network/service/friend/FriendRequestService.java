@@ -16,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -30,20 +32,33 @@ public class FriendRequestService {
         User requestor = userService.getCurrentUser();
         if (getRequestByUsers(recipient, requestor) != null) return null;
         FriendRequest request = FriendRequest.builder()
-                .recipient(recipient)
-                .requestor(requestor)
+                .recipient(recipient).requestor(requestor).time(LocalDateTime.now())
                 .build();
         return friendRequestRepo.save(request);
     }
 
-    public String actionRequest(Long requestId, boolean accept) {
+    public String actionRequestById(Long requestId, boolean accept) {
         FriendRequest request = getById(requestId);
+        String result = "Từ chối kết bạn";
         if (accept) {
             friendshipService.createFriendShip(request);
-            return "Chấp nhận kết bạn";
+            result = "Chấp nhận kết bạn";
         }
-        else friendRequestRepo.delete(request);
-        return "Từ chối kết bạn";
+        friendRequestRepo.delete(request);
+        return result;
+    }
+
+    public String actionRequestByUserId(Long userId, boolean accept) {
+        User user = userService.getById(userId);
+        User requestor = userService.getCurrentUser();
+        FriendRequest request = getRequestByBothUsers(requestor, user);
+        String result = "Từ chối kết bạn";
+        if (accept) {
+            friendshipService.createFriendShip(request);
+            result = "Chấp nhận kết bạn";
+        }
+        friendRequestRepo.delete(request);
+        return result;
     }
 
     public FriendRequest getById(Long requestId) {
@@ -60,4 +75,10 @@ public class FriendRequestService {
     public FriendRequest getRequestByUsers(User requestor, User recipient){
         return friendRequestRepo.findRequestByUsers(requestor, recipient);
     }
+
+    public FriendRequest getRequestByBothUsers(User requestor, User recipient){
+        return friendRequestRepo.findRequestByBothUsers(requestor, recipient);
+    }
+
+
 }

@@ -26,7 +26,6 @@ public class ProfileResponse {
     boolean myProfile;
     boolean friend;
     boolean hasFriendRequest;
-    Long friendRequestId;
     boolean sentFriendRequest;
 
 }

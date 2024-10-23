@@ -4,6 +4,7 @@ import com.social.network.entity.message.Conversation;
 import com.social.network.entity.message.MessageCustom;
 import com.social.network.entity.post.Image;
 import com.social.network.entity.post.Post;
+import com.social.network.entity.user.User;
 import com.social.network.repository.post.ImageRepo;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,12 @@ public class ImageService {
             postImages.removeAll(imagesToRemove);
             imageRepo.deleteAll(imagesToRemove);
         }
+    }
+
+    public void updateUserAvatar(String updateUrl, User user){
+        Image currentAvatar = user.getAvatar();
+        if (currentAvatar != null && !currentAvatar.getUrl().equals(updateUrl))
+            imageRepo.delete(currentAvatar);
     }
 
     public String deleteById(Long id){

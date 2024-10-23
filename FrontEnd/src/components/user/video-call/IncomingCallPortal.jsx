@@ -5,7 +5,7 @@ import { Modal, Button } from 'react-bootstrap';
 const IncomingCallPortal = ({ incoming, callFrom, handleAcceptCall, handleRejectCall }) => {
 
     return ReactDOM.createPortal(
-        <Modal show={incoming} centered>
+        <Modal show={incoming} centered >
             <Modal.Header>
                 <Modal.Title>Cuộc gọi đến</Modal.Title>
             </Modal.Header>

@@ -2,13 +2,11 @@ package com.social.network.service.user;
 
 import com.social.network.dto.request.user.ChangePasswordRequest;
 import com.social.network.dto.request.user.UserCreateRequest;
-import com.social.network.dto.request.user.UserUpdateRequest;
+import com.social.network.dto.request.user.ProfileUpdateRequest;
 import com.social.network.dto.response.ApiResponse;
-import com.social.network.dto.response.user.ProfileResponse;
 import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.message.Conversation;
 import com.social.network.entity.message.UserConversation;
-import com.social.network.entity.post.Image;
 import com.social.network.entity.user.Role;
 import com.social.network.entity.user.User;
 import com.social.network.exception.AppException;
@@ -16,11 +14,8 @@ import com.social.network.exception.ErrorCode;
 import com.social.network.mapper.UserMapper;
 import com.social.network.repository.user.UserRepo;
 import com.social.network.service.auth.RoleService;
-import com.social.network.service.friend.FriendRequestService;
-import com.social.network.service.friend.FriendshipService;
 import com.social.network.service.message.UserConversationService;
 import com.social.network.utils.PageableUtils;
-import com.social.network.utils.UserUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -87,12 +82,14 @@ public class UserService {
         return userRepo.findByUsername(username.toLowerCase());
     }
 
-    public User updateUser(UserUpdateRequest request) {
+    public Boolean updateUser(ProfileUpdateRequest request) {
         User user = getCurrentUser();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setDateOfBirth(request.getDateOfBirth());
-        return userRepo.save(user);
+        userRepo.save(user);
+
+        return true;
     }
 
     public ApiResponse<String> changePassword(ChangePasswordRequest request, Authentication auth) {

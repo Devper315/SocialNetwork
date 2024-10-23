@@ -9,3 +9,13 @@ export const fetchProfileById = async (id) => {
         console.log("Lỗi khi lấy profile", error.response)
     }
 }
+
+export const updateMyProfile = async (profile) => {
+    try {
+        const response = await httpClient.put(API.PROFILE, profile)
+        return response.data.result
+    }
+    catch (error) {
+        console.log("Lỗi khi sửa profile", error.response)
+    }
+}
