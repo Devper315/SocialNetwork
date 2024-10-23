@@ -7,7 +7,6 @@ const VideoCallPortal = ({ localVideoRef, remoteVideoRef, handleCloseVideoCall,
     sendSignal, action, recipientRef, startVideoStream, show }) => {
     useEffect(() => {
         const startVideo = async () => {
-            console.log("Đang chạy ở video call portal")
             if (localVideoRef.current && show) {
                 await startVideoStream();
                 sendSignal({ type: action, recipient: recipientRef.current });
@@ -17,7 +16,7 @@ const VideoCallPortal = ({ localVideoRef, remoteVideoRef, handleCloseVideoCall,
     }, [localVideoRef, recipientRef, show]);
 
     return ReactDOM.createPortal(
-        <Modal show={show} onHide={handleCloseVideoCall} centered>
+        <Modal show={show} onHide={handleCloseVideoCall} centered >
             <Modal.Header closeButton>
                 <Modal.Title>Video Call</Modal.Title>
             </Modal.Header>

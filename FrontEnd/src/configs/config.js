@@ -6,7 +6,9 @@ export const API = {
     LOGIN: "/api/auth/login",
     REGISTER: "/api/auth/register",
     FRIEND: "/api/friend",
-    FRIEND_REQUEST: "/api/friend-request",
+    SEARCH_FRIEND: "/api/friend/search",
+    FRIEND_REQUEST: "/api/friend/request",
     CONVERSATION: "/api/conversation",
-    POST: "api/user/post"
+    POST: "/api/user/post",
+    PROFILE: "/api/profile"
 }

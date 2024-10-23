@@ -9,7 +9,7 @@ export const ChatSocketProvider = ({ children }) => {
     const { user } = useContext(AuthContext)
     const CHAT_ENDPOINT = '/app/private/send'
     let stompClientRef = useRef(null);
-    let subscribedChatTopic = false
+    let subscribedChatTopicRef = useRef(false)
 
     useEffect(() => {
         if (user.username) {
@@ -32,14 +32,14 @@ export const ChatSocketProvider = ({ children }) => {
     };
 
     const subscribeToChat = (handleMessageReceived, username) => {
-        if (!subscribedChatTopic) {
+        if (!subscribedChatTopicRef.current) {
             const chatTopic = `/user/${username}/private/reply`;
             stompClientRef.current.subscribe(chatTopic, message => {
                 if (message.body) {
                     handleMessageReceived(JSON.parse(message.body));
                 }
             });
-            subscribedChatTopic = true
+            subscribedChatTopicRef.current = true
         }
     };
 

@@ -18,7 +18,6 @@ const ChatWindow = ({ conversation, onClose, recipient }) => {
     const chatBodyRef = useRef(null)
 
     useEffect(() => {
-        console.log(recipient)
         const handleMessageReceived = (newMessage) => {
             setMessageList(prevMessages => [...prevMessages, newMessage])
         }

@@ -16,7 +16,7 @@
   }
   
   .login-form button {
-    width: 108%; /* Chiều rộng 100% */
+    width: 100%; /* Chiều rộng 100% */
     padding: 10px;
     background-color: #1877f2; /* Màu nền nút */
     color: white; /* Màu chữ */
