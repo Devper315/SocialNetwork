@@ -3,9 +3,6 @@ package com.social.network.utils;
 import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.user.Friendship;
 import com.social.network.entity.user.User;
-import com.social.network.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

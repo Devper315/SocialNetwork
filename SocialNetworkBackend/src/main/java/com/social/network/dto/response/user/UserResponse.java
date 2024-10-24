@@ -31,8 +31,7 @@ public class UserResponse {
         this.username = user.getUsername();
         this.fullName = user.getFullName();
         this.email = user.getEmail();
-        if (user.getAvatar() != null)
-            this.avatarUrl = user.getAvatar().getUrl();
+        this.avatarUrl = user.getAvatarUrl();
         this.dateOfBirth = user.getDateOfBirth();
     }
 }

@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Modal, Button } from 'react-bootstrap';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { createFriendRequest, actionFriendRequestByUserId, unfriend } from "../../services/friendService";
 import { fetchProfileById, updateMyProfile } from '../../services/profileService';
-import { storage } from '../../configs/firebaseSDK';
 import EditProfileModal from './EditProfileModal';
 
 const Profile = () => {
@@ -53,8 +50,8 @@ const Profile = () => {
         <div className="profile-page">
             <h1>Trang Cá Nhân</h1>
             <div className="profile-info">
-                <img src={profile.avatar} alt="Avatar" className="avatar" width={100} />
-                <h2>{`${profile.fullName} - id: ${profile.id}`}</h2>
+                <img src={profile.avatarUrl} alt="Avatar" className="avatar" width={100} />
+                <h2>{`${profile.firstName} ${profile.lastName} - id: ${profile.id}`}</h2>
                 <p><strong>Tên đăng nhập:</strong> {profile.username}</p>
                 <p><strong>Email:</strong> {profile.email}</p>
                 <p><strong>Ngày sinh:</strong> {profile.dateOfBirth}</p>

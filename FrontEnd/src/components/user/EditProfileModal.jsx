@@ -1,7 +1,8 @@
 // EditProfileModal.js
 import React, { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../configs/firebaseSDK';
 
 const EditProfileModal = ({ showModal, handleCloseModal, profile, updateProfile }) => {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -25,8 +26,7 @@ const EditProfileModal = ({ showModal, handleCloseModal, profile, updateProfile 
 
     const uploadImage = async () => {
         if (!selectedImage) return;
-        const storage = getStorage();
-        const storageRef = ref(storage, `avatars/${selectedImage.name}`);
+        const storageRef = ref(storage, `avatars/${profile.username}`);
         await uploadBytes(storageRef, selectedImage);
         const downloadURL = await getDownloadURL(storageRef);
         return downloadURL;
@@ -39,7 +39,9 @@ const EditProfileModal = ({ showModal, handleCloseModal, profile, updateProfile 
 
     const handleUpdateProfile = async () => {
         const avatarUrl = await uploadImage();
-        const updatedData = { ...formData, avatar: avatarUrl };
+        let updatedData = {...formData}
+        if (avatarUrl)
+            updatedData.avatarUrl = avatarUrl
         updateProfile(updatedData);
         handleCloseModal();
     };

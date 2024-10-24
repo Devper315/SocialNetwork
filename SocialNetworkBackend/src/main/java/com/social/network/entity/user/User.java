@@ -27,9 +27,7 @@ public class User {
     String username;
     String password;
     String email;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    Image avatar;
+    String avatarUrl;
     LocalDate dateOfBirth;
 
     @ManyToMany
