@@ -18,6 +18,8 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    @Column(name = "content", length = 65535)
     String content;
 
     @OneToMany (mappedBy = "post")

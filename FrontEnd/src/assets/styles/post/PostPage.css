@@ -1,0 +1,141 @@
+.post-container {
+    position: relative; 
+    width: 50%; 
+    margin: 20px auto;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd; 
+}
+
+.post-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    border: 1px solid #ddd; 
+    padding: 10px; 
+    border-radius: 5px; 
+     align-items: flex-start;
+}
+
+.post-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; 
+    -webkit-box-orient: vertical;
+    font-size: 19px;
+    max-height: 6em; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+
+.post-images {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    height: 300px;
+    overflow: hidden; 
+}
+
+.post-image-container {
+    flex: 1;
+    position: relative;
+    border: 1px solid #ddd; 
+    border-radius: 5px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100%; 
+}
+
+.post-image {
+    max-width: 100%; 
+    height: auto; 
+    max-height: 100%; 
+    object-fit: contain; 
+    border-radius: 5px; 
+    background-color: #f0f0f0; 
+}
+.post-text.truncated {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; 
+    overflow: hidden;
+}
+
+.view-full-content-button {
+    background: none;
+    border: none;
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.remove-image-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.success-message {
+    color: green;
+    margin-top: 15px;
+    text-align: center;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 768px) {
+    .post-container {
+        width: 90%; 
+    }
+}
+
+.post-options {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.post-options-button {
+    background-color: transparent;
+    border: none;
+    font-size: 20px; 
+    cursor: pointer;
+}
+
+.post-options-button:hover {
+    color: #007bff;
+}
+
+.post-edit-input {
+    width: 100%; 
+    padding: 10px;
+    border: 1px solid #ccc; 
+    border-radius: 4px;
+    box-sizing: border-box; 
+    resize: vertical; 
+    min-height: 100px; 
+}

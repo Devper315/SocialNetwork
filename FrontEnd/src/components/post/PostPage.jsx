@@ -1,47 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { getPostById, updatePost } from '../../services/postService';
-// import '../../assets/styles/post/PostPage.css';
 import { useParams } from 'react-router-dom';
+import '../../assets/styles/post/PostPage.css';
 
 const PostPage = () => {
+    const { id } = useParams();
     const [post, setPost] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const [editedContent, setEditedContent] = useState('');
     const [imageFiles, setImageFiles] = useState([]);
-    const [status, setStatus] = useState('');
     const [message, setMessage] = useState('');
-    const {id} = useParams()
+    const [showFullContent, setShowFullContent] = useState(false);
 
     useEffect(() => {
-        const getPost = async () => {
-            const postData = await getPostById(id)
-            setEditedContent(postData.content)
-            setImageFiles(postData.imageUrls || [])
-            setStatus(postData.status)
-            setPost(postData)
-        }
-        getPost()
+        const fetchPost = async () => {
+            const { content, imageUrls = [] } = await getPostById(id);
+            setPost({ content, imageUrls });
+            setEditedContent(content);
+            setImageFiles(imageUrls);
+        };
+        fetchPost();
     }, [id]);
 
     const handleEdit = () => {
         setEditMode(true);
-    };
+        setShowFullContent(false)
+    }
 
     const handleSave = async () => {
         try {
-            const currentPost = {
-                id: id,
-                content: editedContent,
-                imageUrls: imageFiles,
-                status: status
-            }
-            await updatePost(currentPost);
-            setPost((prevPost) => ({
-                ...prevPost,
-                content: editedContent,
-                imageUrls: imageFiles,
-                status: status
-            }));
+            await updatePost({ id, content: editedContent, imageUrls: imageFiles });
+            setPost(prev => ({ ...prev, content: editedContent, imageUrls: imageFiles }));
             setEditMode(false);
             setMessage("Chỉnh sửa bài viết thành công!");
         } catch (error) {
@@ -50,64 +39,60 @@ const PostPage = () => {
         }
     };
 
-    const handleImageChange = (event) => {
-        const files = Array.from(event.target.files);
-        const newImageFiles = files.map(file => URL.createObjectURL(file));
-        setImageFiles((prevImages) => [...prevImages, ...newImageFiles]);
+    const handleImageChange = ({ target: { files } }) => {
+        setImageFiles(prev => [...prev, ...Array.from(files).map(file => URL.createObjectURL(file))]);
     };
 
-    const handleRemoveImage = (index) => {
-        setImageFiles((prevImages) => prevImages.filter((_, i) => i !== index));
-    };
+    const handleRemoveImage = index => setImageFiles(prev => prev.filter((_, i) => i !== index));
 
-    if (!post) {
-        return <div>Loading...</div>;
-    }
+    if (!post) return <div>Loading...</div>;
 
     return (
-
-        <div className="post-container">
-            <div className="post-content">
+        <div className="post-container" style={{ height: '60vh', display: 'flex', flexDirection: 'column' }}>
+            <div className="post-content" style={{ flex: '0 0 40%', padding: '5px', overflowY: 'auto' }}>
                 <div className="post-options">
-                    <button className="post-options-button">...</button>
-                    <div className="post-dropdown">
-                        {editMode ? (
-                            <button onClick={handleSave}>Lưu</button>
-                        ) : (
-                            <button onClick={handleEdit}>Sửa bài viết</button>
-                        )}
-                    </div>
+                    <button onClick={editMode ? handleSave : handleEdit}>
+                        {editMode ? "Lưu" : "Sửa bài viết"}
+                    </button>
                 </div>
                 {editMode ? (
-                    <input
-                        type="text"
+                    <textarea
                         value={editedContent}
-                        onChange={(e) => setEditedContent(e.target.value)}
+                        onChange={e => setEditedContent(e.target.value)}
                         className="post-edit-input"
+                        rows={5}
                     />
                 ) : (
-                    <p>{post.content}</p>
-                )}
-
-                <div className="post-images">
-                    {imageFiles.map((url, index) => (
-                        <div key={index} className="post-image-container">
-                            <img src={url} alt={`ảnh ${index}`} className="post-image" />
-                            {editMode && (
-                                <button onClick={() => handleRemoveImage(index)} className="remove-image-button">Xóa</button>
-                            )}
-                        </div>
-                    ))}
-                </div>
-
-                {editMode && (
                     <div>
-                        <input type="file" multiple accept="image/*" onChange={handleImageChange} />
+                        <div
+                            className={`post-text`}
+                            style={{
+                                whiteSpace: 'normal',
+                                overflow: showFullContent ? 'auto' : 'hidden',
+                                maxHeight: showFullContent ? 'none' : '60px'
+                            }}>
+                            {post.content}
+                        </div>
+                        {!showFullContent && post.content.length > 250 && (
+                            <button onClick={() => setShowFullContent(true)} className="view-full-content-button">
+                                Xem thêm
+                            </button>
+                        )}
                     </div>
                 )}
-
-                {message && <div className="success-message">{message}</div>}
             </div>
+
+            <div className="post-images" style={{ flex: '0 0 60%', padding: '10px', overflowY: 'auto' }}>
+                {imageFiles.map((url, index) => (
+                    <div key={index} className="post-image-container">
+                        <img src={url} alt={`ảnh ${index}`} className="post-image" />
+                        {editMode && <button onClick={() => handleRemoveImage(index)} className="remove-image-button">Xóa</button>}
+                    </div>
+                ))}
+                {editMode && <input type="file" multiple accept="image/*" onChange={handleImageChange} />}
+            </div>
+
+            {message && <div className="success-message">{message}</div>}
         </div>
     );
 };

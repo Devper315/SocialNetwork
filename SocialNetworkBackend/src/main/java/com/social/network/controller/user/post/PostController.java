@@ -4,6 +4,7 @@ import com.social.network.dto.request.post.PostCreateRequest;
 import com.social.network.dto.request.post.PostUpdateRequest;
 import com.social.network.dto.response.ApiResponse;
 import com.social.network.dto.response.post.PostResponse;
+import com.social.network.service.post.CommentService;
 import com.social.network.service.post.PostService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,7 @@ public class PostController {
         postService.deletePost(id);
         return ApiResponse.<Void>builder().build();
     }
+
 
     @PutMapping("/{id}")
     public ApiResponse<PostResponse> updatePost(@PathVariable Long id, @RequestBody PostUpdateRequest request) {

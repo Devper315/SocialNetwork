@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import "../../assets/styles/common/Header.css"
 import logoReact from "../../assets/images/logoReact.png"
 const Header = () => {
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   return (
     <header>
       <nav className="navbar navbar-expand-lg navbar-light bg-primary">
@@ -40,13 +40,19 @@ const Header = () => {
                 <span className="menu-text">Thông báo</span>
               </Link>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link to={`/profile/${user.id}`} className="nav-link">
                 <img src={logoReact} alt="" className="menu-logo" />
                 <span className="menu-text">Trang cá nhân</span>
               </Link>
+            </li> */}
+            <li className="nav-item">
+              <Link to="/post-list" className="nav-link">
+                <img src={logoReact} alt="" className="menu-logo" />
+                <span className="menu-text">Post</span>
+              </Link>
             </li>
-            
+
           </ul>
         </div>
       </nav>

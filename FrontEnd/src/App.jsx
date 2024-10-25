@@ -6,8 +6,9 @@ import FriendList from './components/user/FriendList';
 import Register from './components/common/Register';
 import PostPage from './components/post/PostPage';
 import PostList from './components/post/PostList';
-import 'bootstrap/dist/css/bootstrap.min.css'; 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Profile from './components/user/Profile';
+import React from 'react';
 
 
 function App() {
