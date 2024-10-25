@@ -3,6 +3,7 @@ import { AuthContext } from './AuthContext'
 import { Stomp } from '@stomp/stompjs';
 import { CONFIG } from '../configs/config';
 
+
 export const ChatSocketContext = createContext()
 
 export const ChatSocketProvider = ({ children }) => {
@@ -67,7 +68,7 @@ export const ChatSocketProvider = ({ children }) => {
         }
     };
 
-    const PROVIDER_VALUE = {subscribeToChat, sendMessageWebSocket}
+    const PROVIDER_VALUE = { subscribeToChat, sendMessageWebSocket }
 
     return (
         <ChatSocketContext.Provider value={PROVIDER_VALUE}>

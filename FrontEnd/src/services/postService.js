@@ -39,7 +39,7 @@ export const deletePost = async (postId) => {
         return response.data;
     } catch (error) {
         console.error('Lỗi khi xóa bài viết: ', error.response?.data || error.message);
-        throw error; 
+        throw error;
     }
 };
 

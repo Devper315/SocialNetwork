@@ -3,18 +3,17 @@ package com.social.network.dto.request.post;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostUpdateRequest {
+public class CommentUpdateRequest
+{
     Long id;
-    String content;
-    List<String> imageUrls;
-    String status;
-
-
+    private String content;
+    private String imageUrl;
+    LocalDateTime time;
 }

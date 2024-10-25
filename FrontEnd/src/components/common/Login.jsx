@@ -5,13 +5,13 @@ import { AuthContext } from "../../contexts/AuthContext";
 
 const Login = () => {
     const { loginSuccess } = useContext(AuthContext);
-    
+
     const [form, setForm] = useState({
         username: '',
         password: ''
     });
-    const [isLoading, setIsLoading] = useState(false); // Để kiểm soát nút đang đăng nhập
-    const [errorMessage, setErrorMessage] = useState(''); // Để lưu lỗi
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
