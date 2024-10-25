@@ -15,7 +15,6 @@ public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    String firebasePath;
     String url;
 
     @ManyToOne
