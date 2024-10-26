@@ -4,6 +4,8 @@ import com.social.network.dto.request.post.PostCreateRequest;
 import com.social.network.dto.request.post.PostUpdateRequest;
 import com.social.network.dto.response.ApiResponse;
 import com.social.network.dto.response.post.PostResponse;
+import com.social.network.entity.post.Post;
+import com.social.network.service.image.ImageService;
 import com.social.network.service.post.CommentService;
 import com.social.network.service.post.PostService;
 import lombok.AccessLevel;
@@ -19,6 +21,8 @@ import java.util.List;
 @RequestMapping("/api/user/post")
 public class PostController {
     PostService postService;
+    CommentService commentService;
+    ImageService imageService;
     @GetMapping
     public ApiResponse<List<PostResponse>> getMyPost(){
         return ApiResponse.<List<PostResponse>>builder()
@@ -42,6 +46,9 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deletePost(@PathVariable Long id) {
+        Post post = postService.getById(id);
+        commentService.deleteAllCommentsByPostId(id);
+        imageService.deleteAllImagesByPostId(post);
         postService.deletePost(id);
         return ApiResponse.<Void>builder().build();
     }

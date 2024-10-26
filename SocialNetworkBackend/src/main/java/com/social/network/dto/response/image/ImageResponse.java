@@ -1,6 +1,6 @@
-package com.social.network.dto.response.post;
+package com.social.network.dto.response.image;
 
-import com.social.network.entity.post.Image;
+import com.social.network.entity.image.Image;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

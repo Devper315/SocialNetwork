@@ -1,14 +1,12 @@
 package com.social.network.entity.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.social.network.entity.post.Image;
+import com.social.network.entity.image.Image;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor

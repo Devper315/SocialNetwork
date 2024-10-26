@@ -1,6 +1,6 @@
 package com.social.network.entity.message;
 
-import com.social.network.entity.post.Image;
+import com.social.network.entity.image.Image;
 import com.social.network.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
