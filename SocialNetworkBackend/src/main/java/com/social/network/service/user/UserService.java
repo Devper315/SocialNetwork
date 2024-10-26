@@ -7,6 +7,7 @@ import com.social.network.dto.response.ApiResponse;
 import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.message.Conversation;
 import com.social.network.entity.message.UserConversation;
+import com.social.network.entity.post.Image;
 import com.social.network.entity.user.Role;
 import com.social.network.entity.user.User;
 import com.social.network.exception.AppException;
@@ -14,6 +15,7 @@ import com.social.network.exception.ErrorCode;
 import com.social.network.mapper.UserMapper;
 import com.social.network.repository.user.UserRepo;
 import com.social.network.service.auth.RoleService;
+import com.social.network.service.message.ImageService;
 import com.social.network.service.message.UserConversationService;
 import com.social.network.utils.PageableUtils;
 import lombok.AccessLevel;
@@ -38,6 +40,7 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     RoleService roleService;
     UserConversationService userConversationService;
+    ImageService imageService;
 
 
     public List<User> getAll() {
@@ -84,8 +87,10 @@ public class UserService {
 
     public Boolean updateUser(ProfileUpdateRequest request) {
         User user = getCurrentUser();
+        user.setAvatarUrl(request.getAvatarUrl());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
+        user.setFullName(user.getFirstName() + " " + user.getLastName());
         user.setDateOfBirth(request.getDateOfBirth());
         userRepo.save(user);
 

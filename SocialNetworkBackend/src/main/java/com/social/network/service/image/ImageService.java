@@ -61,11 +61,7 @@ public class ImageService {
         }
     }
 
-    public void updateUserAvatar(String updateUrl, User user){
-        Image currentAvatar = user.getAvatar();
-        if (currentAvatar != null && !currentAvatar.getUrl().equals(updateUrl))
-            imageRepo.delete(currentAvatar);
-    }
+
 
     public String deleteById(Long id){
         imageRepo.deleteById(id);
