@@ -10,5 +10,6 @@ export const API = {
     FRIEND_REQUEST: "/api/friend/request",
     CONVERSATION: "/api/conversation",
     POST: "/api/user/post",
-    PROFILE: "/api/profile"
+    PROFILE: "/api/profile",
+    COMMENT: "/api/user/post/comments"
 }

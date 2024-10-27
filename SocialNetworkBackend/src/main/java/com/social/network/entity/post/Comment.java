@@ -28,7 +28,7 @@ public class Comment {
     @JoinColumn(name = "author_id", nullable = false)
     User author;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     Post post;
 
