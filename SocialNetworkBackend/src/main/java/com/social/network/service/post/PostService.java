@@ -3,11 +3,10 @@ package com.social.network.service.post;
 import com.social.network.dto.request.post.PostCreateRequest;
 import com.social.network.dto.request.post.PostUpdateRequest;
 import com.social.network.dto.response.post.PostResponse;
-import com.social.network.entity.post.Image;
 import com.social.network.entity.post.Post;
 import com.social.network.entity.user.User;
 import com.social.network.repository.post.PostRepo;
-import com.social.network.service.message.ImageService;
+import com.social.network.service.image.ImageService;
 import com.social.network.service.user.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

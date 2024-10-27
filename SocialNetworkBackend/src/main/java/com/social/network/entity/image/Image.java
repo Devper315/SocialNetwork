@@ -1,6 +1,7 @@
-package com.social.network.entity.post;
+package com.social.network.entity.image;
 
 import com.social.network.entity.message.MessageCustom;
+import com.social.network.entity.post.Post;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

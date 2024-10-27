@@ -1,4 +1,4 @@
-package com.social.network.dto.request.post;
+package com.social.network.dto.request.image;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

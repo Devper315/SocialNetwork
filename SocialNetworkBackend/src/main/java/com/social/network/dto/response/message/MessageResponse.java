@@ -1,9 +1,8 @@
 package com.social.network.dto.response.message;
 
-import com.social.network.dto.response.post.ImageResponse;
 import com.social.network.entity.message.MessageCustom;
 import com.social.network.entity.message.MessageStatus;
-import com.social.network.entity.post.Image;
+import com.social.network.entity.image.Image;
 import com.social.network.utils.DateUtils;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -27,6 +29,14 @@ public class CommentController
         CommentResponse commentResponse = new CommentResponse(commentService.getById(id));
         return ApiResponse.<CommentResponse>builder()
                 .result(commentResponse)
+                .build();
+    }
+
+    @GetMapping("/{postId}/comments")
+    public ApiResponse<List<CommentResponse>> getCommentsByPostId(@PathVariable Long postId) {
+        List<CommentResponse> comments = commentService.getCommentsByPostId(postId);
+        return ApiResponse.<List<CommentResponse>>builder()
+                .result(comments)
                 .build();
     }
 

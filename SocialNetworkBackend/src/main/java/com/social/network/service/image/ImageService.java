@@ -1,11 +1,10 @@
-package com.social.network.service.message;
+package com.social.network.service.image;
 
-import com.social.network.entity.message.Conversation;
 import com.social.network.entity.message.MessageCustom;
-import com.social.network.entity.post.Image;
+import com.social.network.entity.image.Image;
 import com.social.network.entity.post.Post;
 import com.social.network.entity.user.User;
-import com.social.network.repository.post.ImageRepo;
+import com.social.network.repository.image.ImageRepo;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,9 +23,10 @@ public class ImageService {
         return imageRepo.findByMessage(message);
     }
 
-    public List<Image> getByPost(Post post){
+    public List<Image> getByPostId(Post post) {
         return imageRepo.findByPost(post);
     }
+
 
     public void createForPost(Post post, List<String> imageUrls) {
         List<Image> images = new ArrayList<>();
@@ -67,6 +67,14 @@ public class ImageService {
         imageRepo.deleteById(id);
         return "Xóa ảnh thành công";
     }
+
+    public void deleteAllImagesByPostId(Post post) {
+        List<Image> images = imageRepo.findByPost(post);
+        imageRepo.deleteAll(images);
+    }
+
+
+
 
 
 }
