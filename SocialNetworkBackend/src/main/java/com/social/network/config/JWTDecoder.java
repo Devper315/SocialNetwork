@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -31,5 +32,16 @@ public class JWTDecoder implements JwtDecoder {
                     .build();
         }
         return nimbusJwtDecoder.decode(token);
+    }
+
+    public String extractUsernameFromToken(String token) {
+        try {
+            Jwt jwt = decode(token);
+            Map<String, String> customClaim = (Map<String, String>) jwt.getClaims().get("customClaim");
+            return customClaim.get("username");
+        } catch (JwtException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

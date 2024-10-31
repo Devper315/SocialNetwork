@@ -21,8 +21,9 @@ public class Notification {
 
     String content;
 
-    @ManyToOne
-    User recipient;
+    String recipient;
+    String navigateUrl;
+    boolean isRead;
 
     LocalDateTime time;
 }

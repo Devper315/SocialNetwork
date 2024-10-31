@@ -18,7 +18,6 @@ public class Ward {
     @Column(unique = true)
     String name;
 
-    @ManyToOne
-    District district;
+    Long districtId;
 
 }

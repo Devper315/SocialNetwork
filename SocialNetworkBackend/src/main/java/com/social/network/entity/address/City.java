@@ -17,4 +17,5 @@ public class City {
 
     @Column(unique = true)
     String name;
+    Long countryId;
 }

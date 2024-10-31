@@ -60,7 +60,7 @@ const PostPage = () => {
             try {
                 const commentData = {
                     content: newComment,
-                    imageUrl: uploadedImageUrl
+                    // imageUrl: uploadedImageUrl
                 };
 
                 const comment = await createComment(commentData);

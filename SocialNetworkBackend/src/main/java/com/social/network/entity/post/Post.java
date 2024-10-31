@@ -31,5 +31,6 @@ public class Post {
     LocalDateTime createdTime;
     LocalDateTime updatedTime;
     String status;
+    Long groupId;
 
 }

@@ -6,16 +6,19 @@ import { AuthProvider } from './contexts/AuthContext';
 import { BrowserRouter } from 'react-router-dom';
 import { ChatSocketProvider } from './contexts/ChatSocketContext';
 import { VideoCallProvider } from './contexts/VideoCallSocketContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
         <AuthProvider>
-            <ChatSocketProvider>
+            {/* <ChatSocketProvider> */}
                 <VideoCallProvider>
-                    <App />
+                    <NotificationProvider>
+                        <App />
+                    </NotificationProvider>
                 </VideoCallProvider>
-            </ChatSocketProvider>
+            {/* </ChatSocketProvider> */}
         </AuthProvider>
     </BrowserRouter>
 );

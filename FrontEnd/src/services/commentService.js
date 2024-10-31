@@ -21,12 +21,12 @@ export const getComments = async () => {
 };
 
 export const updateComment = async (post) => {
-    try {
-        const response = await httpClient.put(`${API.COMMENT}/${comment.id}`, comment);
-        return response.data;
-    } catch (error) {
-        throw new Error('Cập nhật bình luận không thành công!');
-    }
+    // try {
+    //     const response = await httpClient.put(`${API.COMMENT}/${comment.id}`, comment);
+    //     return response.data;
+    // } catch (error) {
+    //     throw new Error('Cập nhật bình luận không thành công!');
+    // }
 };
 
 export const getCommentsByPostId = async (postId) => {
