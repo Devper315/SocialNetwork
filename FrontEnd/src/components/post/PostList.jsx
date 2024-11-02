@@ -4,6 +4,7 @@ import { getPosts } from '../../services/postService';
 import '../../assets/styles/post/PostList.css';
 import { Col, Container, Image, Row } from 'react-bootstrap';
 
+
 const PostList = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);

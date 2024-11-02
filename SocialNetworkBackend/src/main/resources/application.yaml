@@ -30,6 +30,16 @@ spring:
     fromName: "Mạng xã hội PTIT 2024"
     booking:
       subject: "Xác nhận email đăng ký"
+    spring:
+      cloud:
+        gcp:
+          project-id: Msocial-network-d428b
+          storage:
+            bucket: social-network-d428b.appspot.com
+            credentials:
+              location: classpath:serviceAccountKey.json
+
+
 
 jwt:
   signerKey: "bj0hKxleZxWk8mHcrceJBce84L5qniIsLM3UcEw6NZWiyTXXN3zTVFoBRB0BScPz"
@@ -44,4 +54,7 @@ firebase:
 
 frontend:
   url: "https://211c-1-54-7-90.ngrok-free.app"
+
+upload:
+  dir: uploads/
 
