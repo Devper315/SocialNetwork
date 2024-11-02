@@ -11,5 +11,6 @@ export const API = {
     CONVERSATION: "/api/conversation",
     POST: "/api/user/post",
     PROFILE: "/api/profile",
-    COMMENT: "/api/user/post/comments"
+    COMMENT: "/api/user/post/comments",
+    NOTIFICATION: "/api/notifications"
 }

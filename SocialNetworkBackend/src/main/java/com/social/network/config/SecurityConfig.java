@@ -27,13 +27,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
-    String[] PUBLIC_GET_ENPOINTS = {"/api/post/**", "/ws/**", "/video-call/**"};
+    String[] PUBLIC_GET_ENPOINTS = {"/api/post/**", "/ws/**", "/video-call/**", "/notifications"};
     String[] PUBLIC_POST_ENPOINTS = {"/api/auth/login", "/api/auth/register", "/ws/**"};
     JWTDecoder jwtDecoder;
-
-    @NonFinal
-    @Value("${frontend.url}")
-    String frontEndUrl;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
