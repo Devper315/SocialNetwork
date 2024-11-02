@@ -14,6 +14,16 @@ export const getCommentById = async (id) => {
         console.error('Lỗi khi tải bình luận: ', error);
     }
 };
+export const updateComment = async (comment) => {
+    try {
+        const response = await httpClient.put(`${API.COMMENT}/${comment.id}`, {
+            content: comment.content,
+            imageUrl: comment.imageUrl
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 
 export const getComments = async () => {
     const response = await httpClient.get(API.COMMENT);
@@ -29,12 +39,23 @@ export const updateComment = async (post) => {
     // }
 };
 
+
+
 export const getCommentsByPostId = async (postId) => {
     try {
-        const response = await httpClient.get(`${API.POST}/${postId}/comments`);
+        const response = await httpClient.get(`${API.COMMENT}/${postId}/comments`);
         return response.data.result;
     } catch (error) {
         console.error('Lỗi khi tải bình luận cho bài viết:', error);
+    }
+};
+export const deleteComment = async (commentId) => {
+    try {
+        const response = await httpClient.delete(`${API.COMMENT}/${commentId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Lỗi khi xóa bài viết: ', error.response?.data || error.message);
+        throw error;
     }
 };
 

@@ -7,6 +7,7 @@ import com.social.network.dto.response.ApiResponse;
 import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.message.Conversation;
 import com.social.network.entity.message.UserConversation;
+import com.social.network.entity.image.Image;
 import com.social.network.entity.user.Role;
 import com.social.network.entity.user.User;
 import com.social.network.exception.AppException;

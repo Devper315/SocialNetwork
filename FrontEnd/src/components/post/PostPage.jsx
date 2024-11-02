@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { getPostById, updatePost } from '../../services/postService';
-import { createComment, getCommentsByPostId } from '../../services/commentService';
+import { getCommentsByPostId, createComment } from '../../services/commentService';
 import { useParams } from 'react-router-dom';
 import '../../assets/styles/post/PostPage.css';
+import CommentList from '../../components/post/CommentList';
 
 const PostPage = () => {
     const { id } = useParams();
     const [post, setPost] = useState(null);
-    const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState('');
     const [editMode, setEditMode] = useState(false);
     const [editedContent, setEditedContent] = useState('');
     const [imageFiles, setImageFiles] = useState([]);
     const [message, setMessage] = useState('');
     const [showFullContent, setShowFullContent] = useState(false);
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState('');
+    const [newCommentImage, setNewCommentImage] = useState(null);
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -24,23 +26,35 @@ const PostPage = () => {
         };
 
         const fetchComments = async () => {
-            const comments = await getCommentsByPostId(id);
-            setComments(comments);
+            try {
+                const commentsData = await getCommentsByPostId(id);
+                setComments(commentsData);
+            } catch (error) {
+            }
         };
 
         fetchPost();
         fetchComments();
     }, [id]);
 
-    const handleEdit = () => {
-        setEditMode(true);
+    const handleEditToggle = () => {
+        setEditMode(prev => !prev);
         setShowFullContent(false);
     };
 
     const handleSave = async () => {
         try {
-            await updatePost({ id, content: editedContent, imageUrls: imageFiles });
-            setPost(prev => ({ ...prev, content: editedContent, imageUrls: imageFiles }));
+            const currentPost = {
+                id: id,
+                content: editedContent,
+                imageUrls: imageFiles,
+            }
+            await updatePost(currentPost);
+            setPost((prevPost) => ({
+                ...prevPost,
+                content: editedContent,
+                imageUrls: imageFiles,
+            }));
             setEditMode(false);
             setMessage("Chỉnh sửa bài viết thành công!");
         } catch (error) {
@@ -70,16 +84,34 @@ const PostPage = () => {
                 console.error(error);
                 setMessage("Không thể thêm bình luận, vui lòng thử lại!");
             }
-        }
+    const handleNewCommentChange = e => setNewComment(e.target.value);
+
+    const handleNewCommentImageChange = e => {
+        setNewCommentImage(URL.createObjectURL(e.target.files[0]));
     };
 
-    if (!post) return <div>Loading...</div>;
+    const handleCreateComment = async () => {
+        try {
+            const form = { content: newComment, imageUrl: newCommentImage, postId: id };
+            await createComment(form);
+            setComments(prev => [...prev, { content: newComment, imageUrl: newCommentImage }]);
+            setNewComment('');
+            setNewCommentImage(null);
+            setMessage("Bình luận đã được thêm!");
+        } catch {
+            setMessage("Có lỗi xảy ra khi thêm bình luận!");
+        }
+    };
+    if (!post) {
+        return <p>Đang tải bài viết...</p>;
+    }
+
 
     return (
-        <div className="post-container" style={{ height: '70vh', display: 'flex', flexDirection: 'column' }}>
-            <div className="post-content" style={{ flex: '0 0 40%', padding: '5px', overflowY: 'auto' }}>
+        <div className="post-container" style={{ height: '200vh', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+            <div className="post-content" style={{ padding: '5px' }}>
                 <div className="post-options">
-                    <button onClick={editMode ? handleSave : handleEdit}>
+                    <button onClick={editMode ? handleSave : handleEditToggle}>
                         {editMode ? "Lưu" : "Sửa bài viết"}
                     </button>
                 </div>
@@ -110,7 +142,7 @@ const PostPage = () => {
                 )}
             </div>
 
-            <div className="post-images" style={{ flex: '0 0 60%', padding: '10px', overflowY: 'auto' }}>
+            <div className="post-images" style={{ padding: '10px', overflowY: 'auto' }}>
                 {imageFiles.map((url, index) => (
                     <div key={index} className="post-image-container">
                         <img src={url} alt={`ảnh ${index}`} className="post-image" />
@@ -120,27 +152,22 @@ const PostPage = () => {
                 {editMode && <input type="file" multiple accept="image/*" onChange={handleImageChange} />}
             </div>
 
-            <div className="comments-section">
-                <h3>Bình luận</h3>
-                <div className="comments-list">
-                    {comments.map((comment, index) => (
-                        <div key={index} className="comment">
-                            <p><strong>{comment.user}</strong>: {comment.text}</p>
-                        </div>
-                    ))}
-                </div>
-                <div className="add-comment">
-                    <input
-                        type="text"
-                        placeholder="Viết bình luận..."
-                        value={newComment}
-                        onChange={e => setNewComment(e.target.value)}
-                    />
-                    <button onClick={handleAddComment}>Đăng</button>
-                </div>
-            </div>
-
             {message && <div className="success-message">{message}</div>}
+
+            <CommentList postId={id} />
+
+            <div className="new-comment-container">
+                <textarea
+                    value={newComment}
+                    onChange={handleNewCommentChange}
+                    className="new-comment-input"
+                    placeholder="Nhập bình luận của bạn..."
+                    rows={3}
+                />
+                <input type="file" accept="image/*" onChange={handleNewCommentImageChange} />
+                <button onClick={handleCreateComment} className="create-comment-button">Thêm bình luận</button>
+                {newCommentImage && <img src={newCommentImage} alt="Hình bình luận" className="comment-preview" />}
+            </div>
         </div>
     );
 };
