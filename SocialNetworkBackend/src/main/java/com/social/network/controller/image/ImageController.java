@@ -31,6 +31,17 @@ public class ImageController {
                 .result(imageService.deleteById(id))
                 .build();
     }
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            String imageUrl = imageService.uploadImage(file);
+            return ResponseEntity.ok(imageUrl);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Lỗi khi tải ảnh lên");
+        }
+    }
+
+
 
 
 }
