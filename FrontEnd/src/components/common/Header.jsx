@@ -25,7 +25,7 @@ const Header = () => {
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link to="/groups" className="nav-link">
+                            <Link to="/group" className="nav-link">
                                 <img src={logoReact} alt="" className="menu-logo" />
                                 <span className="menu-text">Nhóm</span>
                             </Link>

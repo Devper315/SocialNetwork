@@ -18,8 +18,6 @@ import java.util.List;
 @RequestMapping("/api/user/group")
 public class GroupController {
     GroupService groupService;
-
-
     @GetMapping
     public ApiResponse<List<Group>> search(
             @RequestParam(defaultValue = "") String keyword,

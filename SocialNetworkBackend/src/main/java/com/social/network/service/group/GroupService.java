@@ -27,7 +27,7 @@ public class GroupService {
     public Group createGroup(GroupRequest request) {
         User user = userService.getCurrentUser();
         Group group = Group.builder()
-                .name(request.getName())
+                .name(request.getName()).imageUrl(request.getImageUrl())
                 .createUserId(user.getId())
                 .createTime(LocalDateTime.now())
                 .build();
@@ -56,6 +56,7 @@ public class GroupService {
         Group group = groupRepo.findById(id).orElse(null);
         assert group != null;
         group.setName(request.getName());
+        group.setImageUrl(request.getImageUrl());
         return groupRepo.save(group);
     }
 

@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Profile from './components/user/Profile';
 import React from 'react';
 import Notification from './components/user/Notification';
+import Group from './components/user/Group';
 
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Homepage />} />
         <Route path='/friends' element={<FriendList />} />
-        <Route path='/groups' element={<Homepage />} />
+        <Route path='/group' element={<Group />} />
         <Route path='/messages' element={<Homepage />} />
         <Route path='/profile/:id' element={<Profile />} />
         <Route path='/register' element={<Register />} />

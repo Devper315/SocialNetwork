@@ -18,6 +18,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String name;
+    String imageUrl;
     Long createUserId;
     LocalDateTime createTime;
 }

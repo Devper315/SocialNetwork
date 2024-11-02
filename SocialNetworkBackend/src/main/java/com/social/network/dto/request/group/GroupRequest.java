@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GroupRequest {
     String name;
+    String imageUrl;
 }
