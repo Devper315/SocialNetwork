@@ -1,19 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { fetchGroup } from "../../services/groupService";
+import useInfiniteScroll from "../../hook/useInfiniteScroll";
 
 
 const Group = () => {
     const navigate = useNavigate()
     const location = useLocation()
-    const [groups, setGroups] = useState([])
     const [keyword, setKeyword] = useState(location.state?.keyword || '')
-    // const searchGroup = async () => {
-    //     const groupData = fetchGroup(keyword, page)
-    // }
-
+    const containerRef = useRef(null)
+    const {items: groups, hasMore} = useInfiniteScroll([], keyword, fetchGroup, containerRef)
     return(
-        <div>Danh sách nhóm</div>
+        <div ref={containerRef}>
+            <h6>Danh sách nhóm</h6>
+            {groups.map(group => (
+                <div key={group.id}>{group.name}</div>   
+            ))}
+            {hasMore && <p>Loading more...</p>}
+        </div>
     )
 }
 

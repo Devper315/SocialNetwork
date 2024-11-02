@@ -14,9 +14,7 @@ const Notification = () => {
     const navigate = useNavigate()
 
     const loadMoreNotifications = async () => {
-        console.log("Lấy thêm thông báo")
         const data = await fetchMyNotifications(page);
-        console.log(data)
         if (data.length < 10) setHasMore(false);
         setNotifications([...notifications, ...data]);
         setPage(page + 1)

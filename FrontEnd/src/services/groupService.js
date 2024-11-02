@@ -1,13 +1,14 @@
 import { API } from "../configs/config"
 import httpClient from "../configs/httpClient"
 
-export const fetchGroup = (keyword, page) => {
+export const fetchGroup = async (keyword, page) => {
     const params = { keyword, page }
     try {
-        const response = httpClient.get(API.GROUP, { params })
-        return response.data
+        const response = await httpClient.get(API.GROUP, { params })
+        console.log(response.data.result)
+        return response.data.result
     }
     catch (error) {
-        console.log("Lỗi khi lấy dữ liệu nhóm", error.response.data)
+        console.log("Lỗi khi lấy dữ liệu nhóm", error)
     }
 }
