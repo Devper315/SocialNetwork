@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { getCommentsByPostId, updateComment, deleteComment } from '../../services/commentService';
 import { Container, Row, Col, Dropdown } from 'react-bootstrap';
 import '../../assets/styles/post/CommentList.css';
+import { uploadImage } from '../../services/imageService';
+
 
 const CommentList = ({ postId }) => {
     const [comments, setComments] = useState([]);
@@ -45,25 +47,37 @@ const CommentList = ({ postId }) => {
     const handleSave = async () => {
         if (editCommentId === null) return;
 
+        let imageUrl = currentImageUrl;
+
+        // Nếu có tệp hình ảnh mới, tải lên nó
+        if (editedImageFile) {
+            try {
+                imageUrl = await uploadImage(editedImageFile);
+                console.log(imageUrl)
+            } catch (error) {
+                console.error('Failed to upload image:', error);
+                return; // Ngừng hàm nếu tải lên không thành công
+            }
+        }
+
         const commentToUpdate = {
             id: editCommentId,
             content: editedContent || '',
-            imageUrl: editedImageFile
-                ? URL.createObjectURL(editedImageFile)
-                : currentImageUrl || null
+            imageUrl: imageUrl || null
         };
 
         try {
             const updatedComment = await updateComment(commentToUpdate);
-            setComments(prev => prev.filter(comment => comment.id !== editCommentId));
+            setComments(prev => prev.map(comment => comment.id === editCommentId ? updatedComment : comment));
             setEditCommentId(null);
             setEditedContent('');
             setEditedImageFile(null);
             setCurrentImageUrl('');
         } catch (error) {
-
+            console.error('Failed to update comment:', error);
         }
     };
+
 
     const handleDelete = async (commentId) => {
         try {
