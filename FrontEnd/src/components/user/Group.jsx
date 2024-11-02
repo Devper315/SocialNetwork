@@ -8,10 +8,9 @@ const Group = () => {
     const location = useLocation()
     const [groups, setGroups] = useState([])
     const [keyword, setKeyword] = useState(location.state?.keyword || '')
-    const [hasMore, setHasMore] = 
-    const searchGroup = async () => {
-        const groupData = fetchGroup(keyword, page)
-    }
+    // const searchGroup = async () => {
+    //     const groupData = fetchGroup(keyword, page)
+    // }
 
     return(
         <div>Danh sách nhóm</div>

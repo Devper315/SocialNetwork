@@ -84,92 +84,94 @@ const PostPage = () => {
                 console.error(error);
                 setMessage("Không thể thêm bình luận, vui lòng thử lại!");
             }
-    const handleNewCommentChange = e => setNewComment(e.target.value);
+            const handleNewCommentChange = e => setNewComment(e.target.value);
 
-    const handleNewCommentImageChange = e => {
-        setNewCommentImage(URL.createObjectURL(e.target.files[0]));
-    };
+            const handleNewCommentImageChange = e => {
+                setNewCommentImage(URL.createObjectURL(e.target.files[0]));
+            };
 
-    const handleCreateComment = async () => {
-        try {
-            const form = { content: newComment, imageUrl: newCommentImage, postId: id };
-            await createComment(form);
-            setComments(prev => [...prev, { content: newComment, imageUrl: newCommentImage }]);
-            setNewComment('');
-            setNewCommentImage(null);
-            setMessage("Bình luận đã được thêm!");
-        } catch {
-            setMessage("Có lỗi xảy ra khi thêm bình luận!");
-        }
-    };
-    if (!post) {
-        return <p>Đang tải bài viết...</p>;
-    }
+            const handleCreateComment = async () => {
+                try {
+                    const form = { content: newComment, imageUrl: newCommentImage, postId: id };
+                    await createComment(form);
+                    setComments(prev => [...prev, { content: newComment, imageUrl: newCommentImage }]);
+                    setNewComment('');
+                    setNewCommentImage(null);
+                    setMessage("Bình luận đã được thêm!");
+                } catch {
+                    setMessage("Có lỗi xảy ra khi thêm bình luận!");
+                }
+            };
+            if (!post) {
+                return <p>Đang tải bài viết...</p>;
+            }
 
 
-    return (
-        <div className="post-container" style={{ height: '200vh', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
-            <div className="post-content" style={{ padding: '5px' }}>
-                <div className="post-options">
-                    <button onClick={editMode ? handleSave : handleEditToggle}>
-                        {editMode ? "Lưu" : "Sửa bài viết"}
-                    </button>
-                </div>
-                {editMode ? (
-                    <textarea
-                        value={editedContent}
-                        onChange={e => setEditedContent(e.target.value)}
-                        className="post-edit-input"
-                        rows={5}
-                    />
-                ) : (
-                    <div>
-                        <div
-                            className={`post-text`}
-                            style={{
-                                whiteSpace: 'normal',
-                                overflow: showFullContent ? 'auto' : 'hidden',
-                                maxHeight: showFullContent ? 'none' : '60px'
-                            }}>
-                            {post.content}
-                        </div>
-                        {!showFullContent && post.content.length > 250 && (
-                            <button onClick={() => setShowFullContent(true)} className="view-full-content-button">
-                                Xem thêm
+            return (
+                <div className="post-container" style={{ height: '200vh', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+                    <div className="post-content" style={{ padding: '5px' }}>
+                        <div className="post-options">
+                            <button onClick={editMode ? handleSave : handleEditToggle}>
+                                {editMode ? "Lưu" : "Sửa bài viết"}
                             </button>
+                        </div>
+                        {editMode ? (
+                            <textarea
+                                value={editedContent}
+                                onChange={e => setEditedContent(e.target.value)}
+                                className="post-edit-input"
+                                rows={5}
+                            />
+                        ) : (
+                            <div>
+                                <div
+                                    className={`post-text`}
+                                    style={{
+                                        whiteSpace: 'normal',
+                                        overflow: showFullContent ? 'auto' : 'hidden',
+                                        maxHeight: showFullContent ? 'none' : '60px'
+                                    }}>
+                                    {post.content}
+                                </div>
+                                {!showFullContent && post.content.length > 250 && (
+                                    <button onClick={() => setShowFullContent(true)} className="view-full-content-button">
+                                        Xem thêm
+                                    </button>
+                                )}
+                            </div>
                         )}
                     </div>
-                )}
-            </div>
 
-            <div className="post-images" style={{ padding: '10px', overflowY: 'auto' }}>
-                {imageFiles.map((url, index) => (
-                    <div key={index} className="post-image-container">
-                        <img src={url} alt={`ảnh ${index}`} className="post-image" />
-                        {editMode && <button onClick={() => handleRemoveImage(index)} className="remove-image-button">Xóa</button>}
+                    <div className="post-images" style={{ padding: '10px', overflowY: 'auto' }}>
+                        {imageFiles.map((url, index) => (
+                            <div key={index} className="post-image-container">
+                                <img src={url} alt={`ảnh ${index}`} className="post-image" />
+                                {editMode && <button onClick={() => handleRemoveImage(index)} className="remove-image-button">Xóa</button>}
+                            </div>
+                        ))}
+                        {editMode && <input type="file" multiple accept="image/*" onChange={handleImageChange} />}
                     </div>
-                ))}
-                {editMode && <input type="file" multiple accept="image/*" onChange={handleImageChange} />}
-            </div>
 
-            {message && <div className="success-message">{message}</div>}
+                    {message && <div className="success-message">{message}</div>}
 
-            <CommentList postId={id} />
+                    <CommentList postId={id} />
 
-            <div className="new-comment-container">
-                <textarea
-                    value={newComment}
-                    onChange={handleNewCommentChange}
-                    className="new-comment-input"
-                    placeholder="Nhập bình luận của bạn..."
-                    rows={3}
-                />
-                <input type="file" accept="image/*" onChange={handleNewCommentImageChange} />
-                <button onClick={handleCreateComment} className="create-comment-button">Thêm bình luận</button>
-                {newCommentImage && <img src={newCommentImage} alt="Hình bình luận" className="comment-preview" />}
-            </div>
-        </div>
-    );
-};
+                    <div className="new-comment-container">
+                        <textarea
+                            value={newComment}
+                            onChange={handleNewCommentChange}
+                            className="new-comment-input"
+                            placeholder="Nhập bình luận của bạn..."
+                            rows={3}
+                        />
+                        <input type="file" accept="image/*" onChange={handleNewCommentImageChange} />
+                        <button onClick={handleCreateComment} className="create-comment-button">Thêm bình luận</button>
+                        {newCommentImage && <img src={newCommentImage} alt="Hình bình luận" className="comment-preview" />}
+                    </div>
+                </div>
+            );
+        };
+    }
+}
 
 export default PostPage;
