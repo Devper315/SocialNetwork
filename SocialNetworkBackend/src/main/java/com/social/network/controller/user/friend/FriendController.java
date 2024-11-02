@@ -8,6 +8,7 @@ import com.social.network.entity.user.Friendship;
 import com.social.network.entity.user.User;
 import com.social.network.service.friend.FriendRequestService;
 import com.social.network.service.friend.FriendshipService;
+import com.social.network.service.notification.NotificationService;
 import com.social.network.service.user.UserService;
 import com.social.network.utils.UserUtils;
 import lombok.AccessLevel;
@@ -66,8 +67,9 @@ public class FriendController {
 
     @PostMapping("/request/{recipientId}")
     public ApiResponse<FriendRequest> createFriendRequest(@PathVariable Long recipientId){
+        FriendRequest request = friendRequestService.createFriendRequest(recipientId);
         return ApiResponse.<FriendRequest>builder()
-                .result(friendRequestService.createFriendRequest(recipientId))
+                .result(request)
                 .build();
     }
 

@@ -69,6 +69,21 @@ const PostPage = () => {
 
     const handleRemoveImage = index => setImageFiles(prev => prev.filter((_, i) => i !== index));
 
+    const handleAddComment = async () => {
+        if (newComment.trim()) {
+            try {
+                const commentData = {
+                    content: newComment,
+                    // imageUrl: uploadedImageUrl
+                };
+
+                const comment = await createComment(commentData);
+                setComments(prev => [...prev, comment]);
+                setNewComment('');
+            } catch (error) {
+                console.error(error);
+                setMessage("Không thể thêm bình luận, vui lòng thử lại!");
+            }
     const handleNewCommentChange = e => setNewComment(e.target.value);
 
     const handleNewCommentImageChange = e => {

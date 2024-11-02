@@ -7,6 +7,7 @@ import com.social.network.entity.user.User;
 import com.social.network.mapper.FriendRequestMapper;
 import com.social.network.repository.friend.FriendRequestRepo;
 import com.social.network.repository.friend.FriendshipRepo;
+import com.social.network.service.notification.NotificationService;
 import com.social.network.service.user.UserService;
 import com.social.network.utils.PageableUtils;
 import lombok.AccessLevel;
@@ -26,6 +27,7 @@ public class FriendRequestService {
     UserService userService;
     FriendshipService friendshipService;
     FriendRequestMapper friendRequestMapper;
+    NotificationService notificationService;
 
     public FriendRequest createFriendRequest(Long recipientId) {
         User recipient = userService.getById(recipientId);
@@ -34,7 +36,9 @@ public class FriendRequestService {
         FriendRequest request = FriendRequest.builder()
                 .recipient(recipient).requestor(requestor).time(LocalDateTime.now())
                 .build();
-        return friendRequestRepo.save(request);
+        request = friendRequestRepo.save(request);
+        notificationService.notifyFriendRequest(requestor, recipient);
+        return request;
     }
 
     public String actionRequestById(Long requestId, boolean accept) {
@@ -49,12 +53,13 @@ public class FriendRequestService {
     }
 
     public String actionRequestByUserId(Long userId, boolean accept) {
-        User user = userService.getById(userId);
+        User recipient = userService.getById(userId);
         User requestor = userService.getCurrentUser();
-        FriendRequest request = getRequestByBothUsers(requestor, user);
+        FriendRequest request = getRequestByBothUsers(requestor, recipient);
         String result = "Từ chối kết bạn";
         if (accept) {
             friendshipService.createFriendShip(request);
+            notificationService.notifyAcceptFriend(requestor, recipient);
             result = "Chấp nhận kết bạn";
         }
         friendRequestRepo.delete(request);

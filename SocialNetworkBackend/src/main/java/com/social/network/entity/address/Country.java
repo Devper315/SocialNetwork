@@ -1,6 +1,9 @@
 package com.social.network.entity.address;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,15 +13,9 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class District {
+public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-
-    @Column(unique = true)
     String name;
-
-    Long cityId;
-
-
 }

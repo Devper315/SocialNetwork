@@ -31,9 +31,6 @@ export const VideoCallProvider = ({ children }) => {
     const connectVideoCallSocket = () => {
         const token = localStorage.getItem("token")
         videoCallSocket.current = new WebSocket(`${CONFIG.BASE_URL}/video-call?token=${token}`);
-        videoCallSocket.current.onopen = () => {
-            console.log("Kết nối video call socket thành công", user.username)
-        }
         videoCallSocket.current.onmessage = (message) => {
             handleSignalData(JSON.parse(message.data))
         }
