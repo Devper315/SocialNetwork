@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../../configs/firebaseSDK';
+import { storage, uploadFileToFirebase } from '../../configs/firebaseSDK';
 
 const EditProfileModal = ({ showModal, handleCloseModal, profile, updateProfile }) => {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -24,21 +24,13 @@ const EditProfileModal = ({ showModal, handleCloseModal, profile, updateProfile 
         }
     };
 
-    const uploadImage = async () => {
-        if (!selectedImage) return;
-        const storageRef = ref(storage, `avatars/${profile.username}`);
-        await uploadBytes(storageRef, selectedImage);
-        const downloadURL = await getDownloadURL(storageRef);
-        return downloadURL;
-    };
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value })
     };
 
     const handleUpdateProfile = async () => {
-        const avatarUrl = await uploadImage();
+        const avatarUrl = await uploadFileToFirebase(selectedImage, `avatars/${profile.username}`);
         let updatedData = {...formData}
         if (avatarUrl)
             updatedData.avatarUrl = avatarUrl
@@ -82,7 +74,7 @@ const EditProfileModal = ({ showModal, handleCloseModal, profile, updateProfile 
                 <div>
                     <label>Avatar:</label>
                     <input type="file" accept="image/*" onChange={handleImageChange} />
-                    {imagePreview && <img src={imagePreview} alt="Avatar" style={{ width: '100px', marginTop: '10px' }} />}
+                    <img src={imagePreview || formData.avatarUrl} alt="Avatar" style={{ width: '100px', marginTop: '10px' }} />
                 </div>
             </Modal.Body>
             <Modal.Footer>

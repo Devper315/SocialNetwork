@@ -12,13 +12,13 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
         <AuthProvider>
-            {/* <ChatSocketProvider> */}
+            <ChatSocketProvider>
                 <VideoCallProvider>
                     <NotificationProvider>
                         <App />
                     </NotificationProvider>
                 </VideoCallProvider>
-            {/* </ChatSocketProvider> */}
+            </ChatSocketProvider>
         </AuthProvider>
     </BrowserRouter>
 );

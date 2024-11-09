@@ -9,9 +9,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Member;
+import java.util.List;
+
 @Repository
 public interface GroupMemberRepo extends JpaRepository<GroupMember, GroupMemberId> {
     @Transactional
     @Modifying
     void deleteByGroupAndMember(Group group, User member);
+
+    List<GroupMember> findByGroup(Group group);
+    boolean existsByGroupAndMember(Group group, User member);
 }

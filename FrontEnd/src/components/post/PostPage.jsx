@@ -79,6 +79,7 @@ const PostPage = () => {
     const handleCreateComment = async () => {
         try {
             const form = { content: newComment, imageUrl: newCommentImage, postId: id };
+            console.log(form)
             await createComment(form);
             setComments(prev => [...prev, { content: newComment, imageUrl: newCommentImage }]);
             setNewComment('');

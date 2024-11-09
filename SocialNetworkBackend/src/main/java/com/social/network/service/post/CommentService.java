@@ -77,9 +77,6 @@ public class CommentService {
         List<Comment> comments = commentRepo.findByPostId(postId);
         commentRepo.deleteAll(comments);
     }
-
-
-
 }
 
 

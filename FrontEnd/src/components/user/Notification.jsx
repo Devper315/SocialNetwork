@@ -4,6 +4,7 @@ import { fetchMyNotifications, markAsRead } from '../../services/notificationSer
 import logoReact from "../../assets/images/logoReact.png"
 import '../../assets/styles/user/Notification.css'
 import { NotificationContext } from '../../contexts/NotificationContext'
+import { handleScroll } from '../../services/infiniteScroll'
 
 const Notification = () => {
     const [notifications, setNotifications] = useState([])
@@ -14,8 +15,9 @@ const Notification = () => {
     const navigate = useNavigate()
 
     const loadMoreNotifications = async () => {
+        if (!hasMore) return
         const data = await fetchMyNotifications(page);
-        if (data.length < 10) setHasMore(false);
+        setHasMore(data.length === 10)
         setNotifications([...notifications, ...data]);
         setPage(page + 1)
     };
@@ -51,13 +53,6 @@ const Notification = () => {
         )
     }
 
-    const handleScroll = (event) => {
-        const { scrollTop, scrollHeight, clientHeight } = event.target;
-        if (scrollHeight - scrollTop <= clientHeight && hasMore) {
-            loadMoreNotifications();
-        }
-    };
-
     return (
         <div>
             <li className="nav-item" onClick={toggleTab}>
@@ -67,7 +62,7 @@ const Notification = () => {
                 </Link>
             </li>
             {isOpen && (
-                <div className="notification-tab" onScroll={handleScroll}>
+                <div className="notification-tab" onScroll={(event) => handleScroll(event, loadMoreNotifications)}>
                     <h4>Thông báo</h4>
                     {notifications.length === 0 && <p>Không có thông báo mới.</p>}
                     {notifications.length > 0 && notifications.map((notification) => (

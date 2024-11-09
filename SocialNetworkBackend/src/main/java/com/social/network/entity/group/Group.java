@@ -19,6 +19,8 @@ public class Group {
     Long id;
     String name;
     String imageUrl;
+    @Transient
+    boolean joined;
     Long createUserId;
     LocalDateTime createTime;
 }

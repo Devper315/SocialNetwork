@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GroupRequest {
+    Long id;
     String name;
     String imageUrl;
 }
