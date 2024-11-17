@@ -13,7 +13,8 @@ import lombok.experimental.FieldDefaults;
 @EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-public class GroupPermission {
+public class
+GroupPermission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

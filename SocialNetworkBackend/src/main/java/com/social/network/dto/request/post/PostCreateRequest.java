@@ -13,4 +13,5 @@ import java.util.List;
 public class PostCreateRequest {
     String content;
     List<String> imageUrls;
+    Long groupId;
 }

@@ -15,6 +15,4 @@ public class PostUpdateRequest {
     String content;
     List<String> imageUrls;
     String status;
-
-
 }

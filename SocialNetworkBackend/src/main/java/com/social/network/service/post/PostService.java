@@ -3,9 +3,11 @@ package com.social.network.service.post;
 import com.social.network.dto.request.post.PostCreateRequest;
 import com.social.network.dto.request.post.PostUpdateRequest;
 import com.social.network.dto.response.post.PostResponse;
+import com.social.network.entity.group.Group;
 import com.social.network.entity.post.Post;
 import com.social.network.entity.user.User;
 import com.social.network.repository.post.PostRepo;
+import com.social.network.service.group.GroupService;
 import com.social.network.service.image.ImageService;
 import com.social.network.service.user.UserService;
 import lombok.AccessLevel;
@@ -24,25 +26,33 @@ public class PostService {
     PostRepo postRepo;
     UserService userService;
     ImageService imageService;
+    GroupService groupService;
 
-
-    public Post getById(Long id){
+    public Post getById(Long id) {
         return postRepo.findById(id).orElse(null);
     }
 
-
-    public List<PostResponse> getMyPost(){
+    public List<PostResponse> getMyPost() {
         User requestor = userService.getCurrentUser();
         List<Post> posts = postRepo.findByAuthor(requestor);
         return posts.stream().map(PostResponse::new).collect(Collectors.toList());
     }
 
     public PostResponse createPost(PostCreateRequest request) {
+        User currentUser = userService.getCurrentUser();
+        Group group = groupService.getById(request.getGroupId());
+        if (group == null) {
+            throw new RuntimeException("Nhóm không tồn tại");
+        }
+
+
         Post post = Post.builder()
                 .content(request.getContent())
-                .author(userService.getCurrentUser())
+                .author(currentUser)
+                .group(group)
                 .createdTime(LocalDateTime.now())
                 .build();
+
         post = postRepo.save(post);
         imageService.createForPost(post, request.getImageUrls());
         return new PostResponse(post);
@@ -53,10 +63,13 @@ public class PostService {
         if (existingPost == null) {
             throw new RuntimeException("Bài viết không tìm thấy");
         }
+
         existingPost.setContent(request.getContent());
+
         if (request.getStatus() != null) {
             existingPost.setStatus(request.getStatus());
         }
+
         postRepo.save(existingPost);
         imageService.updatePostImages(request.getImageUrls(), existingPost);
         return new PostResponse(existingPost);
@@ -65,6 +78,12 @@ public class PostService {
 
     public void deletePost(Long id) {
         postRepo.deleteById(id);
+    }
+    public List<PostResponse> getPostsByGroup(Long groupId) {
+        return postRepo.findByGroupId(groupId)
+                .stream()
+                .map(PostResponse::new)
+                .collect(Collectors.toList());
     }
 
 }

@@ -11,6 +11,7 @@ import com.social.network.service.post.PostService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -61,4 +62,18 @@ public class PostController {
                 .result(postService.updatePost(request))
                 .build();
     }
+    @GetMapping("/group/{groupId}")
+    public ApiResponse<List<PostResponse>> getPostsByGroup(@PathVariable Long groupId) {
+        List<PostResponse> posts = postService.getPostsByGroup(groupId);
+        if (posts.isEmpty()) {
+            return ApiResponse.<List<PostResponse>>builder()
+                    .message("Không có bài viết nào cho nhóm này.")
+                    .build();
+        }
+        return ApiResponse.<List<PostResponse>>builder()
+                .result(posts)
+                .build();
+    }
+
+
 }

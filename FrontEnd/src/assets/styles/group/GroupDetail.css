@@ -1,0 +1,33 @@
+
+.group-detail-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.group-actions button {
+    margin: 10px 0;
+}
+
+.members-list, .posts-list {
+    margin-top: 20px;
+}
+
+.posts-list ul, .members-list ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.post-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.post-actions button {
+    margin: 10px 0;
+}
+
+.post-comments {
+    margin-top: 20px;
+}
