@@ -39,8 +39,6 @@ public class UserService {
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     RoleService roleService;
-    UserConversationService userConversationService;
-    ImageService imageService;
 
 
     public List<User> getAll() {
@@ -49,6 +47,10 @@ public class UserService {
 
     public User getById(Long id) {
         return userRepo.findById(id).orElseThrow();
+    }
+
+    public List<User> getByIds(List<Long> ids){
+        return userRepo.findAllById(ids);
     }
 
     public UserResponse createUser(UserCreateRequest request) {
@@ -107,15 +109,6 @@ public class UserService {
         return ApiResponse.<String>builder()
                 .result("Đổi mật khẩu thành công")
                 .build();
-    }
-
-    public List<User> getByConversation(Conversation conversation) {
-        List<UserConversation> userConversations = userConversationService.getByConversation(conversation);
-        List<User> users = new ArrayList<>();
-        for (UserConversation uc : userConversations) {
-            users.add(uc.getUser());
-        }
-        return users;
     }
 
     public Page<UserResponse> search(String keyword, int page){

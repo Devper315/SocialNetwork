@@ -5,6 +5,7 @@ import com.social.network.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-public class MessageCustom {
+public class MessageCustom implements Comparable<MessageCustom>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -32,4 +33,10 @@ public class MessageCustom {
     User sender;
     LocalDateTime time;
     MessageStatus status;
+
+
+    @Override
+    public int compareTo(@NotNull MessageCustom m) {
+        return this.getTime().compareTo(m.getTime());
+    }
 }

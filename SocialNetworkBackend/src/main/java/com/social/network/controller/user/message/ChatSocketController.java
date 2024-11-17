@@ -28,5 +28,4 @@ public class ChatSocketController {
                 "/private/reply",
                 request);
     }
-
 }

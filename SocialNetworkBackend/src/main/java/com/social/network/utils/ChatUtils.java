@@ -17,10 +17,4 @@ public class ChatUtils {
                 .collect(Collectors.toList());
     }
 
-    public static List<ConversationResponse> convertConversationList(
-            List<Conversation> conversationList, User requestor) {
-        return conversationList.stream()
-                .map(conversation -> new ConversationResponse(conversation, requestor))
-                .collect(Collectors.toList());
-    }
 }
