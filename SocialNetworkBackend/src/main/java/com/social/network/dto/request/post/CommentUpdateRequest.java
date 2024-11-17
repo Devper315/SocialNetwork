@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class CommentUpdateRequest
 {
     Long id;
-    private String content;
-    private String imageUrl;
+    String content;
+    String imageUrl;
     LocalDateTime time;
 }

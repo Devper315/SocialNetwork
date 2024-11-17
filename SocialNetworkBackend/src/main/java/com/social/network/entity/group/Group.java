@@ -1,5 +1,6 @@
 package com.social.network.entity.group;
 
+import com.social.network.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,4 +24,6 @@ public class Group {
     boolean joined;
     Long createUserId;
     LocalDateTime createTime;
+
+
 }

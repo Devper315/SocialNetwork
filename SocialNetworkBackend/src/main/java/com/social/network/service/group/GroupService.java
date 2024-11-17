@@ -1,11 +1,14 @@
 package com.social.network.service.group;
 
 import com.social.network.dto.request.group.GroupRequest;
+import com.social.network.dto.response.post.PostResponse;
 import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.group.Group;
 import com.social.network.entity.group.GroupMember;
+import com.social.network.entity.post.Post;
 import com.social.network.entity.user.User;
 import com.social.network.repository.group.GroupRepo;
+import com.social.network.repository.post.PostRepo;
 import com.social.network.service.user.UserService;
 import com.social.network.utils.PageableUtils;
 import lombok.AccessLevel;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +29,8 @@ public class GroupService {
     GroupRepo groupRepo;
     UserService userService;
     GroupMemberService groupMemberService;
+    PostRepo postRepo;
+
 
     public Group createGroup(GroupRequest request) {
         User user = userService.getCurrentUser();
@@ -81,4 +87,5 @@ public class GroupService {
         Group group = getById(groupId);
         return groupMemberService.getByGroup(group);
     }
+
 }

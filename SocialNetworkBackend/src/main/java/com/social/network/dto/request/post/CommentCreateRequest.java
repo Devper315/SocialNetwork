@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentCreateRequest
 {
-        private String content;
-        private String imageUrl;
-        private Long postId;
+        String content;
+        String imageUrl;
+        Long postId;
 }

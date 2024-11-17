@@ -1,5 +1,6 @@
 package com.social.network.entity.post;
 
+import com.social.network.entity.group.Group;
 import com.social.network.entity.image.Image;
 import com.social.network.entity.user.User;
 import jakarta.persistence.*;
@@ -23,14 +24,18 @@ public class Post {
     @Column(name = "content", length = 65535)
     String content;
 
-    @OneToMany (mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     List<Image> imageList;
 
     @ManyToOne
     User author;
+
     LocalDateTime createdTime;
     LocalDateTime updatedTime;
-    String status;
-    Long groupId;
 
+    String status;
+
+    @ManyToOne
+    @JoinColumn(name = "group_id", nullable = true)
+    Group group;
 }
