@@ -1,5 +1,5 @@
 export const CONFIG = {
-    BASE_URL: "https://19fd-42-114-38-160.ngrok-free.app"
+    BASE_URL: "https://aac3-14-248-66-29.ngrok-free.app"
 }
 
 export const API = {

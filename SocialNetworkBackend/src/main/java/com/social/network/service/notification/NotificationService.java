@@ -1,6 +1,7 @@
 package com.social.network.service.notification;
 
 import com.social.network.config.JWTDecoder;
+import com.social.network.entity.group.Group;
 import com.social.network.entity.notification.Notification;
 import com.social.network.entity.user.User;
 import com.social.network.repository.notification.NotificationRepo;
@@ -83,6 +84,5 @@ public class NotificationService {
                     notificationRepo.save(n);
                 });
     }
-
 
 }

@@ -49,14 +49,13 @@ const CommentList = ({ postId }) => {
 
         let imageUrl = currentImageUrl;
 
-        // Nếu có tệp hình ảnh mới, tải lên nó
         if (editedImageFile) {
             try {
                 imageUrl = await uploadImage(editedImageFile);
                 console.log(imageUrl)
             } catch (error) {
                 console.error('Failed to upload image:', error);
-                return; // Ngừng hàm nếu tải lên không thành công
+                return;
             }
         }
 

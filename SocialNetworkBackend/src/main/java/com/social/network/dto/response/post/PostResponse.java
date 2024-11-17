@@ -20,6 +20,7 @@ public class PostResponse {
     String content;
     List<String> imageUrls;
     String time;
+    private Long groupId;
 
     public PostResponse(Post post) {
         this.id = post.getId();
@@ -31,6 +32,7 @@ public class PostResponse {
                 : new ArrayList<>();
 
         this.time = DateUtils.reFormatDateTime(post.getCreatedTime());
+        this.groupId = post.getGroup() != null ? post.getGroup().getId() : null;
     }
 
 }

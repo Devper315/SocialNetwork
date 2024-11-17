@@ -5,8 +5,9 @@ import { useParams } from 'react-router-dom';
 import '../../assets/styles/post/PostPage.css';
 import CommentList from '../../components/post/CommentList';
 
-const PostPage = () => {
-    const { id } = useParams();
+const PostPage = ({ postId }) => {
+    const { id: urlId } = useParams();
+    const id = postId || urlId;
     const [post, setPost] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const [editedContent, setEditedContent] = useState('');
@@ -30,6 +31,7 @@ const PostPage = () => {
                 const commentsData = await getCommentsByPostId(id);
                 setComments(commentsData);
             } catch (error) {
+                console.error(error);
             }
         };
 
@@ -48,7 +50,7 @@ const PostPage = () => {
                 id: id,
                 content: editedContent,
                 imageUrls: imageFiles,
-            }
+            };
             await updatePost(currentPost);
             setPost((prevPost) => ({
                 ...prevPost,
@@ -69,7 +71,6 @@ const PostPage = () => {
 
     const handleRemoveImage = index => setImageFiles(prev => prev.filter((_, i) => i !== index));
 
-
     const handleNewCommentChange = e => setNewComment(e.target.value);
 
     const handleNewCommentImageChange = e => {
@@ -79,7 +80,7 @@ const PostPage = () => {
     const handleCreateComment = async () => {
         try {
             const form = { content: newComment, imageUrl: newCommentImage, postId: id };
-            console.log(form)
+            console.log(form);
             await createComment(form);
             setComments(prev => [...prev, { content: newComment, imageUrl: newCommentImage }]);
             setNewComment('');
@@ -89,10 +90,10 @@ const PostPage = () => {
             setMessage("Có lỗi xảy ra khi thêm bình luận!");
         }
     };
+
     if (!post) {
         return <p>Đang tải bài viết...</p>;
     }
-
 
     return (
         <div className="post-container" style={{ height: '200vh', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
