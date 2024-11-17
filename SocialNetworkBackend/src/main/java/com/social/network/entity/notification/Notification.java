@@ -5,6 +5,7 @@ import com.social.network.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -26,4 +27,6 @@ public class Notification {
     boolean isRead;
 
     LocalDateTime time;
+
+
 }

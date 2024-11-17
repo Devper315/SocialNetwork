@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -20,19 +21,13 @@ public class Conversation {
 
     String name;
 
-    // dùng cho cuộc trò chuyện nhóm
     @Transient
-    List<User> memberList;
-
-    @ManyToOne
-    User user1;
-
-    @ManyToOne
-    User user2;
+    List<User> members;
 
     @Transient
     List<MessageCustom> messageList;
 
     @Enumerated
     ConversationType type;
+    LocalDateTime lastUpdate;
 }

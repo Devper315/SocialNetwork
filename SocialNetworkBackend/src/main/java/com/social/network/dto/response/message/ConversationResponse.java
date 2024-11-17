@@ -6,6 +6,8 @@ import com.social.network.entity.user.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -19,19 +21,27 @@ public class ConversationResponse {
     String name;
     String sender;
     String recipient;
+    List<MemberDTO> members;
     ConversationType type;
-    List<MessageResponse> messageList;
+    LocalDateTime lastUpdate;
 
-    public ConversationResponse(Conversation conversation, User requestor){
+    public ConversationResponse(Conversation conversation, List<User> members, User requestor){
         this.id = conversation.getId();
         this.name = conversation.getName();
         this.type = conversation.getType();
+        this.members = members.stream().map(MemberDTO::new).toList();
         if (this.type.equals(ConversationType.PRIVATE)){
             String requestorUsername = requestor.getUsername();
-            String username1 = conversation.getUser1().getUsername();
-            String username2 = conversation.getUser2().getUsername();
+            User member1 = members.get(0);
+            User member2 = members.get(1);
+            String username1 = member1.getUsername();
+            String fullname1 = member1.getFullName();
+            String username2 = member2.getUsername();
+            String fullname2 = member2.getFullName();
             this.sender = requestorUsername.equals(username1) ? username1 : username2;
             this.recipient = requestorUsername.equals(username1) ? username2 : username1;
+            this.name = requestorUsername.equals(username1) ? fullname2 : fullname1;
         }
+        this.lastUpdate = conversation.getLastUpdate();
     }
 }

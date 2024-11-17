@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
@@ -19,15 +18,16 @@ import java.util.List;
 public class NotificationController {
     NotificationService notificationService;
 
+
     @GetMapping(value = "/notifications", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Notification> connectSSE(@RequestParam String token) {
         return notificationService.getNotificationFlux(token);
     }
 
     @GetMapping("/api/notifications")
-    public ApiResponse<List<Notification>> getMyNotification(@RequestParam int page){
+    public ApiResponse<List<Notification>> getMyNotification(@RequestParam Long lastId){
         return ApiResponse.<List<Notification>>builder()
-                .result(notificationService.getMyNotifications(page).getContent())
+                .result(notificationService.getMyNotifications(lastId))
                 .build();
     }
 

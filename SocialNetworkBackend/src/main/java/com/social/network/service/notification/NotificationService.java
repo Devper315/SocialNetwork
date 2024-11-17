@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Sinks;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -68,10 +70,10 @@ public class NotificationService {
                 .subscribe();
     }
 
-    public Page<Notification> getMyNotifications(int page) {
+    public List<Notification> getMyNotifications(Long lastId) {
         User requestor = userService.getCurrentUser();
-        Pageable pageable = PageableUtils.createPageable(page, 10, "time");
-        return notificationRepo.findByRecipient(requestor.getUsername(), pageable);
+        Pageable pageable = PageRequest.of(0, 10);
+        return notificationRepo.findByRecipient(requestor.getUsername(), lastId, pageable).getContent();
     }
 
     public void markAsRead(Long id) {

@@ -1,10 +1,7 @@
 package com.social.network.entity.message;
 
 import com.social.network.entity.user.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,13 +11,12 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@IdClass(UserConversationId.class)
 public class UserConversation {
     @Id
-    @ManyToOne
-    Conversation conversation;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
-    @Id
-    @ManyToOne
-    User user;
+    Long conversationId;
+
+    Long userId;
 }
