@@ -73,7 +73,6 @@ export const VideoCallProvider = ({ children }) => {
         if (data.type === 'answer') {
             await peerConnection.current.setRemoteDescription(new RTCSessionDescription(data.answer));
             console.log("Client 1 hoàn tất tạo kết nối", peerConnection.current.remoteDescription)
-
         }
     }
     const startCall = (recipientUsername) => {
@@ -99,7 +98,7 @@ export const VideoCallProvider = ({ children }) => {
 
     const startVideoStream = async () => {
         console.log("Đang bật video")
-        let stream = await navigator.mediaDevices.getUserMedia({ video: true })
+        let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
         localVideoRef.current.srcObject = stream
     }
     const setTrackForConnection = async () => {

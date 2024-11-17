@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import "../../assets/styles/user/FriendList.css"
 import { actionFriendRequestById, fetchFriend, fetchFriendRequest, searchFriend } from '../../services/friendService';
-import { fetchPrivateConversation } from '../../services/conversationService';
-import ChatWindow from './message/ChatWindow';
 import { Link, useNavigate, useLocation  } from 'react-router-dom';
+import { ChatSocketContext } from '../../contexts/ChatSocketContext';
 
 const FriendList = () => {
     const tabs = {
@@ -11,6 +10,7 @@ const FriendList = () => {
         requests: "Lời mời kết bạn",
         search: "Tìm kiếm bạn bè"
     }
+    const {openChatByFriend} = useContext(ChatSocketContext)
     const navigate = useNavigate()
     const location = useLocation()
     const [keyword, setKeyword] = useState(
@@ -27,6 +27,7 @@ const FriendList = () => {
         size: 20,
         totalPages: null
     });
+
     const fetchData = async (tab, page) => {
         let data;
         if (tab === 'friends') {
@@ -48,9 +49,6 @@ const FriendList = () => {
             page: page
         }));
     };
-    const [conversation, setConversation] = useState({})
-    const [isChatOpen, setIsChatOpen] = useState(false)
-    const [recipient, setRecipient] = useState({})
 
     useEffect(() => {
         fetchData(activeTab, pagination.page)
@@ -65,13 +63,7 @@ const FriendList = () => {
             state: {activeTab, keyword, pagination}
         })
     };
-    const openChatWindow = async (friendId) => {
-        const conversationData = await fetchPrivateConversation(friendId)
-        setConversation(conversationData)
-        setIsChatOpen(true)
-        const friend = friends.find(friend => friend.id === friendId)
-        setRecipient(friend)
-    }
+    
 
     const goToPreviousPage = () => {
         setPagination({
@@ -105,7 +97,7 @@ const FriendList = () => {
                         {friends.length > 0 && friends.map(friend => (
                             <li key={friend.id}>
                                 <Link to={`/profile/${friend.id}`}>{friend.fullName}</Link>
-                                <button onClick={() => openChatWindow(friend.id)}>Nhắn tin</button>
+                                <button onClick={() => openChatByFriend(friend)}>Nhắn tin</button>
                             </li>
                         ))}
                         {friends.length === 0 &&
@@ -208,10 +200,7 @@ const FriendList = () => {
                     </div>
                 )}
             </div>
-            {isChatOpen && <ChatWindow
-                conversation={conversation}
-                onClose={() => setIsChatOpen(false)}
-                recipient={recipient} />}
+            
         </div>
     );
 };

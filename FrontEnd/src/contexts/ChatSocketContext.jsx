@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useEffect, useRef } from 'react'
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { AuthContext } from './AuthContext'
 import { Stomp } from '@stomp/stompjs';
 import { CONFIG } from '../configs/config';
+import ChatWindow from '../components/user/message/ChatWindow';
+import { fetchPrivateConversation } from '../services/conversationService';
 
 
 export const ChatSocketContext = createContext()
@@ -11,6 +13,9 @@ export const ChatSocketProvider = ({ children }) => {
     const CHAT_ENDPOINT = '/app/private/send'
     let stompClientRef = useRef(null);
     let subscribedChatTopicRef = useRef(false)
+    const [conversations, setConversations] = useState([])
+    const [isChatOpen, setIsChatOpen] = useState(false)
+    const [openingConversation, setOpeningConversation] = useState({})
 
     useEffect(() => {
         if (user.username) {
@@ -68,11 +73,27 @@ export const ChatSocketProvider = ({ children }) => {
         }
     };
 
-    const PROVIDER_VALUE = { subscribeToChat, sendMessageWebSocket }
+    const openChatByConversation = (conversation) => {
+        setIsChatOpen(true)
+        setOpeningConversation(conversation)
+    }
+
+    const openChatByFriend = async (friend) => {
+        let conversation = conversations.find(c => c.recipient === friend.username)
+        if (!conversation) 
+            conversation = await fetchPrivateConversation(friend.id)
+        openChatByConversation(conversation)
+    }
+
+    const PROVIDER_VALUE = { subscribeToChat, sendMessageWebSocket, 
+        conversations, setConversations, openChatByFriend, openChatByConversation }
 
     return (
         <ChatSocketContext.Provider value={PROVIDER_VALUE}>
             {children}
+            {isChatOpen && <ChatWindow
+                conversation={openingConversation}
+                onClose={() => setIsChatOpen(false)} />}
         </ChatSocketContext.Provider>
     )
 }

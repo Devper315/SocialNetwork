@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import "../../assets/styles/common/Header.css"
 import logoReact from "../../assets/images/logoReact.png"
 import Notification from "../user/Notification";
+import Conversation from "../user/message/Conversation";
 const Header = () => {
     const { user } = useContext(AuthContext)
     
@@ -30,12 +31,7 @@ const Header = () => {
                                 <span className="menu-text">Nhóm</span>
                             </Link>
                         </li>
-                        <li className="nav-item">
-                            <Link to="/messages" className="nav-link">
-                                <img src={logoReact} alt="" className="menu-logo" />
-                                <span className="menu-text">Tin nhắn</span>
-                            </Link>
-                        </li>
+                        <Conversation/>
                         <Notification/>
                         <li className="nav-item">
                             <Link to={`/profile/${user.id}`} className="nav-link">

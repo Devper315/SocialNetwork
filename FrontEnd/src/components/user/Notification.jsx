@@ -10,16 +10,17 @@ const Notification = () => {
     const [notifications, setNotifications] = useState([])
     const [isOpen, setIsOpen] = useState(false)
     const [hasMore, setHasMore] = useState(true)
-    const [page, setPage] = useState(1);
+    const [lastId, setLastId] = useState(0);
     const { notificationSource } = useContext(NotificationContext)
     const navigate = useNavigate()
 
     const loadMoreNotifications = async () => {
         if (!hasMore) return
-        const data = await fetchMyNotifications(page);
+        const data = await fetchMyNotifications(lastId);
         setHasMore(data.length === 10)
         setNotifications([...notifications, ...data]);
-        setPage(page + 1)
+        if (data.length === 10)
+            setLastId(data.at(-1).id)
     };
 
     useEffect(() => {
@@ -45,7 +46,6 @@ const Notification = () => {
         if (!notification.read) markAsRead(notification.id)
         toggleTab()
         navigate(notification.navigateUrl)
-
         setNotifications((prevNotifications) =>
             prevNotifications.map((n) =>
                 n.id === notification.id ? { ...n, read: true } : n

@@ -131,10 +131,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #eaecf1;
 }
 
 .send-button:hover {
-    background-color: #dfdfdf;
+    background-color: #bdbaba;
     /* Nền xám khi di chuột vào nút gửi */
 }
 

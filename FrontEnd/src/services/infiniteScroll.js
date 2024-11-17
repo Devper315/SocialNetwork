@@ -4,3 +4,11 @@ export const handleScroll = (event, loadMore) => {
         loadMore();
     }
 };
+
+export const handleScrollReverse = (event, loadMore) => {
+    const { scrollTop } = event.target;
+    if (scrollTop === 0) {
+        loadMore();
+        
+    }
+}
