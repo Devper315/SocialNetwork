@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { AuthContext } from "./AuthContext"
-import { CONFIG } from "../configs/config"
+import { API, CONFIG } from "../configs/config"
 
 
 export const NotificationContext = createContext()
