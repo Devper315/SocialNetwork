@@ -55,6 +55,36 @@ public class NotificationService {
         createNotification(requestor, recipient, content);
     }
 
+    public void notifyGroupRequest(User sender, User recipient, Group group) {
+        String content = sender.getFullName() + " đã gửi yêu cầu tham gia nhóm " + group.getName();
+        createGroupNotification(sender, recipient, group, content, "group-request");
+    }
+
+    public void notifyAcceptGroup(User sender, User recipient, Group group) {
+        String content = "Bạn đã được chấp nhận tham gia nhóm " + group.getName();
+        createGroupNotification(sender, recipient, group, content, "group-accepted");
+    }
+
+    private void createGroupNotification(User sender, User recipient, Group group, String content, String type) {
+        Notification notification = Notification.builder()
+                .content(content)
+                .recipient(String.valueOf(group.getCreateUserId()))
+                .navigateUrl("/group/" + group.getId())
+                .isRead(false)
+                .groupId(group.getId())
+                .time(LocalDateTime.now())
+                .build();
+
+        notificationRepo.save(notification);
+        Mono.delay(Duration.ofSeconds(1))
+                .doOnSuccess(ignored -> {
+                    Optional.ofNullable(notificationSinks.get(String.valueOf(group.getCreateUserId())))
+                            .ifPresent(n -> n.tryEmitNext(notification));
+                })
+                .subscribe();
+    }
+
+
     private void createNotification(User requestor, User recipient, String content){
         Notification notification = Notification.builder()
                 .content(content)
@@ -84,5 +114,6 @@ public class NotificationService {
                     notificationRepo.save(n);
                 });
     }
+
 
 }

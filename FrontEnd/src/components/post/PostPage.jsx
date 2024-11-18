@@ -20,8 +20,8 @@ const PostPage = ({ postId }) => {
 
     useEffect(() => {
         const fetchPost = async () => {
-            const { content, imageUrls = [] } = await getPostById(id);
-            setPost({ content, imageUrls });
+            const { content, imageUrls = [], userName } = await getPostById(id);
+            setPost({ content, imageUrls, userName });
             setEditedContent(content);
             setImageFiles(imageUrls);
         };
@@ -59,6 +59,7 @@ const PostPage = ({ postId }) => {
             }));
             setEditMode(false);
             setMessage("Chỉnh sửa bài viết thành công!");
+
         } catch (error) {
             console.error(error);
             setMessage("Có lỗi xảy ra, vui lòng thử lại!");
@@ -96,8 +97,11 @@ const PostPage = ({ postId }) => {
     }
 
     return (
-        <div className="post-container" style={{ height: '200vh', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
-            <div className="post-content" style={{ padding: '5px' }}>
+        <div className="post-container" >
+            <div className="post-author">
+                {post.userName}
+            </div>
+            <div className="post-content">
                 <div className="post-options">
                     <button onClick={editMode ? handleSave : handleEditToggle}>
                         {editMode ? "Lưu" : "Sửa bài viết"}
@@ -142,7 +146,9 @@ const PostPage = ({ postId }) => {
 
             {message && <div className="success-message">{message}</div>}
 
-            <CommentList postId={id} />
+            {comments.length > 0 && (
+                <CommentList postId={id} />
+            )}
 
             <div className="new-comment-container">
                 <textarea

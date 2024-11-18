@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchGroupById, getGroupMembers } from "../../../services/groupService";
-import { getPostsByGroup, deletePost, createPost } from "../../../services/postService";
+import { getPostsByGroup, createPost } from "../../../services/postService";
 import GroupEditModal from "./GroupEditModal";
 import "../../../assets/styles/group/GroupDetail.css";
-import PostPage from '../../../components/post/PostPage';
+import PostPage from "../../../components/post/PostPage";
 
 const GroupDetail = () => {
     const { id } = useParams();
@@ -14,6 +14,7 @@ const GroupDetail = () => {
     const [showMembers, setShowMembers] = useState(false);
     const [posts, setPosts] = useState([]);
     const [newPostContent, setNewPostContent] = useState("");
+    const [imageFiles, setImageFiles] = useState([]);
 
     useEffect(() => {
         const getGroup = async () => {
@@ -26,7 +27,7 @@ const GroupDetail = () => {
                 const postsData = await getPostsByGroup(id);
                 setPosts(postsData || []);
             } catch (error) {
-                console.error("Lỗi khi lấy bài viết theo nhóm:", error);
+                console.error("Error fetching group posts:", error);
             }
         };
 
@@ -34,69 +35,42 @@ const GroupDetail = () => {
         getPosts();
     }, [id]);
 
-    const requestJoinGroup = () => {
-        console.log("tham gia");
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        const newImageUrls = files.map((file) => URL.createObjectURL(file));
+        setImageFiles((prevFiles) => [...prevFiles, ...newImageUrls]);
     };
 
-    const leaveGroup = () => {
-        console.log("roi nhom");
-    };
-
-    const openEditModal = () => {
-        setShowModal(true);
-    };
-
-    const closeEditModal = () => {
-        setShowModal(false);
-    };
-
-    const toggleMemberList = async () => {
-        if (!showMembers) {
-            const membersData = await getGroupMembers(id);
-            setMembers(membersData || []);
-        }
-        setShowMembers(!showMembers);
-    };
-
-    const handleDeletePost = async (postId) => {
-        try {
-            await deletePost(postId);
-            setPosts(posts.filter(post => post.id !== postId));
-            alert("Bài viết đã được xóa!");
-        } catch (error) {
-            console.error(error);
-            alert("Có lỗi xảy ra khi xóa bài viết.");
-        }
+    const handleRemoveImage = (index) => {
+        setImageFiles(imageFiles.filter((_, i) => i !== index));
     };
 
     const handleCreatePost = async (e) => {
         e.preventDefault();
-        if (!newPostContent) {
-            alert("Vui lòng nhập nội dung bài viết!");
-            return;
-        }
-
         try {
-            const postForm = {
-                content: newPostContent,
+            const newPost = {
                 groupId: id,
+                content: newPostContent,
+                imageUrls: imageFiles,
             };
-            const newPost = await createPost(postForm);
-            setPosts([newPost, ...posts]);
-            setNewPostContent("");
+            await createPost(newPost);
             alert("Bài viết đã được thêm!");
         } catch (error) {
             console.error(error);
+            alert("Có lỗi xảy ra");
         }
     };
 
     return (
         <div className="group-detail-container">
             <div className="group-actions">
-                <button onClick={openEditModal}>Sửa thông tin nhóm</button>
-                <button onClick={toggleMemberList}>Danh sách thành viên</button>
-                {!group.joined && <button onClick={requestJoinGroup}>Yêu cầu tham gia nhóm</button>}
-                {group.joined && <button onClick={leaveGroup}>Rời nhóm</button>}
+                <button onClick={() => setShowModal(true)}>Sửa thông tin nhóm</button>
+                <button onClick={() => setShowMembers(!showMembers)}>Danh sách thành viên</button>
+                {!group.joined ? (
+                    <button>Yêu cầu tham gia nhóm</button>
+                ) : (
+                    <button>Rời nhóm</button>
+                )}
             </div>
 
             {showMembers ? (
@@ -118,31 +92,37 @@ const GroupDetail = () => {
                                 onChange={(e) => setNewPostContent(e.target.value)}
                                 placeholder="Nhập nội dung bài viết..."
                                 rows="4"
-                                style={{ width: "100%" }}
                             />
+                            <div className="post-images">
+                                {imageFiles.map((url, index) => (
+                                    <div key={index} className="post-image-container">
+                                        <img src={url} alt={`ảnh ${index}`} />
+                                        <button onClick={() => handleRemoveImage(index)}>Xóa</button>
+                                    </div>
+                                ))}
+                                <input type="file" multiple accept="image/*" onChange={handleImageChange} />
+                            </div>
                             <button type="submit">Đăng bài</button>
                         </form>
                     </div>
 
                     <div className="posts-list">
-                        <ul>
-                            {posts.length > 0 ? (
-                                posts.map((post) => (
-                                    <li key={post.id} className="post-item">
-                                        <PostPage postId={post.id} />
-                                    </li>
-                                ))
-                            ) : (
-                                <div>Không có bài viết nào.</div>
-                            )}
-                        </ul>
+                        {posts.length > 0 ? (
+                            posts.map((post) => (
+                                <li key={post.id}>
+                                    <PostPage postId={post.id} />
+                                </li>
+                            ))
+                        ) : (
+                            <div>Không có bài viết nào.</div>
+                        )}
                     </div>
                 </>
             )}
 
             <GroupEditModal
                 show={showModal}
-                handleClose={closeEditModal}
+                handleClose={() => setShowModal(false)}
                 originalGroup={group}
                 setOriginalGroup={setGroup}
             />

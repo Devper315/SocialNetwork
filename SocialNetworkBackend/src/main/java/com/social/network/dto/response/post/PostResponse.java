@@ -20,7 +20,8 @@ public class PostResponse {
     String content;
     List<String> imageUrls;
     String time;
-    private Long groupId;
+    String userName;
+    Long groupId;
 
     public PostResponse(Post post) {
         this.id = post.getId();
@@ -33,6 +34,7 @@ public class PostResponse {
 
         this.time = DateUtils.reFormatDateTime(post.getCreatedTime());
         this.groupId = post.getGroup() != null ? post.getGroup().getId() : null;
+        this.userName = post.getAuthor().getUsername();
     }
 
 }

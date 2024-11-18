@@ -25,5 +25,4 @@ public class Group {
     Long createUserId;
     LocalDateTime createTime;
 
-
 }
