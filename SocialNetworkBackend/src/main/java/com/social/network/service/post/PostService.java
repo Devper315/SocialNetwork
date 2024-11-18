@@ -32,6 +32,8 @@ public class PostService {
         return postRepo.findById(id).orElse(null);
     }
 
+
+
     public List<PostResponse> getMyPost() {
         User requestor = userService.getCurrentUser();
         List<Post> posts = postRepo.findByAuthor(requestor);

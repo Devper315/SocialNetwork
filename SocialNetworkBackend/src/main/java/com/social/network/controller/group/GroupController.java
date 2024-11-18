@@ -5,7 +5,10 @@ import com.social.network.dto.response.ApiResponse;
 import com.social.network.dto.response.post.PostResponse;
 import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.group.Group;
+import com.social.network.entity.user.User;
 import com.social.network.service.group.GroupService;
+import com.social.network.service.notification.NotificationService;
+import com.social.network.service.user.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,6 +23,8 @@ import java.util.List;
 @RequestMapping("/api/user/group")
 public class GroupController {
     GroupService groupService;
+    UserService userService;
+    NotificationService notificationService;
     @GetMapping
     public ApiResponse<List<Group>> search(
             @RequestParam(defaultValue = "") String keyword,
@@ -85,6 +90,7 @@ public class GroupController {
                 .result(groupService.updateGroup(request))
                 .build();
     }
+
 
 
 }
