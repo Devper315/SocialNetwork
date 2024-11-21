@@ -1,5 +1,5 @@
 export const CONFIG = {
-    BASE_URL: "https://localhost:8080/"
+    BASE_URL: "https://localhost:8080"
 }
 
 export const API = {
