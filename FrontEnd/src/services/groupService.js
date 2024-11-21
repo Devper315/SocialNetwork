@@ -8,7 +8,7 @@ export const createGroup = async (form) => {
         return response
     }
     catch (error) {
-        console.log("Lỗi khi tạo nhóm", error)
+        console.log(error)
     }
 }
 
@@ -19,7 +19,7 @@ export const fetchGroups = async (page, keyword) => {
         return response.data.result
     }
     catch (error) {
-        console.log("Lỗi khi lấy dữ liệu nhóm", error)
+        console.log(error)
     }
 }
 
@@ -30,7 +30,7 @@ export const fetchMyGroups = async (page, keyword) => {
         return response.data.result
     }
     catch (error) {
-        console.log("Lỗi khi lấy dữ liệu nhóm của tôi", error)
+        console.log(error)
     }
 }
 
@@ -40,7 +40,7 @@ export const fetchGroupById = async (id) => {
         return response.data.result
     }
     catch (error) {
-        console.log("Lỗi khi lấy dữ liệu chi tiết nhóm", error)
+        console.log(error)
     }
 }
 
@@ -50,7 +50,7 @@ export const updateGroup = async (form) => {
         return response
     }
     catch (error) {
-        console.log("Lỗi khi cập nhật nhóm", error)
+        console.log(error)
     }
 }
 
@@ -61,7 +61,7 @@ export const addGroupMember = async (groupId, userId) => {
         });
         return response.data.result;
     } catch (error) {
-        console.log("Lỗi khi thêm thành viên vào nhóm", error);
+        console.log(error);
     }
 };
 
@@ -72,7 +72,7 @@ export const removeGroupMember = async (groupId, userId) => {
         });
         return response.data.result;
     } catch (error) {
-        console.log("Lỗi khi xóa thành viên khỏi nhóm", error);
+        console.log(error);
     }
 };
 
@@ -81,9 +81,60 @@ export const getGroupMembers = async (groupId) => {
         const response = await httpClient.get(`${API.GROUP}/members/${groupId}`);
         return response.data.result;
     } catch (error) {
-        console.log("Lỗi khi lấy danh sách thành viên của nhóm", error);
+        console.log(error);
     }
 };
+
+export const sendJoinGroupRequest = async (groupId) => {
+    try {
+        const response = await httpClient.post(`${API.GROUP}/requests/${groupId}`);
+        console.log("Đã gửi yêu cầu tham gia nhóm", response.data.result);
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const fetchGroupJoinRequests = async (groupId) => {
+    try {
+        const response = await httpClient.get(`${API.GROUP}/requests/${groupId}/admin-requests`);
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        throw error;
+    }
+};
+
+
+
+export const actionJoinGroupRequest = async (requestId, accept) => {
+    const response = await httpClient.post(`${API.GROUP}/requests/${requestId}/action/${accept}`);
+    console.log(response.data);
+    return response;
+
+};
+
+
+export const checkIfRequestExists = async (groupId) => {
+    try {
+        const response = await httpClient.get(`${API.GROUP}/requests/exists/${groupId}`);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+};
+
+export const checkGroupCreator = async (groupId) => {
+    try {
+        const response = await httpClient.get(`${API.GROUP}/is-creator/${groupId}`);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+};
+
 
 
 

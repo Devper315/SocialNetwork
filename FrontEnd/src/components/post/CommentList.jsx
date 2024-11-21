@@ -5,7 +5,7 @@ import '../../assets/styles/post/CommentList.css';
 import { uploadImage } from '../../services/imageService';
 
 
-const CommentList = ({ postId }) => {
+const CommentList = ({postId}) => {
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');

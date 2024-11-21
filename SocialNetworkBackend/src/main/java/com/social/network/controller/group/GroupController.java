@@ -91,6 +91,13 @@ public class GroupController {
                 .build();
     }
 
+    @GetMapping("/is-creator/{groupId}")
+    public boolean isGroupCreator(@PathVariable Long groupId) {
+        return groupService.isGroupCreator(groupId);
+    }
+
+
+
 
 
 }

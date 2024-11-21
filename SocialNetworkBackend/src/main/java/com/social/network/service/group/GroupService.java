@@ -88,4 +88,11 @@ public class GroupService {
         return groupMemberService.getByGroup(group);
     }
 
+    public boolean isGroupCreator(Long groupId) {
+        Group group = groupRepo.findById(groupId).orElse(null);
+        User currentUser = userService.getCurrentUser();
+        return currentUser.getId().equals(group.getCreateUserId());
+    }
+
+
 }
