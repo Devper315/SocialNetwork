@@ -24,9 +24,6 @@ public class Notification {
     String recipient;
     String navigateUrl;
     boolean isRead;
-    String sender;
-    String type;
-    Long groupId;
     LocalDateTime time;
 
 

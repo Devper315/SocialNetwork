@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import "../../assets/styles/user/FriendList.css"
 import { actionFriendRequestById, fetchFriend, fetchFriendRequest, searchFriend } from '../../services/friendService';
-import { Link, useNavigate, useLocation  } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ChatSocketContext } from '../../contexts/ChatSocketContext';
 
 const FriendList = () => {
@@ -10,7 +10,7 @@ const FriendList = () => {
         requests: "Lời mời kết bạn",
         search: "Tìm kiếm bạn bè"
     }
-    const {openChatByFriend} = useContext(ChatSocketContext)
+    const { openChatByFriend } = useContext(ChatSocketContext)
     const navigate = useNavigate()
     const location = useLocation()
     const [keyword, setKeyword] = useState(
@@ -60,10 +60,10 @@ const FriendList = () => {
     const handleSearch = () => {
         fetchData(activeTab, pagination.page)
         navigate(location.pathname, {
-            state: {activeTab, keyword, pagination}
+            state: { activeTab, keyword, pagination }
         })
     };
-    
+
 
     const goToPreviousPage = () => {
         setPagination({
@@ -171,7 +171,7 @@ const FriendList = () => {
             state: { activeTab: tab, keyword, pagination }
         });
     };
-    
+
     return (
         <div className="friend-list-container">
             <div className="sidebar">
@@ -200,7 +200,7 @@ const FriendList = () => {
                     </div>
                 )}
             </div>
-            
+
         </div>
     );
 };
