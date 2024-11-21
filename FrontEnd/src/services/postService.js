@@ -2,7 +2,8 @@ import { API } from "../configs/config";
 import httpClient from "../configs/httpClient";
 
 export const createPost = async (form) => {
-    return await httpClient.post(API.POST, form);
+    const response = await httpClient.post(API.POST, form);
+    return response.data;
 };
 
 
