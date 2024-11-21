@@ -16,7 +16,7 @@ const VideoCallPortal = ({ localVideoRef, remoteVideoRef, handleCloseVideoCall,
     }, [localVideoRef, recipientRef, show]);
 
     return ReactDOM.createPortal(
-        <Modal show={show} onHide={handleCloseVideoCall} centered >
+        <Modal show={show} onHide={handleCloseVideoCall} centered size='lg'>
             <Modal.Header closeButton>
                 <Modal.Title>Video Call</Modal.Title>
             </Modal.Header>

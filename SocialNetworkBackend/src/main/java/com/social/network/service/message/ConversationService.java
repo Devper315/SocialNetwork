@@ -1,29 +1,25 @@
 package com.social.network.service.message;
 
-import com.social.network.dto.request.MessageCreateRequest;
+import com.social.network.dto.request.MessageDTO;
 import com.social.network.dto.response.message.ConversationResponse;
 import com.social.network.dto.response.message.MessageResponse;
 import com.social.network.entity.message.Conversation;
 import com.social.network.entity.message.ConversationType;
 import com.social.network.entity.message.MessageCustom;
-import com.social.network.entity.message.UserConversation;
 import com.social.network.entity.user.User;
 import com.social.network.repository.message.ConversationRepo;
 import com.social.network.service.user.UserService;
-import com.social.network.utils.PageableUtils;
+import jakarta.persistence.Tuple;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,23 +36,40 @@ public class ConversationService {
         return conversationRepo.findById(id).orElse(null);
     }
 
+    public ConversationResponse getResponseById(Long id) {
+        Conversation conversation = getById(id);
+        User requestor = userService.getCurrentUser();
+        conversation.setRead(userConversationService.checkConversationRead(conversation, requestor));
+        return toConversationResponse(requestor, conversation);
+    }
+
     public List<ConversationResponse> getMyConversations(String lastUpdate) {
         User requestor = userService.getCurrentUser();
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Long> conversationIds = userConversationService.getByUser(requestor, lastUpdate, pageable);
-        List<Conversation> conversations = conversationRepo.findByIds(conversationIds.getContent());
-        return conversations.stream()
-                .map(conversation -> {
-                    List<User> members = userConversationService.getByConversation(conversation);
-                    return new ConversationResponse(conversation, members, requestor);
-                }).toList();
+        Page<Tuple> tuples = userConversationService.getByUser(requestor, lastUpdate, pageable);
+        return tuples.stream().map(t -> {
+            Long id = t.get(0, Long.class);
+            Conversation conversation = getById(id);
+            conversation.setRead(t.get(1, Boolean.class));
+            return toConversationResponse(requestor, conversation);
+        }).toList();
     }
 
-    public void createMessage(MessageCreateRequest request) {
+    public void createMessage(MessageDTO request) {
+        User recipient = userService.getByUsername(request.getRecipient());
         Conversation conversation = getById(request.getConversationId());
-        LocalDateTime lastUpdate = messageService.createMessage(request, conversation);
-        conversation.setLastUpdate(lastUpdate);
+        conversation.setRead(userConversationService.checkConversationRead(conversation, recipient));
+        request.setConversation(toConversationResponse(recipient, conversation));
+        MessageCustom message = messageService.createMessage(request, conversation);
+        request.setId(message.getId());
+        conversation.setLastUpdate(message.getTime());
         conversationRepo.save(conversation);
+        userConversationService.markAsUnread(conversation.getId(), recipient.getId());
+    }
+
+    private ConversationResponse toConversationResponse(User requestor, Conversation conversation) {
+        List<User> members = userConversationService.getByConversation(conversation);
+        return new ConversationResponse(conversation, members, requestor);
     }
 
     public ConversationResponse getConversationByFriendId(Long friendId) {
@@ -65,9 +78,12 @@ public class ConversationService {
         Conversation conversation = conversationRepo.findConversation(requestor.getId(), friend.getId(), ConversationType.PRIVATE);
         if (conversation == null) {
             conversation = createPrivateConversation(requestor, friend);
+            conversation.setRead(true);
         }
-        List<User> members = userConversationService.getByConversation(conversation);
-        return new ConversationResponse(conversation, members, requestor);
+        else {
+            conversation.setRead(userConversationService.checkConversationRead(conversation, requestor));
+        }
+        return toConversationResponse(requestor, conversation);
     }
 
     private Conversation createPrivateConversation(User requestor, User friend) {
@@ -87,5 +103,11 @@ public class ConversationService {
         return sortableMessages.stream().map(MessageResponse::new).toList();
     }
 
+    public void markAsRead(MessageDTO messageDTO) {
+        userConversationService.markAsRead(messageDTO);
+    }
 
+    public Integer getUnreadTotal() {
+        return userConversationService.getUnreadTotal();
+    }
 }

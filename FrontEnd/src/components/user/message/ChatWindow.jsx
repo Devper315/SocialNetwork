@@ -11,28 +11,20 @@ import { fetchMessagesByConversationId } from '../../../services/conversationSer
 import { handleScrollReverse } from '../../../services/infiniteScroll';
 
 
-const ChatWindow = ({ conversation, onClose, }) => {
+const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMessageAsRead}) => {
     const { user } = useContext(AuthContext)
-    const { subscribeToChat, sendMessageWebSocket } = useContext(ChatSocketContext)
+    const { sendMessageWebSocket } = useContext(ChatSocketContext)
     const { startCall } = useContext(VideoCallSocketContext)
-    const [messageList, setMessageList] = useState([])
     const [message, setMessage] = useState('')
-    const [lastId, setLastId] = useState(0)
     const [hasMore, setHasMore] = useState(true)
     const [isAtBottom, setIsAtBottom] = useState(true)
     const chatBodyRef = useRef(null)
+    const [lastId, setLastId] = useState(0)
 
-    useEffect(() => {
-        const handleMessageReceived = (newMessage) => {
-            if (newMessage.conversationId === conversation.id) {
-                setMessageList(prevMessages => [...prevMessages, newMessage])
-            }
-        }
-        subscribeToChat(handleMessageReceived, user.username)
-    }, [])
 
     useEffect(() => {
         const loadFirstMessageList = async () => {
+            console.log(conversation)
             const data = await fetchMessagesByConversationId(conversation.id, 0);
             setHasMore(data.length === 10)
             setMessageList(data);
@@ -40,6 +32,12 @@ const ChatWindow = ({ conversation, onClose, }) => {
                 setLastId(data.at(0).id)
                 setIsAtBottom(true)
             }
+            if (data.length > 0 && !data.at(-1).isRead) {
+                let lastMessage = data.at(-1)
+                lastMessage.reader = conversation.sender
+                markMessageAsRead(lastMessage)
+            }
+                
         }
         loadFirstMessageList()
     }, [conversation])

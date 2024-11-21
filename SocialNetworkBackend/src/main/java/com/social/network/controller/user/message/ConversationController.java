@@ -19,10 +19,17 @@ import java.util.List;
 public class ConversationController {
     ConversationService conversationService;
 
-    @GetMapping("/{friendId}")
+    @GetMapping("/friend/{friendId}")
     public ApiResponse<ConversationResponse> getConversationByFriendId(@PathVariable Long friendId){
         return ApiResponse.<ConversationResponse>builder()
                 .result(conversationService.getConversationByFriendId(friendId))
+                .build();
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<ConversationResponse> getConversationById(@PathVariable Long id){
+        return ApiResponse.<ConversationResponse>builder()
+                .result(conversationService.getResponseById(id))
                 .build();
     }
 
@@ -39,6 +46,13 @@ public class ConversationController {
             @PathVariable Long conversationId, @RequestParam Long lastId){
         return ApiResponse.<List<MessageResponse>>builder()
                 .result(conversationService.getMessageByConversationId(conversationId, lastId))
+                .build();
+    }
+
+    @GetMapping("/unread-total")
+    public ApiResponse<Integer> getUnreadTotal(){
+        return ApiResponse.<Integer>builder()
+                .result(conversationService.getUnreadTotal())
                 .build();
     }
 }

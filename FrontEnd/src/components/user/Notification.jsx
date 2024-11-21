@@ -16,6 +16,7 @@ const Notification = () => {
 
     const loadMoreNotifications = async () => {
         if (!hasMore) return
+        console.log("LastId", lastId)
         const data = await fetchMyNotifications(lastId);
         setHasMore(data.length === 10)
         setNotifications([...notifications, ...data]);

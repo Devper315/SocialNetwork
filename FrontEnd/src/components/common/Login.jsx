@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import "../../assets/styles/common/Login.css";
 import { login } from "../../services/authService";
 import { AuthContext } from "../../contexts/AuthContext";
+import { Link } from "react-router-dom";
 
 const Login = () => {
     const { loginSuccess } = useContext(AuthContext);
@@ -54,13 +55,12 @@ const Login = () => {
                     <button
                         onClick={handleSubmit}
                         className="login-button"
-                        disabled={isLoading} // Vô hiệu hóa nút khi đang đăng nhập
-                    >
-                        {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'} {/* Thay đổi nội dung nút */}
+                        disabled={isLoading}>
+                        {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
                     </button>
                 </div>
                 <div className="footer-links">
-                    <a href="/register" className="register-link">Bạn chưa có tài khoản? Đăng ký ngay!</a>
+                    <Link to="/register" className="register-link">Bạn chưa có tài khoản? Đăng ký ngay!</Link>
                 </div>
             </main>
         </div>

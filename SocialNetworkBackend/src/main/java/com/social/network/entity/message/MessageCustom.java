@@ -33,7 +33,7 @@ public class MessageCustom implements Comparable<MessageCustom>{
     User sender;
     LocalDateTime time;
     MessageStatus status;
-
+    Boolean isRead;
 
     @Override
     public int compareTo(@NotNull MessageCustom m) {

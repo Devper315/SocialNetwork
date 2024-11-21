@@ -3,7 +3,7 @@ import httpClient from "../configs/httpClient"
 
 export const fetchPrivateConversation = async (friendId) => {
     try{
-        const response = await httpClient.get(`${API.CONVERSATION}/${friendId}`, friendId)
+        const response = await httpClient.get(`${API.CONVERSATION}/friend/${friendId}`, friendId)
         return response.data.result
     }
     catch(error){
@@ -21,6 +21,16 @@ export const fetchMyConversations = async (lastUpdate) => {
     }
 }
 
+export const fetchConversationById = async (id) => {
+    try{
+        const response = await httpClient.get(`${API.CONVERSATION}/${id}`)
+        return response.data.result
+    }
+    catch(error) {
+        console.log("Lỗi khi lấy cuộc trò chuyện theo id", error.response)
+    }
+}
+
 export const fetchMessagesByConversationId = async (conversationId, lastId) => {
     try{
         const response = await httpClient.get(`${API.MESSAGE}/${conversationId}`, {params: {lastId}})
@@ -28,5 +38,15 @@ export const fetchMessagesByConversationId = async (conversationId, lastId) => {
     }
     catch(error){
         console.log("Lỗi khi lấy dữ liệu tin nhắn", error)
+    }
+}
+
+export const fetchUnreadTotal = async () => {
+    try{
+        const response = await httpClient.get(`${API.CONVERSATION}/unread-total`)
+        return response.data.result
+    }
+    catch(error){
+        console.log("Lỗi khi lấy dữ liệu số lượng chưa đọc", error)
     }
 }

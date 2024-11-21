@@ -98,7 +98,7 @@ export const VideoCallProvider = ({ children }) => {
 
     const startVideoStream = async () => {
         console.log("Đang bật video")
-        let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        let stream = await navigator.mediaDevices.getUserMedia({ video: true })
         localVideoRef.current.srcObject = stream
     }
     const setTrackForConnection = async () => {

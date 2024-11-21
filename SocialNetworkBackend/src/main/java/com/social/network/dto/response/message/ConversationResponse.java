@@ -1,5 +1,6 @@
 package com.social.network.dto.response.message;
 
+import com.social.network.dto.request.MessageDTO;
 import com.social.network.entity.message.Conversation;
 import com.social.network.entity.message.ConversationType;
 import com.social.network.entity.user.User;
@@ -24,12 +25,12 @@ public class ConversationResponse {
     List<MemberDTO> members;
     ConversationType type;
     LocalDateTime lastUpdate;
+    boolean isRead;
 
     public ConversationResponse(Conversation conversation, List<User> members, User requestor){
         this.id = conversation.getId();
         this.name = conversation.getName();
         this.type = conversation.getType();
-        this.members = members.stream().map(MemberDTO::new).toList();
         if (this.type.equals(ConversationType.PRIVATE)){
             String requestorUsername = requestor.getUsername();
             User member1 = members.get(0);
@@ -42,6 +43,10 @@ public class ConversationResponse {
             this.recipient = requestorUsername.equals(username1) ? username2 : username1;
             this.name = requestorUsername.equals(username1) ? fullname2 : fullname1;
         }
+        else {
+            this.members = members.stream().map(MemberDTO::new).toList();
+        }
+        this.isRead = conversation.isRead();
         this.lastUpdate = conversation.getLastUpdate();
     }
 }

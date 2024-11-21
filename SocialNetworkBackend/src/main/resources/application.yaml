@@ -46,11 +46,6 @@ jwt:
   validDuration: 9999
   refreshableDuration: 9999
 
-firebase:
-  bucket: "social-network-d428b.appspot.com"
-  userPath: "user/"
-  roomPath: "room/"
-  hotelPath: "hotel/"
 
 frontend:
   url: "https://211c-1-54-7-90.ngrok-free.app"

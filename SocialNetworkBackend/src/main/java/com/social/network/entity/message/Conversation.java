@@ -30,4 +30,6 @@ public class Conversation {
     @Enumerated
     ConversationType type;
     LocalDateTime lastUpdate;
+    @Transient
+    boolean isRead;
 }

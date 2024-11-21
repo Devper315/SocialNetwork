@@ -19,4 +19,8 @@ public class UserConversation {
     Long conversationId;
 
     Long userId;
+
+    @Column(nullable = true)
+    boolean isRead;
+    Long lastMessageId;
 }
