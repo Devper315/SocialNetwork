@@ -55,6 +55,20 @@ public class NotificationService {
         createNotification(requestor, recipient, content);
     }
 
+    public void notifyGroupRequest(User requestor, User recipient, Group group) {
+        String content = requestor.getFullName() + " đã gửi lời mời tham gia nhóm "+group.getName();
+        createNotification(requestor, recipient, content);
+    }
+    public void notifyAcceptGroupRequest(User requestor, User recipient, Group group) {
+        String content = requestor.getFullName() + " đã chấp nhận lời mời tham gia nhóm "+group.getName();
+        createNotification(requestor, recipient, content);
+    }
+    public void notifyRefuseGroupRequest(User requestor, User recipient, Group group) {
+        String content = requestor.getFullName() + " đã từ chối lời mời tham gia nhóm "+group.getName();
+        createNotification(requestor, recipient, content);
+    }
+
+
     private void createNotification(User requestor, User recipient, String content){
         Notification notification = Notification.builder()
                 .content(content)
@@ -84,5 +98,6 @@ public class NotificationService {
                     notificationRepo.save(n);
                 });
     }
+
 
 }
