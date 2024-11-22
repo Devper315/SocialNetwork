@@ -1,4 +1,4 @@
-package com.social.network.controller.user.friend;
+package com.social.network.controller.friend;
 
 import com.social.network.dto.response.ApiResponse;
 import com.social.network.dto.response.friend.FriendRequestResponse;

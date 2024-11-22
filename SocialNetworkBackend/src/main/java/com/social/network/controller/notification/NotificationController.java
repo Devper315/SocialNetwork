@@ -1,4 +1,4 @@
-package com.social.network.controller.user.notification;
+package com.social.network.controller.notification;
 
 import com.social.network.dto.response.ApiResponse;
 import com.social.network.entity.group.Group;

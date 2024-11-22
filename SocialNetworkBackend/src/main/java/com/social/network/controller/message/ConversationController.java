@@ -1,4 +1,4 @@
-package com.social.network.controller.user.message;
+package com.social.network.controller.message;
 
 import com.social.network.dto.response.ApiResponse;
 import com.social.network.dto.response.message.ConversationResponse;

@@ -1,4 +1,4 @@
-package com.social.network.controller.user.profile;
+package com.social.network.controller.profile;
 
 import com.social.network.dto.request.user.ProfileUpdateRequest;
 import com.social.network.dto.response.ApiResponse;

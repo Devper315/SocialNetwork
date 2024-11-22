@@ -1,4 +1,4 @@
-package com.social.network.controller.user.post;
+package com.social.network.controller.post;
 
 import com.social.network.dto.request.post.PostCreateRequest;
 import com.social.network.dto.request.post.PostUpdateRequest;
