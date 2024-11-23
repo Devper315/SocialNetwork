@@ -40,14 +40,14 @@ public class GroupService {
                 .createTime(LocalDateTime.now())
                 .build();
         group = groupRepo.save(group);
-        groupMemberService.addGroupMember(group, user);
+        groupMemberService.addGroupMember(group, user, 0L);
         return group;
     }
 
     public boolean addGroupMember(Long groupId, Long userId){
         User user = userService.getById(userId);
         Group group = getById(groupId);
-        return groupMemberService.addGroupMember(group, user);
+        return groupMemberService.addGroupMember(group, user, 2L);
     }
 
     public boolean removeGroupMember(Long groupId, Long userId){

@@ -1,12 +1,8 @@
 package com.social.network.controller.user.notification;
 
 import com.social.network.dto.response.ApiResponse;
-import com.social.network.entity.group.Group;
 import com.social.network.entity.notification.Notification;
-import com.social.network.entity.user.User;
-import com.social.network.service.group.GroupService;
 import com.social.network.service.notification.NotificationService;
-import com.social.network.service.user.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,8 +17,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class NotificationController {
     NotificationService notificationService;
-    UserService userService;
-    GroupService groupService;
+
 
     @GetMapping(value = "/notifications", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Notification> connectSSE(@RequestParam String token) {
@@ -40,6 +35,4 @@ public class NotificationController {
     public void markAsRead(@PathVariable Long id){
         notificationService.markAsRead(id);
     }
-
-
 }

@@ -8,6 +8,7 @@ import {
     actionJoinGroupRequest,
     fetchGroupJoinRequests,
     checkGroupCreator,
+    removeGroupMember
 } from "../../../services/groupService";
 import { getPostsByGroup, createPost } from "../../../services/postService";
 import GroupEditModal from "./GroupEditModal";
@@ -43,11 +44,29 @@ const GroupDetail = () => {
                 setIsGroupCreator(creatorStatus);
                 setIsRequestPending(requestPending);
             } catch (error) {
-                console.error("Error fetching group data:", error);
+                console.error(error);
             }
         };
         fetchData();
     }, [id]);
+
+    const handleRemoveMember = async (userId) => {
+        if (window.confirm("Bạn có chắc muốn xóa thành viên này khỏi nhóm?")) {
+            try {
+                const result = await removeGroupMember(id, userId);
+                if (result) {
+                    alert("Thành viên đã được xóa khỏi nhóm.");
+                    const updatedMembers = await getGroupMembers(id);
+                    setMembers(updatedMembers || []);
+                } else {
+                    alert("Không thể xóa thành viên. Vui lòng thử lại.");
+                }
+            } catch (error) {
+                alert("Có lỗi xảy ra khi xóa thành viên.");
+                console.error(error);
+            }
+        }
+    };
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files).map((file) =>
@@ -87,8 +106,13 @@ const GroupDetail = () => {
     return (
         <div className="group-detail-container">
             <div className="group-actions">
-                <button onClick={() => setShowModal(true)}>Sửa thông tin nhóm</button>
-                <button onClick={() => setShowMembers(!showMembers)}>Danh sách thành viên</button>
+                {isGroupCreator && (
+                    <>
+                        <button onClick={() => setShowModal(true)}>Sửa thông tin nhóm</button>
+                        <button onClick={() => setShowMembers(!showMembers)}>Danh sách thành viên</button>
+                    </>
+                )}
+
                 {isRequestPending ? (
                     <button disabled>Đang chờ phê duyệt</button>
                 ) : group.joined ? (
@@ -108,11 +132,21 @@ const GroupDetail = () => {
                     <h6>Danh sách thành viên:</h6>
                     <ul>
                         {members.map((member) => (
-                            <li key={member.id}>{member.fullName}</li>
+                            <li key={member.id}>
+                                {member.fullName}
+                                <button
+                                    type="button"
+                                    className="remove-member-btn"
+                                    onClick={() => handleRemoveMember(member.id)}
+                                >
+                                    X
+                                </button>
+                            </li>
                         ))}
                     </ul>
                 </div>
             )}
+
 
             {showJoinRequests && (
                 <GroupJoinRequests groupId={id} closeRequests={() => setShowJoinRequests(false)} />

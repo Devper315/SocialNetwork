@@ -17,7 +17,7 @@ public interface GroupMemberRepo extends JpaRepository<GroupMember, GroupMemberI
     @Transactional
     @Modifying
     void deleteByGroupAndMember(Group group, User member);
-
+    GroupMember findByGroupAndMember(Group group, User user);
     List<GroupMember> findByGroup(Group group);
     boolean existsByGroupAndMember(Group group, User member);
 }

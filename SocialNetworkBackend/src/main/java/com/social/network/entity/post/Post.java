@@ -38,4 +38,7 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = true)
     Group group;
+
+    @Column(nullable = true)
+    String approvalStatus;
 }
