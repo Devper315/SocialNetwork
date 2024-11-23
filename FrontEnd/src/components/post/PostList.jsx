@@ -1,24 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getPosts } from '../../services/postService';
-import '../../assets/styles/post/PostList.css';
-import { Col, Container, Image, Row } from 'react-bootstrap';
-
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getPosts } from "../../services/postService";
+import {
+  Box,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  CardMedia,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await getPosts();
-        console.log('Fetched Posts:', response);
+        console.log("Fetched Posts:", response);
         setPosts(response);
       } catch (error) {
-        setError('Không thể lấy bài viết: ' + error.message);
+        setError("Không thể lấy bài viết: " + error.message);
       } finally {
         setLoading(false);
       }
@@ -27,35 +34,83 @@ const PostList = () => {
     fetchPosts();
   }, []);
 
-
   const handlePostClick = (postId) => {
-    console.log('Navigating to PostPage with ID:', postId);
+    console.log("Navigating to PostPage with ID:", postId);
     navigate(`/postpage/${postId}`);
   };
 
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "50vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "50vh",
+        }}
+      >
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    );
+  }
 
   return (
-    <Container fluid className="post-list-container">
-      {posts.map((post) => {
-        return (
-          <Row key={post.id} className="post-item mb-4" onClick={() => handlePostClick(post.id)}>
-            <Col>
-              <p>{post.content}</p>
-              <Row className="post-images">
-                {post.imageUrls &&
-                  post.imageUrls.map((url, idx) => (
-                    <Col xs={12} sm={6} md={4} lg={3} key={idx} className="mb-3">
-                      <Image src={url} alt={`Ảnh ${idx}`} className="post-image img-fluid" />
-                    </Col>
-                  ))}
-              </Row>
-              <p>Thời gian: {post.time}</p>
-            </Col>
-          </Row>
-        );
-      })}
-    </Container>
+    <Box sx={{ padding: "16px" }}>
+      <Grid container spacing={4}>
+        {posts.map((post) => (
+          <Grid item xs={12} md={6} lg={4} key={post.id}>
+            <Card
+              sx={{
+                cursor: "pointer",
+                "&:hover": { boxShadow: "0px 4px 12px rgba(0,0,0,0.2)" },
+              }}
+              onClick={() => handlePostClick(post.id)}
+            >
+              {post.imageUrls && post.imageUrls[0] && (
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={post.imageUrls[0]}
+                  alt={`Ảnh bài viết ${post.id}`}
+                />
+              )}
+              <CardContent>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    marginBottom: "8px",
+                  }}
+                >
+                  {post.content}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Thời gian: {new Date(post.time).toLocaleString()}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 };
 
-export default PostList; 
+export default PostList;

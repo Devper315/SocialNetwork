@@ -27,6 +27,7 @@ public class User {
     String email;
     String avatarUrl;
     LocalDate dateOfBirth;
+    Boolean active;
 
     @ManyToMany
     List<Role> roles;

@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useRef, useState, React } from "react"
 import { AuthContext } from "./AuthContext"
 import { CONFIG } from "../configs/config"
-import IncomingCallPortal from "../components/user/video-call/IncomingCallPortal"
-import VideoCallPortal from "../components/user/video-call/VideoCallPortal"
+import IncomingCallPortal from "../components/video-call/IncomingCallPortal"
+import VideoCallPortal from "../components/video-call/VideoCallPortal"
 
 
 export const VideoCallSocketContext = createContext()
@@ -12,7 +12,7 @@ export const VideoCallProvider = ({ children }) => {
     let peerConnection = useRef(null)
     let videoCallSocket = useRef(null)
     const [callFrom, setCallFrom] = useState(null)
-    const [incoming, setIncoming] = useState(null)
+    const [incoming, setIncoming] = useState(false)
     const recipientRef = useRef(null)
     const [action, setAction] = useState(null)
     const [openingVideoCall, setOpeningVideoCall] = useState(false)
