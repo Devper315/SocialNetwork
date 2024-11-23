@@ -94,9 +94,9 @@ const Register = () => {
                 {registerError && <p className="register-error">{registerError}</p>}
                 <button type="submit" className="submit-btn">Đăng ký</button>
             </form>
-            <RegisterSuccessModal 
-                show={success} handleCloseModal={handleCloseModal}
-                handleNavigateLogin={handleNavigateLogin}/>
+            <RegisterSuccessModal
+                show={success} registeredEmail={form.email}
+                handleCloseModal={handleCloseModal} />
         </div>
     );
 };

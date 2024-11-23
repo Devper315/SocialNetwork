@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import { AuthContext } from './AuthContext'
 import { Stomp } from '@stomp/stompjs';
 import { CONFIG } from '../configs/config';
-import ChatWindow from '../components/user/message/ChatWindow';
+import ChatWindow from '../components/message/ChatWindow';
 import { fetchConversationById, fetchPrivateConversation, fetchUnreadTotal } from '../services/conversationService';
 
 

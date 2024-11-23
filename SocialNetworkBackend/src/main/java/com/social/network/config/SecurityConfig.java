@@ -28,7 +28,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
     String[] PUBLIC_GET_ENPOINTS = {"/api/post/**", "/ws/**", "/video-call/**", "/notifications"};
-    String[] PUBLIC_POST_ENPOINTS = {"/api/auth/login", "/api/auth/register", "/ws/**"};
+    String[] PUBLIC_POST_ENPOINTS = {"/api/auth/login", "/api/auth/register/**", "/ws/**"};
     JWTDecoder jwtDecoder;
 
     @Bean

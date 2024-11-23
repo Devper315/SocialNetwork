@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchGroupJoinRequests, actionJoinGroupRequest } from "../../../services/groupService";
+import { fetchGroupJoinRequests, actionJoinGroupRequest } from "../../services/groupService";
 
 const GroupJoinRequests = ({ groupId, closeRequests }) => {
     const [joinRequests, setJoinRequests] = useState([]);

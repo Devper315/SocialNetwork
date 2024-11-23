@@ -47,7 +47,7 @@ public class AuthService {
     protected long REFRESHABLE_DURATION;
 
     public LoginResponse authenticate(LoginRequest request) {
-        User user = userRepo.findByUsername(request.getUsername().toLowerCase());
+        User user = userRepo.findByUsernameAndActive(request.getUsername().toLowerCase(), true);
         if (user == null) throw new AppException(ErrorCode.UNAUTHENTICATED);
         boolean result = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if (!result) throw new AppException(ErrorCode.UNAUTHENTICATED);

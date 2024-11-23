@@ -1,4 +1,4 @@
-package com.social.network.controller.common;
+package com.social.network.controller.auth;
 
 
 import com.social.network.dto.request.auth.IntrospectRequest;
@@ -7,18 +7,13 @@ import com.social.network.dto.request.user.UserCreateRequest;
 import com.social.network.dto.response.ApiResponse;
 import com.social.network.dto.response.auth.IntrospectResponse;
 import com.social.network.dto.response.auth.LoginResponse;
-import com.social.network.dto.response.user.UserResponse;
-import com.social.network.mapper.UserMapper;
 import com.social.network.service.auth.AuthService;
 import com.social.network.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,9 +38,14 @@ public class AuthController {
     }
 
     @PostMapping ("/register")
-    public ApiResponse<UserResponse> register(@Valid @RequestBody UserCreateRequest request){
-        return ApiResponse.<UserResponse>builder()
-                .result(userService.createUser(request))
+    public void register(@Valid @RequestBody UserCreateRequest request){
+        userService.createUser(request);
+    }
+
+    @PostMapping("/register/verify")
+    public ApiResponse<Boolean> verifyEmail(@RequestParam String token){
+        return ApiResponse.<Boolean>builder()
+                .result(userService.verifyEmail(token))
                 .build();
     }
 }

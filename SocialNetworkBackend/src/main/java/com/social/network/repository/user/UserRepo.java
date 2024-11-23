@@ -15,7 +15,7 @@ public interface UserRepo extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
 
-    User findByUsername(String username);
+    User findByUsernameAndActive(String username, Boolean active);
 
     @Query("SELECT u FROM User u WHERE LOWER(u.fullName) LIKE LOWER(:keyword) AND u <> :requestor")
     Page<User> search(User requestor, String keyword, Pageable pageable);

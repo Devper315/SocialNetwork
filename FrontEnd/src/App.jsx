@@ -6,12 +6,11 @@ import FriendList from './components/user/FriendList';
 import Register from './components/common/Register';
 import PostPage from './components/post/PostPage';
 import PostList from './components/post/PostList';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Profile from './components/user/Profile';
 import React from 'react';
-import Notification from './components/user/Notification';
-import GroupList from './components/user/group/GroupList';
-import GroupDetail from './components/user/group/GroupDetail';
+import GroupList from './components/group/GroupList';
+import GroupDetail from './components/group/GroupDetail';
+import EmailVerification from './components/common/EmailVerification';
 
 
 function App() {
@@ -28,6 +27,7 @@ function App() {
         <Route path='/register' element={<Register />} />
         <Route path='/post-list' element={<PostList />} />
         <Route path='/postpage/:id' element={<PostPage />} />
+        <Route path='/register/verify/' element={<EmailVerification />} />
       </Routes>
     </div>
   );

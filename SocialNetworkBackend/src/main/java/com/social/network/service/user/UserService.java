@@ -5,18 +5,16 @@ import com.social.network.dto.request.user.UserCreateRequest;
 import com.social.network.dto.request.user.ProfileUpdateRequest;
 import com.social.network.dto.response.ApiResponse;
 import com.social.network.dto.response.user.UserResponse;
-import com.social.network.entity.message.Conversation;
-import com.social.network.entity.message.UserConversation;
-import com.social.network.entity.image.Image;
+import com.social.network.entity.user.EmailVerification;
 import com.social.network.entity.user.Role;
 import com.social.network.entity.user.User;
 import com.social.network.exception.AppException;
 import com.social.network.exception.ErrorCode;
 import com.social.network.mapper.UserMapper;
+import com.social.network.repository.user.EmailVerificationRepo;
 import com.social.network.repository.user.UserRepo;
+import com.social.network.service.EmailService;
 import com.social.network.service.auth.RoleService;
-import com.social.network.service.image.ImageService;
-import com.social.network.service.message.UserConversationService;
 import com.social.network.utils.PageableUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +26,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +39,8 @@ public class UserService {
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     RoleService roleService;
+    EmailVerificationRepo emailVerificationRepo;
+    EmailService emailService;
 
 
     public List<User> getAll() {
@@ -53,7 +55,7 @@ public class UserService {
         return userRepo.findAllById(ids);
     }
 
-    public UserResponse createUser(UserCreateRequest request) {
+    public void createUser(UserCreateRequest request) {
         if (userRepo.existsByUsername(request.getUsername()))
             throw new AppException(ErrorCode.USER_EXISTED);
         if (userRepo.existsByEmail(request.getEmail()))
@@ -65,8 +67,13 @@ public class UserService {
         List<Role> roles = new ArrayList<>();
         roles.add(roleService.getByName("USER"));
         user.setRoles(roles);
-        user = userRepo.save(user);
-        return new UserResponse(user);
+        EmailVerification emailVerification = EmailVerification.builder()
+                .user(user).token(UUID.randomUUID().toString())
+                .expiryTime(LocalDateTime.now().plusHours(1))
+                .build();
+        userRepo.save(user);
+        emailVerificationRepo.save(emailVerification);
+        emailService.sendHtmlEmail(request.getEmail(), user.getFullName(), emailVerification.getToken());
     }
 
 
@@ -84,7 +91,7 @@ public class UserService {
     }
 
     public User getByUsername(String username) {
-        return userRepo.findByUsername(username.toLowerCase());
+        return userRepo.findByUsernameAndActive(username.toLowerCase(), true);
     }
 
     public Boolean updateUser(ProfileUpdateRequest request) {
@@ -120,4 +127,15 @@ public class UserService {
     }
 
 
+    public Boolean verifyEmail(String token) {
+        EmailVerification emailVerification = emailVerificationRepo.findByToken(token);
+        if (emailVerification != null && !emailVerification.isExpired()){
+            User newUser = emailVerification.getUser();
+            newUser.setActive(true);
+            userRepo.save(newUser);
+            emailVerificationRepo.delete(emailVerification);
+            return true;
+        }
+        return false;
+    }
 }

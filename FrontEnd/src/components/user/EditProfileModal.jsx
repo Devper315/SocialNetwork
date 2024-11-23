@@ -1,92 +1,108 @@
-// EditProfileModal.js
 import React, { useEffect, useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage, uploadFileToFirebase } from '../../configs/firebaseSDK';
+import { uploadFileToFirebase } from '../../configs/firebaseSDK';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Box, Avatar, Typography } from '@mui/material';
 
 const EditProfileModal = ({ showModal, handleCloseModal, profile, updateProfile }) => {
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [imagePreview, setImagePreview] = useState('');
-    const [formData, setFormData] = useState({});
-    useEffect(() => {
-        setFormData(profile);
-    }, [profile]);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
+  const [formData, setFormData] = useState({});
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setSelectedImage(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+  useEffect(() => {
+    setFormData(profile);
+  }, [profile]);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value })
-    };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-    const handleUpdateProfile = async () => {
-        const avatarUrl = await uploadFileToFirebase(selectedImage, `avatars/${profile.username}`);
-        let updatedData = {...formData}
-        if (avatarUrl)
-            updatedData.avatarUrl = avatarUrl
-        updateProfile(updatedData);
-        handleCloseModal();
-    };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    return (
-        <Modal show={showModal} onHide={handleCloseModal}>
-            <Modal.Header closeButton>
-                <Modal.Title>Chỉnh Sửa Trang Cá Nhân</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <div>
-                    <label>Họ:</label>
-                    <input
-                        type="text"
-                        name="firstName"
-                        value={formData.firstName || ''}
-                        onChange={handleInputChange}
-                        className="form-control"/>
-                </div>
-                <div>
-                    <label>Tên:</label>
-                    <input
-                        type="text"
-                        name="lastName"
-                        value={formData.lastName || ''}
-                        onChange={handleInputChange}
-                        className="form-control"/>
-                </div>
-                <div>
-                    <label>Ngày sinh:</label>
-                    <input
-                        type="date"
-                        name="dateOfBirth"
-                        value={formData.dateOfBirth || ''}
-                        onChange={handleInputChange}
-                        className="form-control" />
-                </div>
-                <div>
-                    <label>Avatar:</label>
-                    <input type="file" accept="image/*" onChange={handleImageChange} />
-                    <img src={imagePreview || formData.avatarUrl} alt="Avatar" style={{ width: '100px', marginTop: '10px' }} />
-                </div>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="primary" onClick={handleUpdateProfile} disabled={!formData.fullName || !formData.email || !formData.dateOfBirth}>
-                    Xác nhận
-                </Button>
-                <Button variant="secondary" onClick={handleCloseModal}>
-                    Đóng
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    );
+  const handleUpdateProfile = async () => {
+    const avatarUrl = await uploadFileToFirebase(selectedImage, `avatars/${profile.username}`);
+    let updatedData = { ...formData };
+    if (avatarUrl) updatedData.avatarUrl = avatarUrl;
+    updateProfile(updatedData);
+    handleCloseModal();
+  };
+
+  return (
+    <Dialog open={showModal} onClose={handleCloseModal} fullWidth maxWidth="sm">
+      <DialogTitle>Chỉnh Sửa Trang Cá Nhân</DialogTitle>
+      <DialogContent>
+        <Box sx={{ mb: 2 }}>
+          <TextField
+            fullWidth
+            label="Họ"
+            name="firstName"
+            value={formData.firstName || ''}
+            onChange={handleInputChange}
+            variant="outlined"
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="Tên"
+            name="lastName"
+            value={formData.lastName || ''}
+            onChange={handleInputChange}
+            variant="outlined"
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="Ngày sinh"
+            name="dateOfBirth"
+            type="date"
+            value={formData.dateOfBirth || ''}
+            onChange={handleInputChange}
+            variant="outlined"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            sx={{ mb: 2 }}
+          />
+        </Box>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          <Typography variant="subtitle1">Avatar</Typography>
+          <Avatar
+            src={imagePreview || formData.avatarUrl}
+            alt="Avatar"
+            sx={{ width: 100, height: 100 }}
+          />
+          <Button variant="contained" component="label">
+            Tải lên ảnh
+            <input type="file" accept="image/*" hidden onChange={handleImageChange} />
+          </Button>
+        </Box>
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={handleCloseModal} color="secondary">
+          Đóng
+        </Button>
+        <Button
+          onClick={handleUpdateProfile}
+          color="primary"
+          variant="contained"
+          disabled={!formData.firstName || !formData.lastName || !formData.dateOfBirth}
+        >
+          Xác nhận
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 };
 
 export default EditProfileModal;

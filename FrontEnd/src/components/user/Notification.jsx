@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { fetchMyNotifications, markAsRead } from '../../services/notificationService'
-import logoReact from "../../assets/images/logoReact.png"
-import '../../assets/styles/user/Notification.css'
 import { NotificationContext } from '../../contexts/NotificationContext'
 import { handleScroll } from '../../services/infiniteScroll'
+import { IconButton, Tooltip, Dialog, DialogTitle, DialogContent, Typography } from "@mui/material";
+import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 
 const Notification = () => {
     const [notifications, setNotifications] = useState([])
-    const [isOpen, setIsOpen] = useState(false)
     const [hasMore, setHasMore] = useState(true)
     const [lastId, setLastId] = useState(0);
     const { notificationSource } = useContext(NotificationContext)
+    const [dialogOpen, setDialogOpen] = useState(false)
     const navigate = useNavigate()
 
     const loadMoreNotifications = async () => {
@@ -29,23 +29,21 @@ const Notification = () => {
             loadMoreNotifications()
             notificationSource.onmessage = (message) => {
                 const newNotification = JSON.parse(message.data)
-                console.log(newNotification)
                 setNotifications((prevNotifications) => [newNotification, ...prevNotifications])
             }
             return () => {
                 notificationSource.onmessage = null
             };
         }
-
     }, [notificationSource])
 
-    const toggleTab = () => {
-        setIsOpen(!isOpen)
+    const toggleDialog = () => {
+        setDialogOpen(!dialogOpen)
     }
 
     const handleClickNotification = async (notification) => {
         if (!notification.read) markAsRead(notification.id)
-        toggleTab()
+        setDialogOpen(false)
         navigate(notification.navigateUrl)
         setNotifications((prevNotifications) =>
             prevNotifications.map((n) =>
@@ -56,28 +54,43 @@ const Notification = () => {
 
     return (
         <div>
-            <li className="nav-item" onClick={toggleTab}>
-                <Link to="#" className="nav-link">
-                    <img src={logoReact} alt="" className="menu-logo" />
-                    <span className="menu-text">Thông báo</span>
-                </Link>
-            </li>
-            {isOpen && (
-                <div className="notification-tab" onScroll={(event) => handleScroll(event, loadMoreNotifications)}>
-                    <h4>Thông báo</h4>
-                    {notifications.length === 0 && <p>Không có thông báo mới.</p>}
+            <Tooltip title="Thông báo" arrow>
+                <IconButton onClick={toggleDialog} component={Link} to="#" color="inherit">
+                    <NotificationsOutlinedIcon />
+                </IconButton>
+            </Tooltip>
+
+            <Dialog
+                open={dialogOpen}
+                onClose={() => setDialogOpen(false)}
+                PaperProps={{
+                    sx: {
+                        width: 400,
+                        maxHeight: 500,
+                        overflowY: 'auto',
+                        position: 'fixed',  // Sử dụng position fixed để Dialog nằm cố định trên màn hình
+                        top: 50,  // Khoảng cách từ trên xuống
+                        right: 10,  // Khoảng cách từ phải vào
+                        transform: 'translateX(0)',  // Đảm bảo Dialog không bị lệch
+                    }
+                }}
+            >
+                <DialogTitle>Thông báo</DialogTitle>
+                <DialogContent onScroll={(event) => handleScroll(event, loadMoreNotifications)}>
+                    {notifications.length === 0 && <Typography variant="body2" sx={{ padding: 2 }}>Không có thông báo mới.</Typography>}
                     {notifications.length > 0 && notifications.map((notification) => (
                         <div
                             key={notification.id}
                             onClick={() => handleClickNotification(notification)}
-                            className={`notification-item ${notification.read ? "read" : "unread"}`}>
-                            <span>{notification.content}</span> <br />
-                            <span>{new Date(notification.time).toLocaleString()}</span> <br />
+                            className={`notification-item ${notification.read ? "read" : "unread"}`}
+                            style={{ cursor: 'pointer', padding: '10px', marginBottom: '5px', borderRadius: '5px' }}
+                        >
+                            <Typography variant="body2">{notification.content}</Typography>
+                            <Typography variant="caption" color="textSecondary">{new Date(notification.time).toLocaleString()}</Typography>
                         </div>
                     ))}
-                </div>
-
-            )}
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

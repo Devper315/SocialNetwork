@@ -8,12 +8,12 @@ import {
     actionJoinGroupRequest,
     fetchGroupJoinRequests,
     checkGroupCreator,
-} from "../../../services/groupService";
-import { getPostsByGroup, createPost } from "../../../services/postService";
+} from "../../services/groupService";
+import { getPostsByGroup, createPost } from "../../services/postService";
 import GroupEditModal from "./GroupEditModal";
 import GroupJoinRequests from "./GroupJoinRequests";
-import "../../../assets/styles/group/GroupDetail.css";
-import PostPage from "../../../components/post/PostPage";
+import "../../assets/styles/group/GroupDetail.css";
+import PostPage from "../../components/post/PostPage";
 
 const GroupDetail = () => {
     const { id } = useParams();
