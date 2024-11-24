@@ -1,19 +1,19 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 
-const IncomingCallPortal = ({ incoming, callFrom, handleAcceptCall, handleRejectCall }) => {
+const IncomingCallPortal = ({ incoming, openInComing, handleAcceptCall, handleRejectCall }) => {
 
     return (
-        <Dialog open={incoming} onClose={() => handleRejectCall()} fullWidth maxWidth="sm" centered>
+        <Dialog open={openInComing} onClose={() => handleRejectCall()} fullWidth maxWidth="sm" centered>
             <DialogTitle>Cuộc gọi đến</DialogTitle>
             <DialogContent>
-                <p>{callFrom} đang gọi cho bạn</p>
+                <p>{incoming.callerName} đang gọi cho bạn</p>
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => handleAcceptCall(callFrom)} color="primary" variant="contained">
+                <Button onClick={handleAcceptCall} color="primary" variant="contained">
                     Chấp nhận
                 </Button>
-                <Button onClick={() => handleRejectCall()} color="secondary" variant="outlined">
+                <Button onClick={handleRejectCall} color="secondary" variant="outlined">
                     Từ chối
                 </Button>
             </DialogActions>

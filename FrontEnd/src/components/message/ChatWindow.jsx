@@ -16,7 +16,7 @@ import '../../assets/styles/message/ChatWindow.css';
 const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMessageAsRead }) => {
     const { user } = useContext(AuthContext);
     const { sendMessageWebSocket } = useContext(ChatSocketContext);
-    const { startCall } = useContext(VideoCallSocketContext);
+    const { startVideoCall, startAudioCall } = useContext(VideoCallSocketContext);
     const [message, setMessage] = useState('');
     const [hasMore, setHasMore] = useState(true);
     const [isAtBottom, setIsAtBottom] = useState(true);
@@ -82,10 +82,6 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
         }
     };
 
-    const handleStartCall = () => {
-        startCall(conversation.recipient);
-    };
-
     const scrollReverse = (event) => {
         const { scrollTop, scrollHeight, clientHeight } = event.target;
         setIsAtBottom(scrollTop === scrollHeight - clientHeight);
@@ -96,10 +92,10 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
         <Box className="chat-window">
             <Box className="chat-header">
                 <Typography variant="h6" className="recipient-name">{conversation.name}</Typography>
-                <IconButton onClick={handleStartCall} className="call-button">
+                <IconButton onClick={() => startVideoCall(conversation.recipient)} className="call-button">
                     <VideocamIcon className="call-icon-video" />
                 </IconButton>
-                <IconButton onClick={handleStartCall} className="call-button">
+                <IconButton onClick={() => startAudioCall(conversation.recipient)} className="call-button">
                     <CallIcon className="call-icon" />
                 </IconButton>
                 <IconButton onClick={onClose} className="close-button">

@@ -28,7 +28,7 @@ public class VideoCallHandler extends TextWebSocketHandler {
         try {
             Map<String, Object> p2pMessage = objectMapper.readValue(payload, Map.class);
             Object sender = session.getAttributes().get("username");
-            Object type = p2pMessage.get("type");
+            System.out.println("recipient: " + p2pMessage.get("recipient"));
             WebSocketSession recipientSession = sessions.get(p2pMessage.get("recipient"));
             p2pMessage.put("sender", sender);
             p2pMessage.remove("recipient");

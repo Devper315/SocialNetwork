@@ -1,44 +1,76 @@
-import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import { IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, Autocomplete } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import '../../assets/styles/user/video-call/VideoCallModal.css';
+import VideoCamIcon from '@mui/icons-material/Videocam';
+import VideoCamOffIcon from '@mui/icons-material/VideocamOff';
+import MicIcon from '@mui/icons-material/Mic';
+import MicOffIcon from '@mui/icons-material/MicOff';
+import { AuthContext } from '../../contexts/AuthContext';
 
-const VideoCallPortal = ({ 
-    localVideoRef, 
-    remoteVideoRef, 
-    handleCloseVideoCall, 
-    sendSignal, 
-    action, 
-    recipientRef, 
-    startVideoStream, 
-    show 
-}) => {
+const VideoCallPortal = ({ localVideoRef, remoteVideoRef, handleCloseVideoCall, isCameraOn, toggleCamera,
+    isMicOn, toggleMic, remoteCameraOn, remoteMicOn, sendSignal, action, recipientRef, startVideoStream, show,
+    callType }) => {
+    const { user } = useContext(AuthContext)
     useEffect(() => {
         const startVideo = async () => {
-            if (localVideoRef.current && show) {
+            if (show) {
                 await startVideoStream();
-                sendSignal({ type: action, recipient: recipientRef.current });
+                sendSignal({
+                    type: action,
+                    recipient: recipientRef.current,
+                    incoming: {
+                        callerName: user.fullName,
+                        type: callType
+                    }
+                });
             }
         };
         startVideo();
-    }, [localVideoRef, recipientRef, show]);
+    }, [recipientRef, show]);
 
-    return ReactDOM.createPortal(
-        <Dialog open={show} onClose={handleCloseVideoCall} fullWidth maxWidth="md">
-            <DialogTitle>Video Call</DialogTitle>
-            <DialogContent>
+    return (
+        <Dialog open={show} onClose={handleCloseVideoCall} maxWidth={false}>
+            <DialogTitle sx={{
+                borderBottom: '2px solid #ccc', display: 'flex',
+                justifyContent: 'space-between', alignItems: 'center'
+            }}>
+                Video call
+                <IconButton edge="end" color="inherit" onClick={handleCloseVideoCall} aria-label="close">
+                    <CloseIcon />
+                </IconButton>
+            </DialogTitle>
+
+            <DialogContent sx={{
+                overflow: 'hidden', height: 1000, width: 1000, borderBottom: '2px solid #ccc'
+            }}>
                 <div className="video-container">
                     <video ref={localVideoRef} autoPlay muted className="local-video" />
-                    <video ref={remoteVideoRef} autoPlay className="remote-video" />
+                    <video ref={remoteVideoRef} autoPlay className={remoteCameraOn ? "remote-video" : "hidden"} />
+                    {!remoteCameraOn && <div className="no-remote-video" />}
+                    <div className="icon-wrapper">
+                        <div className="icon">
+                            {remoteCameraOn ? <VideoCamIcon /> : <VideoCamOffIcon />}
+                        </div>
+                        <div className="icon">
+                            {remoteMicOn ? <MicIcon /> : <MicOffIcon />}
+                        </div>
+                    </div>
                 </div>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={handleCloseVideoCall} color="secondary" variant="outlined">
+
+            <DialogActions sx={{ borderTop: '2px solid #ccc' }}>
+                <IconButton onClick={toggleCamera} sx={{ color: isCameraOn ? 'black' : 'gray' }}>
+                    {isCameraOn ? <VideoCamIcon /> : <VideoCamOffIcon />}
+                </IconButton>
+                <IconButton onClick={toggleMic} sx={{ color: isMicOn ? 'black' : 'gray' }}>
+                    {isMicOn ? <MicIcon /> : <MicOffIcon />}
+                </IconButton>
+                <Button onClick={handleCloseVideoCall} variant="outlined">
                     Kết thúc cuộc gọi
                 </Button>
             </DialogActions>
-        </Dialog>,
-        document.getElementById('portal-root')
+        </Dialog>
     );
 };
 
