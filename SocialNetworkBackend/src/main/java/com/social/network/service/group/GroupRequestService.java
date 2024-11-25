@@ -48,13 +48,13 @@ public class GroupRequestService {
     public void actionRequestById(Long requestId, Long accept) {
         GroupRequest request = getById(requestId);
         User user = userService.getCurrentUser();
-        User createGroup = userService.getById(request.getGroup().getCreateUserId());
+        User receiver = request.getUser();
         if (accept==1) {
-            groupService.addGroupMember(request.getGroup().getId(), request.getUser().getId());
-            notificationService.notifyAcceptGroupRequest(user,createGroup,request.getGroup());
+            groupService.addGroupMember(request.getGroup().getId(), receiver.getId());
+            notificationService.notifyAcceptGroupRequest(user,receiver,request.getGroup());
         }
         else{
-            notificationService.notifyRefuseGroupRequest(user,createGroup,request.getGroup());
+            notificationService.notifyRefuseGroupRequest(user,receiver,request.getGroup());
         }
         groupRequestRepo.delete(request);
     }
@@ -70,11 +70,6 @@ public class GroupRequestService {
                 .map(GroupRequestResponse::new)
                 .collect(Collectors.toList());
     }
-
-
-
-
-
 
     public Optional<GroupRequest> getRequestByGroupAndUser(Group group, User user) {
         return groupRequestRepo.findByGroupAndUser(group, user);

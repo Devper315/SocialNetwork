@@ -11,6 +11,8 @@ import React from 'react';
 import GroupList from './components/group/GroupList';
 import GroupDetail from './components/group/GroupDetail';
 import EmailVerification from './components/common/EmailVerification';
+import PendingPosts from './components/group/PendingPosts';
+
 
 
 function App() {
@@ -28,6 +30,7 @@ function App() {
         <Route path='/post-list' element={<PostList />} />
         <Route path='/postpage/:id' element={<PostPage />} />
         <Route path='/register/verify/' element={<EmailVerification />} />
+        <Route path="/pending-posts/:groupId" element={<PendingPosts />} />
       </Routes>
     </div>
   );

@@ -22,6 +22,7 @@ public class PostResponse {
     String time;
     String userName;
     Long groupId;
+    Long approval;
 
     public PostResponse(Post post) {
         this.id = post.getId();
@@ -35,6 +36,7 @@ public class PostResponse {
         this.time = DateUtils.reFormatDateTime(post.getCreatedTime());
         this.groupId = post.getGroup() != null ? post.getGroup().getId() : null;
         this.userName = post.getAuthor().getUsername();
+        this.approval= post.getApprovalStatus();
     }
 
 }

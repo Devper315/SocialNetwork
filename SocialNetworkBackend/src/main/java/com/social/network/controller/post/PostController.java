@@ -75,5 +75,25 @@ public class PostController {
                 .build();
     }
 
+    @GetMapping("/group/{groupId}/pending-approval/{approvalStatus}")
+    public ApiResponse<List<PostResponse>> getPendingApprovalPostsByGroup(@PathVariable Long groupId,@PathVariable Long approvalStatus) {
+        List<PostResponse> posts = postService.getApprovalPostsByGroup(approvalStatus,groupId);
+        if (posts.isEmpty()) {
+            return ApiResponse.<List<PostResponse>>builder()
+                    .build();
+        }
+        return ApiResponse.<List<PostResponse>>builder()
+                .result(posts)
+                .build();
+    }
 
+    @PatchMapping("/{postId}/approval-status")
+    public PostResponse updateApprovalStatus(@PathVariable Long postId) {
+        return postService.updateApprovalStatus(postId);
+    }
+
+    @GetMapping("/check-user/{postId}")
+    public Long checkUser(@PathVariable Long postId) {
+        return postService.checkUser(postId);
+    }
 }

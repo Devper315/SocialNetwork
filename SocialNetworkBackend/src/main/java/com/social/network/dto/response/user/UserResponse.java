@@ -23,6 +23,7 @@ public class UserResponse {
     String email;
     String avatarUrl;
     LocalDate dateOfBirth;
+    Long role;
 
     public UserResponse(User user) {
         this.id = user.getId();
@@ -33,5 +34,12 @@ public class UserResponse {
         this.email = user.getEmail();
         this.avatarUrl = user.getAvatarUrl();
         this.dateOfBirth = user.getDateOfBirth();
+
+    }
+    public UserResponse(User user,Long role) {
+        this.id = user.getId();
+        this.fullName = user.getFullName();
+        this.role=role;
+
     }
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { getPosts } from "../../services/postService";
 import {
@@ -12,30 +13,31 @@ import {
   Alert,
 } from "@mui/material";
 
-const PostList = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+const PostList = ({ posts: propPosts = [], fetchPostsOnMount = true }) => {
+  const [posts, setPosts] = useState(propPosts);
+  const [loading, setLoading] = useState(fetchPostsOnMount && propPosts.length === 0);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+
   useEffect(() => {
+    if (!fetchPostsOnMount || propPosts.length > 0) return;
+
     const fetchPosts = async () => {
       try {
         const response = await getPosts();
-        console.log("Fetched Posts:", response);
         setPosts(response);
-      } catch (error) {
-        setError("Không thể lấy bài viết: " + error.message);
+      } catch (err) {
+        setError("Không thể lấy bài viết: " + err.message);
       } finally {
         setLoading(false);
       }
     };
 
     fetchPosts();
-  }, []);
+  }, [fetchPostsOnMount, propPosts]);
 
   const handlePostClick = (postId) => {
-    console.log("Navigating to PostPage with ID:", postId);
     navigate(`/postpage/${postId}`);
   };
 
@@ -69,6 +71,23 @@ const PostList = () => {
     );
   }
 
+  if (posts.length === 0) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "50vh",
+        }}
+      >
+        <Typography variant="body1" color="text.secondary">
+          Không có bài viết nào để hiển thị.
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ padding: "16px" }}>
       <Grid container spacing={4}>
@@ -81,13 +100,27 @@ const PostList = () => {
               }}
               onClick={() => handlePostClick(post.id)}
             >
-              {post.imageUrls && post.imageUrls[0] && (
+              {post.imageUrls && post.imageUrls[0] ? (
                 <CardMedia
                   component="img"
                   height="200"
                   image={post.imageUrls[0]}
                   alt={`Ảnh bài viết ${post.id}`}
                 />
+              ) : (
+                <Box
+                  sx={{
+                    height: "200px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "#f0f0f0",
+                  }}
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    Không có ảnh
+                  </Typography>
+                </Box>
               )}
               <CardContent>
                 <Typography
@@ -99,10 +132,12 @@ const PostList = () => {
                     marginBottom: "8px",
                   }}
                 >
-                  {post.content}
+                  {post.content || "Không có nội dung"}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Thời gian: {new Date(post.time).toLocaleString()}
+                  {post.time
+                    ? `Thời gian: ${new Date(post.time).toLocaleString()}`
+                    : "Không rõ thời gian"}
                 </Typography>
               </CardContent>
             </Card>
@@ -111,6 +146,12 @@ const PostList = () => {
       </Grid>
     </Box>
   );
+};
+
+
+PostList.propTypes = {
+  posts: PropTypes.array,
+  fetchPostsOnMount: PropTypes.bool,
 };
 
 export default PostList;

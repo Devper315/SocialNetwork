@@ -12,4 +12,5 @@ import java.util.List;
 public interface PostRepo extends JpaRepository<Post, Long> {
     List<Post> findByAuthor(User author);
     List<Post> findByGroupId(Long groupId);
+    List<Post> findByApprovalStatusAndGroupId(Long groupId,Long approvalStatus);
 }

@@ -1,15 +1,9 @@
 package com.social.network.entity.group;
 
-import com.social.network.entity.user.FriendshipId;
 import com.social.network.entity.user.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.lang.reflect.Member;
 
 @Data
 @NoArgsConstructor
@@ -27,6 +21,7 @@ public class GroupMember {
     @ManyToOne
     User member;
 
-    @ManyToOne
-    GroupRole groupRole;
+    @Column(name = "group_role_id")
+    Long role;
 }
+
