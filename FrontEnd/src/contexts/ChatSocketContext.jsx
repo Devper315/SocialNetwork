@@ -21,7 +21,7 @@ export const ChatSocketProvider = ({ children }) => {
 
 
     useEffect(() => {
-        if (user.username) {
+        if (user) {
             connectChatSocket()
         }
         return () => {

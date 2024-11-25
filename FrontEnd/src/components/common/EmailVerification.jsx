@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { verifyEmail } from "../../services/authService";
 
 
 const EmailVerification = () => {
     const location = useLocation();
-    const navigate = useNavigate()
     const [message, setMessage] = useState("Đang xác thực email của bạn...")
     const [verify, setVerify] = useState(false)
     useEffect(() => {
@@ -25,7 +24,7 @@ const EmailVerification = () => {
     return (
         <div style={{ textAlign: "center", marginTop: "50px" }}>
             <h2>{message}</h2>
-            {verify && <Link to="/login">Đăng nhập ngay</Link>}
+            {verify && <Link to="/">Đăng nhập ngay</Link>}
         </div>
     );
 }

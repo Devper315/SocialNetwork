@@ -30,7 +30,7 @@
         }
 
         .email-header h1 {
-            color: #4CAF50;
+            color: #1877F2;
             font-size: 24px;
         }
 
@@ -47,24 +47,36 @@
         }
 
         .button {
-            display: inline-block;
+            display: block;
+            width: fit-content;
+            margin: 0 auto;
             padding: 12px 25px;
-            background-color: #4CAF50;
-            color: white;
+            background-color: #1877F2;
+            color: #ffffff;
             font-size: 16px;
+            font-weight: bold;
+            text-align: center;
             text-decoration: none;
             border-radius: 5px;
-            text-align: center;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
         }
 
         .button:hover {
-            background-color: #45a049;
+            background-color: #145dbf;
+            cursor: pointer;
         }
 
         .footer-text {
             color: #999;
             font-size: 12px;
             margin-top: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #ffffff;
         }
     </style>
 </head>
@@ -76,15 +88,18 @@
     </div>
 
     <div class="email-body">
-        <p>Xin chào <strong th:text="${fullName}"/>,</p>
+        <p>Xin chào <strong th:text="${fullName}"></strong>,</p>
         <p>Cảm ơn bạn chọn sử dụng MXH của chúng tôi! Để hoàn tất việc đăng ký,
             vui lòng bấm nút bên dưới để xác nhận email của bạn.</p>
         <p>Nếu bạn không thực hiện đăng ký, vui lòng bỏ qua email này.</p>
-        <a th:href="${verificationLink}" class="button">Xác nhận email</a>
+        <form th:action="${frontEndUrl}" method="get">
+            <input name="token" type="hidden" th:value="${token}">
+            <button type="submit" class="button">Xác nhận email</button>
+        </form>
     </div>
 
     <div class="email-footer">
-        <p>Nếu bạn cần hỗ trợ, hãy liên hệ <a href="mailto:support@yourdomain.com">chúng tôi</a>.</p>
+        <p>Nếu bạn cần hỗ trợ, hãy liên hệ <a href="mailto:phanvanthi315.1@gmail.com">chúng tôi</a>.</p>
     </div>
 
     <div class="footer-text">

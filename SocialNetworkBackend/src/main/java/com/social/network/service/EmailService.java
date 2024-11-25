@@ -39,7 +39,7 @@ public class EmailService {
 
     @NonFinal
     @Value("${frontend.url}")
-    private String frontendUrl;
+    private String frontEndUrl;
 
 
     @Async
@@ -50,7 +50,8 @@ public class EmailService {
             Context context = new Context();
             Map<String, Object> variables = new HashMap<>();
             variables.put("fullName", fullName);
-            variables.put("verificationLink", frontendUrl + "/register/verify?token=" + token);
+            variables.put("frontEndUrl", frontEndUrl + "/register/verify");
+            variables.put("token", token);
             context.setVariables(variables);
             String htmlContent = templateEngine.process("email-confirmation", context);
             helper.setFrom(FROM_EMAIL, FROM_NAME);

@@ -11,56 +11,54 @@ import Conversation from "../message/Conversation";
 import Notification from "../user/Notification";
 
 const Header = () => {
-  const { user } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
 
-  return (
-    <AppBar position="static" color="primary">
-      <Toolbar>
-        <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-          {/* Trang chủ */}
-          <Tooltip title="Trang chủ">
-            <IconButton component={Link} to="/" color="inherit">
-              <HomeIcon fontSize="large" />
-            </IconButton>
-          </Tooltip>
+    return (
+        <AppBar position="static" color="primary">
+            <Toolbar>
+                <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+                    <Tooltip title="Trang chủ">
+                        <IconButton component={Link} to="/" color="inherit">
+                            <HomeIcon fontSize="large" />
+                        </IconButton>
+                    </Tooltip>
 
-          {/* Bạn bè */}
-          <Tooltip title="Bạn bè">
-            <IconButton component={Link} to="/friends" color="inherit">
-              <PeopleIcon fontSize="large" />
-            </IconButton>
-          </Tooltip>
+                    {user && <Tooltip title="Bạn bè">
+                        <IconButton component={Link} to="/friends" color="inherit">
+                            <PeopleIcon fontSize="large" />
+                        </IconButton>
+                    </Tooltip>}
+                    
 
-          {/* Nhóm */}
-          <Tooltip title="Nhóm">
-            <IconButton component={Link} to="/group" color="inherit">
-              <GroupsIcon fontSize="large" />
-            </IconButton>
-          </Tooltip>
+                    {user && <Tooltip title="Nhóm">
+                        <IconButton component={Link} to="/group" color="inherit">
+                            <GroupsIcon fontSize="large" />
+                        </IconButton>
+                    </Tooltip>}
+                    
 
-          {/* Cuộc trò chuyện */}
-          <Conversation />
+                    {user && <Conversation />}
+                    
 
-          {/* Thông báo */}
-          <Notification />
+                    {user && <Notification />}
+                    
 
-          {/* Trang cá nhân */}
-          <Tooltip title="Trang cá nhân">
-            <IconButton component={Link} to={`/profile/${user.id}`} color="inherit">
-              <PersonIcon fontSize="large" />
-            </IconButton>
-          </Tooltip>
+                    {user && <Tooltip title="Trang cá nhân">
+                        <IconButton component={Link} to={`/profile/${user.id}`} color="inherit">
+                            <PersonIcon fontSize="large" />
+                        </IconButton>
+                    </Tooltip>}
 
-          {/* Post */}
-          <Tooltip title="Post">
-            <IconButton component={Link} to="/post-list" color="inherit">
-              <PostAddIcon fontSize="large" />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </Toolbar>
-    </AppBar>
-  );
+                    {user && <Tooltip title="Bài viết">
+                        <IconButton component={Link} to="/post-list" color="inherit">
+                            <PostAddIcon fontSize="large" />
+                        </IconButton>
+                    </Tooltip>}
+                    
+                </Box>
+            </Toolbar>
+        </AppBar>
+    );
 };
 
 export default Header;
