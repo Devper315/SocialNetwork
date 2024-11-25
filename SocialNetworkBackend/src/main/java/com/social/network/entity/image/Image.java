@@ -16,6 +16,8 @@ public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    @Column(length = 1000)
     String url;
 
     @ManyToOne

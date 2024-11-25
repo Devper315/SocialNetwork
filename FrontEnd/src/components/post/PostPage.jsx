@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getPostById, updatePost } from '../../services/postService';
+import { getPostById, updatePost, checkUser } from '../../services/postService';
 import { getCommentsByPostId, createComment } from '../../services/commentService';
 import { useParams } from 'react-router-dom';
 import '../../assets/styles/post/PostPage.css';
@@ -17,6 +17,7 @@ const PostPage = ({ postId }) => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [newCommentImage, setNewCommentImage] = useState(null);
+    const [userPermission, setUserPermission] = useState(null);
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -24,7 +25,18 @@ const PostPage = ({ postId }) => {
             setPost({ content, imageUrls, userName });
             setEditedContent(content);
             setImageFiles(imageUrls);
+
         };
+
+        const fetchCheckUser = async () => {
+            try {
+                const result = await checkUser(id);
+                setUserPermission(result);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
 
         const fetchComments = async () => {
             try {
@@ -37,6 +49,7 @@ const PostPage = ({ postId }) => {
 
         fetchPost();
         fetchComments();
+        fetchCheckUser();
     }, [id]);
 
     const handleEditToggle = () => {
@@ -103,9 +116,13 @@ const PostPage = ({ postId }) => {
             </div>
             <div className="post-content">
                 <div className="post-options">
-                    <button onClick={editMode ? handleSave : handleEditToggle}>
-                        {editMode ? "Lưu" : "Sửa bài viết"}
-                    </button>
+                    {userPermission === 1 && (
+                        <button onClick={editMode ? handleSave : handleEditToggle}>
+                            {editMode ? "Lưu" : "Sửa bài viết"}
+                        </button>
+                    )}
+
+
                 </div>
                 {editMode ? (
                     <textarea

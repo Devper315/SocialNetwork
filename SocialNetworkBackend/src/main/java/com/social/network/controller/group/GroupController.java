@@ -6,6 +6,7 @@ import com.social.network.dto.response.post.PostResponse;
 import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.group.Group;
 import com.social.network.entity.user.User;
+import com.social.network.service.group.GroupMemberService;
 import com.social.network.service.group.GroupService;
 import com.social.network.service.notification.NotificationService;
 import com.social.network.service.user.UserService;
@@ -25,10 +26,12 @@ public class GroupController {
     GroupService groupService;
     UserService userService;
     NotificationService notificationService;
+    GroupMemberService groupMemberService;
+
     @GetMapping
     public ApiResponse<List<Group>> search(
             @RequestParam(defaultValue = "") String keyword,
-            @RequestParam int page){
+            @RequestParam int page) {
         Page<Group> groupPage = groupService.search(keyword, page);
         return ApiResponse.<List<Group>>builder()
                 .result(groupPage.getContent())
@@ -39,7 +42,7 @@ public class GroupController {
     @GetMapping("/my")
     public ApiResponse<List<Group>> getMyGroup(
             @RequestParam(defaultValue = "") String keyword,
-            @RequestParam int page){
+            @RequestParam int page) {
         Page<Group> groupPage = groupService.searchMyGroups(keyword, page);
         return ApiResponse.<List<Group>>builder()
                 .result(groupPage.getContent())
@@ -48,56 +51,65 @@ public class GroupController {
     }
 
     @GetMapping("/detail/{id}")
-    public ApiResponse<Group> getGroupById(@PathVariable Long id){
+    public ApiResponse<Group> getGroupById(@PathVariable Long id) {
         return ApiResponse.<Group>builder()
                 .result(groupService.getById(id))
                 .build();
     }
 
 
-
     @GetMapping("/members/{groupId}")
-    public ApiResponse<List<UserResponse>> getMembersByGroupId(@PathVariable Long groupId){
+    public ApiResponse<List<UserResponse>> getMembersByGroupId(@PathVariable Long groupId) {
         return ApiResponse.<List<UserResponse>>builder()
                 .result(groupService.getMembersByGroupId(groupId))
                 .build();
     }
 
-    @PostMapping ("/add-member")
-    public ApiResponse<Boolean> addMember(@RequestParam Long groupId, @RequestParam Long userId){
+    @PostMapping("/add-member")
+    public ApiResponse<Boolean> addMember(@RequestParam Long groupId, @RequestParam Long userId) {
         return ApiResponse.<Boolean>builder()
                 .result(groupService.addGroupMember(groupId, userId))
                 .build();
     }
 
     @DeleteMapping("/remove-member")
-    public ApiResponse<Boolean> removeMember(@RequestParam Long groupId, @RequestParam Long userId){
+    public ApiResponse<Boolean> removeMember(@RequestParam Long groupId, @RequestParam Long userId) {
         return ApiResponse.<Boolean>builder()
                 .result(groupService.removeGroupMember(groupId, userId))
                 .build();
     }
 
     @PostMapping
-    public ApiResponse<Group> createGroup(@RequestBody GroupRequest request){
+    public ApiResponse<Group> createGroup(@RequestBody GroupRequest request) {
         return ApiResponse.<Group>builder()
                 .result(groupService.createGroup(request))
                 .build();
     }
 
     @PutMapping
-    public ApiResponse<Group> updateGroup(@RequestBody GroupRequest request){
+    public ApiResponse<Group> updateGroup(@RequestBody GroupRequest request) {
         return ApiResponse.<Group>builder()
                 .result(groupService.updateGroup(request))
                 .build();
     }
 
-    @GetMapping("/is-creator/{groupId}")
-    public boolean isGroupCreator(@PathVariable Long groupId) {
-        return groupService.isGroupCreator(groupId);
+    @GetMapping("/check-user/{groupId}")
+    public Long isGroupCreator(@PathVariable Long groupId) {
+        return groupService.checkUser(groupId);
     }
 
+    @PostMapping("/change-role/{groupId}/{userId}/{roleId}")
+    public ApiResponse<Boolean> changeRole( @PathVariable Long groupId,@PathVariable Long userId, @PathVariable Long roleId) {
+        return ApiResponse.<Boolean>builder()
+                .result(groupService.changeMemberRole(groupId,userId,roleId))
+                .build();
+    }
 
-
-
+    @GetMapping("get-role/{groupId}/{userId}")
+    public ApiResponse<Long> getRole(@PathVariable Long groupId, @PathVariable Long userId) {
+        return ApiResponse.<Long>builder()
+                .result(groupService.getUserRoleInGroup(groupId,userId))
+                .build();
+    }
 
 }

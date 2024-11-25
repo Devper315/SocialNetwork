@@ -9,6 +9,7 @@ import com.social.network.repository.group.GroupMemberRepo;
 import com.social.network.repository.group.GroupRepo;
 import com.social.network.repository.group.GroupRoleRepo;
 import com.social.network.repository.user.UserRepo;
+import com.social.network.service.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class GroupMemberService {
     GroupMemberRepo groupMemberRepo;
-    GroupRepo groupRepo;
-    UserRepo userRepo;
-    GroupRoleRepo groupRoleRepo;
     public boolean addGroupMember(Group group, User user, Long role) {
         GroupMember groupMember = GroupMember.builder()
                 .group(group)
@@ -35,7 +33,6 @@ public class GroupMemberService {
         groupMemberRepo.save(groupMember);
         return true;
     }
-
 
     public boolean removeGroupMember(Group group, User member){
         groupMemberRepo.deleteByGroupAndMember(group, member);
@@ -55,17 +52,21 @@ public class GroupMemberService {
         List <UserResponse> responses = new ArrayList<>();
         for (GroupMember groupMember: groupMembers){
             User user = groupMember.getMember();
-            responses.add(new UserResponse(user));
+            Long role = groupMember.getRole();
+            responses.add(new UserResponse(user,role));
         }
         return responses;
     }
 
-    public boolean changeMemberRole(Long groupId, Long userId, Long newRoleId) {
-        Group group = groupRepo.findById(groupId).orElse(null);
-        User user = userRepo.findById(userId).orElse(null);
+    public boolean changeMemberRole(Group group, User user, Long newRoleId) {
         GroupMember groupMember = groupMemberRepo.findByGroupAndMember(group, user);
         groupMember.setRole(newRoleId);
         groupMemberRepo.save(groupMember);
         return true;
+    }
+
+    public Long getUserRoleInGroup(Group group,User user) {
+        GroupMember groupMember = groupMemberRepo.findByGroupAndMember(group, user);
+        return groupMember.getRole();
     }
 }

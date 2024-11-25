@@ -9,6 +9,7 @@ import com.social.network.entity.post.Post;
 import com.social.network.entity.user.User;
 import com.social.network.repository.group.GroupRepo;
 import com.social.network.repository.post.PostRepo;
+import com.social.network.repository.user.UserRepo;
 import com.social.network.service.user.UserService;
 import com.social.network.utils.PageableUtils;
 import lombok.AccessLevel;
@@ -29,7 +30,7 @@ public class GroupService {
     GroupRepo groupRepo;
     UserService userService;
     GroupMemberService groupMemberService;
-    PostRepo postRepo;
+    UserRepo userRepo;
 
 
     public Group createGroup(GroupRequest request) {
@@ -88,10 +89,23 @@ public class GroupService {
         return groupMemberService.getByGroup(group);
     }
 
-    public boolean isGroupCreator(Long groupId) {
+    public Long checkUser(Long groupId) {
         Group group = groupRepo.findById(groupId).orElse(null);
         User currentUser = userService.getCurrentUser();
-        return currentUser.getId().equals(group.getCreateUserId());
+        return groupMemberService.getUserRoleInGroup(group, currentUser);
+
+    }
+
+    public boolean changeMemberRole(Long groupId, Long userId, Long newRoleId) {
+        Group group = groupRepo.findById(groupId).orElse(null);
+        User user = userRepo.findById(userId).orElse(null);
+        return groupMemberService.changeMemberRole(group, user, newRoleId);
+    }
+
+    public Long getUserRoleInGroup(Long groupId, Long userId) {
+        Group group = getById(groupId);
+        User user = userRepo.findById(userId).orElse(null);
+        return groupMemberService.getUserRoleInGroup(group, user);
     }
 
 

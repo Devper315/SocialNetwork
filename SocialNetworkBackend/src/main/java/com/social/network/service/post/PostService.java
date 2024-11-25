@@ -40,19 +40,27 @@ public class PostService {
         return posts.stream().map(PostResponse::new).collect(Collectors.toList());
     }
 
+    public List<PostResponse> getApprovalPostsByGroup(Long groupId, Long approvalStatus) {
+        List<Post> posts = postRepo.findByApprovalStatusAndGroupId(groupId,approvalStatus);
+        return posts.stream()
+                .map(PostResponse::new)
+                .collect(Collectors.toList());
+    }
+
+
+
     public PostResponse createPost(PostCreateRequest request) {
         User currentUser = userService.getCurrentUser();
         Group group = groupService.getById(request.getGroupId());
         if (group == null) {
             throw new RuntimeException("Nhóm không tồn tại");
         }
-
-
         Post post = Post.builder()
                 .content(request.getContent())
                 .author(currentUser)
                 .group(group)
                 .createdTime(LocalDateTime.now())
+                .approvalStatus(0L)
                 .build();
 
         post = postRepo.save(post);
@@ -86,6 +94,20 @@ public class PostService {
                 .stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    public PostResponse updateApprovalStatus(Long postId) {
+        Post post = getById(postId);
+        post.setApprovalStatus(1L);
+        post = postRepo.save(post);
+        return new PostResponse(post);
+    }
+
+    public Long checkUser(Long postId) {
+        Post post = getById(postId);
+        User user = userService.getCurrentUser();
+        if(post.getAuthor().equals(user)) return 1L;
+        else return 0L;
     }
 
 }

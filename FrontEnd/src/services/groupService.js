@@ -125,15 +125,45 @@ export const checkIfRequestExists = async (groupId) => {
     }
 };
 
-export const checkGroupCreator = async (groupId) => {
+export const checkUser = async (groupId) => {
     try {
-        const response = await httpClient.get(`${API.GROUP}/is-creator/${groupId}`);
+        const response = await httpClient.get(`${API.GROUP}/check-user/${groupId}`);
         return response.data;
     } catch (error) {
         console.log(error);
         return false;
     }
 };
+
+export const getUserRoleInGroup = async (groupId, userId) => {
+    try {
+        const response = await httpClient.get(`${API.GROUP}/role/${groupId}/user/${userId}`);
+        return response.data.result;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
+export const changeRole = async (groupId, userId, roleId) => {
+    try {
+        const response = await httpClient.post(`${API.GROUP}/change-role/${groupId}/${userId}/${roleId}`);
+        return response.data.result;
+    } catch (error) {
+        console.error("Lỗi khi thay đổi vai trò:", error);
+        throw new Error("Không thể thay đổi vai trò của thành viên!");
+    }
+};
+export const getRole = async (groupId, userId) => {
+    try {
+        const response = await httpClient.get(`${API.GROUP}/get-role/${groupId}/${userId}`);
+        return response.data.result;
+    } catch (error) {
+        console.error("Lỗi khi lấy vai trò của thành viên:", error);
+        throw new Error("Không thể lấy vai trò của thành viên!");
+    }
+};
+
+
 
 
 

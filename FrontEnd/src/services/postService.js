@@ -21,8 +21,6 @@ export const getPosts = async () => {
 };
 
 
-
-
 export const updatePost = async (post) => {
     try {
         const response = await httpClient.put(`${API.POST}/${post.id}`, post);
@@ -31,8 +29,6 @@ export const updatePost = async (post) => {
         throw new Error('Cập nhật bài viết không thành công!');
     }
 };
-
-
 export const deletePost = async (postId) => {
     try {
         const response = await httpClient.delete(`${API.POST}/${postId}`);
@@ -50,6 +46,30 @@ export const getPostsByGroup = async (groupId) => {
         throw new Error('Không thể lấy bài viết theo nhóm!');
     }
 };
+
+export const getPendingPostsByGroup = async (groupId, approval) => {
+    try {
+        const response = await httpClient.get(`${API.POST}/group/${groupId}/pending-approval/${approval}`);
+        return response.data.result;
+    } catch (error) {
+    }
+};
+
+export const updateApprovalStatus = async (postId) => {
+    try {
+        const response = await httpClient.patch(`${API.POST}/${postId}/approval-status`);
+        return response.data;
+    } catch (error) {
+    }
+};
+
+export const checkUser = async (postId) => {
+    try {
+        const response = await httpClient.get(`${API.POST}/check-user/${postId}`);
+        return response.data;
+    } catch (error) {
+    }
+}
 
 
 

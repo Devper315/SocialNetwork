@@ -40,5 +40,5 @@ public class Post {
     Group group;
 
     @Column(nullable = true)
-    String approvalStatus;
+    Long approvalStatus;
 }
