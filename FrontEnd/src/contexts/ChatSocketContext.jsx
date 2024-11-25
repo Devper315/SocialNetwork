@@ -3,7 +3,7 @@ import { AuthContext } from './AuthContext'
 import { Stomp } from '@stomp/stompjs';
 import { CONFIG } from '../configs/config';
 import ChatWindow from '../components/message/ChatWindow';
-import { fetchConversationById, fetchPrivateConversation, fetchUnreadTotal } from '../services/conversationService';
+import { fetchPrivateConversation, fetchUnreadConversationTotal, } from '../services/conversationService';
 
 
 export const ChatSocketContext = createContext()
@@ -25,6 +25,7 @@ export const ChatSocketProvider = ({ children }) => {
             connectChatSocket()
         }
         return () => {
+            setConversations([])
             disconnectChatSocket()
         }
     }, [user])
@@ -48,7 +49,7 @@ export const ChatSocketProvider = ({ children }) => {
                 updateConversations(newMessage)
             }
         })
-        fetchUnreadTotal().then(data => {
+        fetchUnreadConversationTotal().then(data => {
             setUnreadTotal(data)
         })
     }
@@ -121,7 +122,7 @@ export const ChatSocketProvider = ({ children }) => {
 
     const PROVIDER_VALUE = {
         sendMessageWebSocket, conversations, setConversations,
-        openChatByFriend, openChatByConversation, unreadTotal, setUnreadTotal
+        openChatByFriend, openChatByConversation, unreadTotal,
     }
 
     return (

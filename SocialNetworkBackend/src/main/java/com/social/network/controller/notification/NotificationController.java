@@ -31,6 +31,13 @@ public class NotificationController {
                 .build();
     }
 
+    @GetMapping("/api/notifications/unread-total")
+    public ApiResponse<Long> getUnreadTotal(){
+        return ApiResponse.<Long>builder()
+                .result(notificationService.getUnreadTotal())
+                .build();
+    }
+
     @PatchMapping("/api/notifications/{id}")
     public void markAsRead(@PathVariable Long id){
         notificationService.markAsRead(id);

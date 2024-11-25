@@ -99,5 +99,10 @@ public class NotificationService {
                 });
     }
 
+    public Long getUnreadTotal(){
+        User requestor = userService.getCurrentUser();
+        return notificationRepo.getUnreadTotal(requestor.getUsername());
+    }
+
 
 }

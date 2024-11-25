@@ -53,16 +53,17 @@ const Conversation = () => {
 
             <Dialog
                 open={dialogOpen}
-                onClose={() => setDialogOpen(false)} 
+                onClose={() => setDialogOpen(false)}
                 PaperProps={{
-                    sx: { 
-                        width: 300, 
-                        height: 300, 
+                    sx: {
+                        width: 300,
+                        height: 300,
                         overflowY: 'auto',
                         position: 'absolute',
                         top: 50,
                         right: 10,
-                    }}}>
+                    }
+                }}>
                 <DialogTitle>Cuộc trò chuyện</DialogTitle>
                 <DialogContent onScroll={event => handleScroll(event, loadMoreConversation)}>
                     <div>

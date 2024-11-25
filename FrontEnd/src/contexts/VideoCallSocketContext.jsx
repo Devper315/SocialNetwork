@@ -60,19 +60,19 @@ export const VideoCallProvider = ({ children }) => {
             })
             setOpenIncoming(true)
         }
-        if (data.type === 'accept') {
+        else if (data.type === 'accept') {
             console.log("Cuộc gọi được chấp nhận")
             connectWebRTC()
         }
-        if (data.type === 'reject') {
+        else if (data.type === 'reject') {
             handleCloseVideoCall()
             console.log(`${recipientRef.current} đã từ chối cuộc gọi`)
         }
-        if (data.type === 'candidate') {
+        else if (data.type === 'candidate') {
             console.log("Nhận được candidate mới")
             await peerConnection.current.addIceCandidate(new RTCIceCandidate(data.candidate));
         }
-        if (data.type === 'offer') {
+        else if (data.type === 'offer') {
             if (!peerConnection.current) {
                 peerConnection.current = new RTCPeerConnection(configuration);
             }
@@ -81,13 +81,18 @@ export const VideoCallProvider = ({ children }) => {
             createAnswer();
             console.log("Client 2 hoàn tất tạo kết nối", peerConnection.current.remoteDescription)
         }
-        if (data.type === 'answer') {
+        else if (data.type === 'answer') {
             await peerConnection.current.setRemoteDescription(new RTCSessionDescription(data.answer));
             console.log("Client 1 hoàn tất tạo kết nối", peerConnection.current.remoteDescription)
         }
-        if (data.type === 'remote-device') {
+        else if (data.type === 'remote-device') {
             setRemoteCameraOn(data.isCameraOn)
             setRemoteMicOn(data.isMicOn)
+        }
+        else if (data.type === 'end'){
+            stopVideoStream()
+            setOpeningVideoCall(false)
+            peerConnection.current = null
         }
     }
 
@@ -204,6 +209,13 @@ export const VideoCallProvider = ({ children }) => {
 
     const handleCloseVideoCall = () => {
         console.log("Đang đóng video")
+        stopVideoStream()
+        peerConnection.current = null
+        setOpeningVideoCall(false)
+        sendSignal({type: "end", recipient: recipientRef.current})
+    }
+
+    const stopVideoStream = () => {
         if (localVideoRef.current && localVideoRef.current.srcObject) {
             let stream = localVideoRef.current.srcObject;
             let tracks = stream.getTracks();
@@ -211,7 +223,6 @@ export const VideoCallProvider = ({ children }) => {
             localVideoRef.current.srcObject = null;
             remoteVideoRef.current.srcObject = null
         }
-        setOpeningVideoCall(false)
     }
 
     const openCamera = async () => {

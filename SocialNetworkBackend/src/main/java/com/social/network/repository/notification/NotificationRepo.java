@@ -17,4 +17,8 @@ public interface NotificationRepo extends JpaRepository<Notification, Long> {
             "ORDER BY n.time DESC")
     Page<Notification> findByRecipient(String requestor, Long lastId, Pageable pageable);
 
+    @Query("SELECT COUNT(n.id) FROM Notification n " +
+            "WHERE n.recipient = :recipient AND n.isRead = false ")
+    Long getUnreadTotal(String recipient);
+
 }

@@ -1,0 +1,16 @@
+.notification-item {
+    cursor: pointer;
+    padding: 5px;
+}
+
+.notification-item:hover {
+    background-color: #f0f0f0;
+}
+
+.read {
+    color: gray;
+}
+
+.unread {
+    font-weight: bold;
+}

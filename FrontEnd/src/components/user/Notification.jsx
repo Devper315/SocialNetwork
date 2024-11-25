@@ -3,14 +3,15 @@ import { Link, useNavigate } from 'react-router-dom'
 import { fetchMyNotifications, markAsRead } from '../../services/notificationService'
 import { NotificationContext } from '../../contexts/NotificationContext'
 import { handleScroll } from '../../services/infiniteScroll'
-import { IconButton, Tooltip, Dialog, DialogTitle, DialogContent, Typography } from "@mui/material";
+import { IconButton, Tooltip, Dialog, DialogTitle, DialogContent, Typography, Badge } from "@mui/material";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
+import '../../assets/styles/Notification.css'
 
 const Notification = () => {
     const [notifications, setNotifications] = useState([])
     const [hasMore, setHasMore] = useState(true)
     const [lastId, setLastId] = useState(0);
-    const { notificationSource } = useContext(NotificationContext)
+    const { notificationSource, unreadTotal, setUnreadTotal } = useContext(NotificationContext)
     const [dialogOpen, setDialogOpen] = useState(false)
     const navigate = useNavigate()
 
@@ -29,6 +30,7 @@ const Notification = () => {
             loadMoreNotifications()
             notificationSource.onmessage = (message) => {
                 const newNotification = JSON.parse(message.data)
+                setUnreadTotal(prev => prev + 1)
                 setNotifications((prevNotifications) => [newNotification, ...prevNotifications])
             }
             return () => {
@@ -42,7 +44,10 @@ const Notification = () => {
     }
 
     const handleClickNotification = async (notification) => {
-        if (!notification.read) markAsRead(notification.id)
+        if (!notification.read) {
+            markAsRead(notification.id)
+            setUnreadTotal(unreadTotal - 1)
+        }
         setDialogOpen(false)
         navigate(notification.navigateUrl)
         setNotifications((prevNotifications) =>
@@ -56,7 +61,9 @@ const Notification = () => {
         <div>
             <Tooltip title="Thông báo" arrow>
                 <IconButton onClick={toggleDialog} component={Link} to="#" color="inherit">
+                <Badge badgeContent={unreadTotal} color="error" overlap="circular">
                     <NotificationsOutlinedIcon />
+                </Badge>
                 </IconButton>
             </Tooltip>
 
@@ -82,11 +89,12 @@ const Notification = () => {
                         <div
                             key={notification.id}
                             onClick={() => handleClickNotification(notification)}
-                            className={`notification-item ${notification.read ? "read" : "unread"}`}
-                            style={{ cursor: 'pointer', padding: '10px', marginBottom: '5px', borderRadius: '5px' }}
-                        >
-                            <Typography variant="body2">{notification.content}</Typography>
-                            <Typography variant="caption" color="textSecondary">{new Date(notification.time).toLocaleString()}</Typography>
+                            className="notification-item"
+                            style={{ cursor: 'pointer', padding: '10px', marginBottom: '5px', borderRadius: '5px' }}>
+                            <Typography className={notification.read ? "read" : "unread"} variant="body">
+                                {notification.content}</Typography><br/>
+                            <Typography variant="caption" color="textSecondary">
+                                {new Date(notification.time).toLocaleString()}</Typography>
                         </div>
                     ))}
                 </DialogContent>
