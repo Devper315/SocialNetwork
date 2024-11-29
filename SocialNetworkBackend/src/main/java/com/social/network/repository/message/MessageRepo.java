@@ -18,7 +18,7 @@ public interface MessageRepo extends JpaRepository<MessageCustom, Long> {
     @Query("SELECT m FROM MessageCustom m " +
             "WHERE (:lastId = 0 OR m.id < :lastId) AND m.conversation = :conversation " +
             "ORDER BY m.time DESC")
-    Page<MessageCustom> findByConversation(Conversation conversation, Long lastId, Pageable pageable);
+    List<MessageCustom> findByConversation(Conversation conversation, Long lastId, Pageable pageable);
 
     @Query("SELECT m FROM MessageCustom m WHERE m.conversation = :conversation ORDER BY m.time DESC")
     List<MessageCustom> getLastMessage(Conversation conversation, Pageable pageable);

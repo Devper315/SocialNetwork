@@ -8,6 +8,7 @@ import com.social.network.entity.message.ConversationType;
 import com.social.network.entity.message.MessageCustom;
 import com.social.network.entity.user.User;
 import com.social.network.repository.message.ConversationRepo;
+import com.social.network.service.image.ImageService;
 import com.social.network.service.user.UserService;
 import jakarta.persistence.Tuple;
 import lombok.AccessLevel;

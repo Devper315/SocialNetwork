@@ -1,23 +1,24 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Box, IconButton, TextField, Typography, Avatar } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import { AuthContext } from '../../contexts/AuthContext';
 import { MessageStatusTranslation } from '../../translations/MessageStatusTranslation';
 import { format } from 'date-fns';
 import { ChatSocketContext } from '../../contexts/ChatSocketContext';
 import { VideoCallSocketContext } from '../../contexts/VideoCallSocketContext';
-import { fetchMessagesByConversationId } from '../../services/conversationService';
+import { createMessage, fetchMessagesByConversationId, updateMessageImage } from '../../services/conversationService';
 import { handleScrollReverse } from '../../services/infiniteScroll';
-import SendIcon from '@mui/icons-material/Send';
 import CallIcon from '@mui/icons-material/Call';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import '../../assets/styles/message/ChatWindow.css';
+import TextInput from '../common/TextInput';
+import { uploadFileToFirebase } from '../../configs/firebaseSDK';
+import ImageGallery from '../common/ImageGallery';
 
 
 const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMessageAsRead }) => {
     const { user } = useContext(AuthContext);
     const { sendMessageWebSocket } = useContext(ChatSocketContext);
     const { startVideoCall, startAudioCall } = useContext(VideoCallSocketContext);
-    const [message, setMessage] = useState('');
     const [hasMore, setHasMore] = useState(true);
     const [isAtBottom, setIsAtBottom] = useState(true);
     const chatBodyRef = useRef(null);
@@ -32,6 +33,7 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
                 setLastId(data.at(0).id);
                 setIsAtBottom(true);
             }
+            console.log(data.at(-1))
             if (data.length > 0 && !data.at(-1).isRead) {
                 let lastMessage = data.at(-1);
                 lastMessage.reader = conversation.sender;
@@ -66,20 +68,30 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
         }
     };
 
-    const handleSend = () => {
-        if (message) {
-            const newMessage = {
-                conversationId: conversation.id,
-                sender: conversation.sender,
-                recipient: conversation.recipient,
-                content: message,
-                status: 'sending',
-                time: format(new Date(), 'HH:mm dd/MM/yyyy'),
-            };
-            sendMessageWebSocket(newMessage);
-            setMessageList([...messageList, newMessage]);
-            setMessage('');
+    const handleSend = async (message, messageImages) => {
+        if (!message && messageImages.length === 0) return
+        let newMessage = {
+            conversationId: conversation.id,
+            sender: conversation.sender,
+            recipient: conversation.recipient,
+            content: message,
+            status: 'sending',
+            imageUrls: [],
+            time: format(new Date(), 'HH:mm dd/MM/yyyy'),
         }
+        newMessage = await createMessage(newMessage)
+        if (messageImages.length > 0) {
+            const uploadPromises = messageImages.map((image, index) => {
+                const filename = `images/${newMessage.id}-${index}`
+                return uploadFileToFirebase(image, filename);
+            })
+            const imageUrls = await Promise.all(uploadPromises)
+            console.log(imageUrls)
+            newMessage.imageUrls = imageUrls
+            updateMessageImage(newMessage)
+        }
+        setMessageList([...messageList, newMessage])
+        sendMessageWebSocket(newMessage);
     };
 
     const scrollReverse = (event) => {
@@ -107,55 +119,35 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
                 ref={chatBodyRef}
                 onScroll={scrollReverse}
                 sx={{
-                    flex: 1,
-                    padding: 2,
-                    overflowY: 'auto',
+                    flex: 1, padding: 2, overflowY: 'auto',
                     maxHeight: 'calc(100% - 140px)',
                 }}>
                 {messageList.map((msg, index) => (
-                    <Box
-                        className={`message ${msg.sender === user.username ? 'sent' : 'received'}`}
-                        key={index}
-                        sx={{
-                            display: 'flex',
-                            flexDirection: msg.sender === user.username ? 'row-reverse' : 'row'}}>
-                        <Box
-                            className="message-content"
-                            sx={{
-                                backgroundColor: msg.sender === user.username ? '#cac6c6' : '#007bff',
-                                color: msg.sender === user.username ? '#000' : '#fff',
-                                borderRadius: 2,
-                                maxWidth: '100%'
-                            }}>
-                            {msg.content}
-                        </Box>
-                        <Typography variant="caption" className="message-time">
-                            {msg.time ? msg.time : MessageStatusTranslation[msg.status]}
-                        </Typography>
-                    </Box>
+                    <>
+                        {msg.content !== '' &&
+                            <Box className={`message ${msg.sender === user.username ? 'sent' : 'received'}`}
+                                key={index}
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: msg.sender === user.username ? 'row-reverse' : 'row'
+                                }}>
+                                <Box className="message-content"
+                                    sx={{
+                                        fontSize: "14px", borderRadius: 2, maxWidth: '100%',
+                                        backgroundColor: msg.sender === user.username ? '#cac6c6' : '#007bff',
+                                        color: msg.sender === user.username ? '#000' : '#fff'
+                                    }}>
+                                    {msg.content}
+                                </Box>
+                                <Typography variant="caption" className="message-time">
+                                    {msg.time ? msg.time : MessageStatusTranslation[msg.status]}
+                                </Typography>
+                            </Box>}
+                        <ImageGallery msg={msg} />
+                    </>
                 ))}
             </Box>
-            <Box className="chat-footer" sx={{ display: 'flex', alignItems: 'center', padding: 1 }}>
-                <TextField
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Aa"
-                    fullWidth
-                    multiline
-                    rows={1} variant="outlined"
-                    sx={{
-                        marginRight: 2,
-                        '& .MuiOutlinedInput-root': {
-                            borderRadius: 5,
-                            fontSize: 14,
-                        },
-                    }}
-                    onKeyDown={handleKeyDown}
-                />
-                <IconButton onClick={handleSend} className="send-button">
-                    <SendIcon />
-                </IconButton>
-            </Box>
+            <TextInput handleSubmit={handleSend} handleKeyDown={handleKeyDown} type="message" />
         </Box>
     );
 };

@@ -1,9 +1,13 @@
 package com.social.network.controller.message;
 
+import com.social.network.dto.request.MessageDTO;
 import com.social.network.dto.response.ApiResponse;
 import com.social.network.dto.response.message.ConversationResponse;
 import com.social.network.dto.response.message.MessageResponse;
+import com.social.network.entity.message.Emoji;
 import com.social.network.service.message.ConversationService;
+import com.social.network.service.message.EmojiService;
+import com.social.network.service.message.MessageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,6 +22,8 @@ import java.util.List;
 @RequestMapping("/api/conversation")
 public class ConversationController {
     ConversationService conversationService;
+    EmojiService emojiService;
+    MessageService messageService;
 
     @GetMapping("/friend/{friendId}")
     public ApiResponse<ConversationResponse> getConversationByFriendId(@PathVariable Long friendId){
@@ -49,10 +55,30 @@ public class ConversationController {
                 .build();
     }
 
+    @PostMapping("/message")
+    public ApiResponse<MessageDTO> createMessage(@RequestBody MessageDTO request){
+        conversationService.createMessage(request);
+        return ApiResponse.<MessageDTO>builder()
+                .result(request)
+                .build();
+    }
+
+    @PutMapping("/message/update-image")
+    public void updateMessageImage(@RequestBody MessageDTO request){
+        messageService.updateMessageImage(request);
+    }
+
     @GetMapping("/unread-total")
     public ApiResponse<Integer> getUnreadTotal(){
         return ApiResponse.<Integer>builder()
                 .result(conversationService.getUnreadTotal())
+                .build();
+    }
+
+    @GetMapping("/emoji")
+    public ApiResponse<List<Emoji>> getEmoji(@RequestParam Long lastId){
+        return ApiResponse.<List<Emoji>>builder()
+                .result(emojiService.getAll(lastId))
                 .build();
     }
 }

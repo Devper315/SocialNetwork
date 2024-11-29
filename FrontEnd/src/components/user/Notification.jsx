@@ -17,7 +17,6 @@ const Notification = () => {
 
     const loadMoreNotifications = async () => {
         if (!hasMore) return
-        console.log("LastId", lastId)
         const data = await fetchMyNotifications(lastId);
         setHasMore(data.length === 10)
         setNotifications([...notifications, ...data]);
@@ -61,9 +60,9 @@ const Notification = () => {
         <div>
             <Tooltip title="Thông báo" arrow>
                 <IconButton onClick={toggleDialog} component={Link} to="#" color="inherit">
-                <Badge badgeContent={unreadTotal} color="error" overlap="circular">
-                    <NotificationsOutlinedIcon />
-                </Badge>
+                    <Badge badgeContent={unreadTotal} color="error" overlap="circular">
+                        <NotificationsOutlinedIcon />
+                    </Badge>
                 </IconButton>
             </Tooltip>
 
@@ -72,16 +71,10 @@ const Notification = () => {
                 onClose={() => setDialogOpen(false)}
                 PaperProps={{
                     sx: {
-                        width: 400,
-                        maxHeight: 500,
-                        overflowY: 'auto',
-                        position: 'fixed',  // Sử dụng position fixed để Dialog nằm cố định trên màn hình
-                        top: 50,  // Khoảng cách từ trên xuống
-                        right: 10,  // Khoảng cách từ phải vào
-                        transform: 'translateX(0)',  // Đảm bảo Dialog không bị lệch
+                        width: 400, maxHeight: 500, overflowY: 'auto', position: 'fixed',
+                        top: 50, right: 10, transform: 'translateX(0)'
                     }
-                }}
-            >
+                }}>
                 <DialogTitle>Thông báo</DialogTitle>
                 <DialogContent onScroll={(event) => handleScroll(event, loadMoreNotifications)}>
                     {notifications.length === 0 && <Typography variant="body2" sx={{ padding: 2 }}>Không có thông báo mới.</Typography>}
@@ -92,7 +85,7 @@ const Notification = () => {
                             className="notification-item"
                             style={{ cursor: 'pointer', padding: '10px', marginBottom: '5px', borderRadius: '5px' }}>
                             <Typography className={notification.read ? "read" : "unread"} variant="body">
-                                {notification.content}</Typography><br/>
+                                {notification.content}</Typography><br />
                             <Typography variant="caption" color="textSecondary">
                                 {new Date(notification.time).toLocaleString()}</Typography>
                         </div>

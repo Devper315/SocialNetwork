@@ -25,15 +25,14 @@ export const updatePost = async (post) => {
         const response = await httpClient.put(`${API.POST}/${post.id}`, post);
         return response.data;
     } catch (error) {
-        throw new Error('Cập nhật bài viết không thành công!');
+        console.log('Cập nhật bài viết không thành công!', error.response);
     }
 };
 export const deletePost = async (postId) => {
     try {
-        const response = await httpClient.delete(`${API.POST}/${postId}`);
-        return response.data;
+        httpClient.delete(`${API.POST}/${postId}`);
     } catch (error) {
-        throw error;
+        console.log("Lỗi khi xóa bài viết", error.response)
     }
 };
 export const getPostsByGroup = async (groupId) => {
@@ -42,7 +41,6 @@ export const getPostsByGroup = async (groupId) => {
         return response.data.result;
     } catch (error) {
         console.error('Lỗi khi lấy bài viết theo nhóm:', error);
-        throw new Error('Không thể lấy bài viết theo nhóm!');
     }
 };
 

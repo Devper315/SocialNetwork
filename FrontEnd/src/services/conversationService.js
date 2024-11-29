@@ -45,3 +45,30 @@ export const fetchUnreadConversationTotal = async() => {
         console.log("Lỗi khi lấy dữ liệu số lượng cuộc trò chuyện chưa đọc", error)
     }
 }
+
+export const fetchEmoji = async(lastId) => {
+    try {
+        const response = await httpClient.get(`${API.CONVERSATION}/emoji`, { params: { lastId } })
+        return response.data.result
+    } catch (error) {
+        console.log("Lỗi khi lấy dữ liệu emoji", error)
+    }
+}
+
+export const createMessage = async(message) => {
+    try {
+        const response = await httpClient.post(`${API.CONVERSATION}/message`, message)
+        return response.data.result
+    } catch (error) {
+        console.log("Lỗi khi tạo tin nhắn mới", error)
+    }
+}
+
+export const updateMessageImage = async(message) => {
+    try {
+        const response = await httpClient.put(`${API.CONVERSATION}/message/update-image`, message)
+        return response.data.result
+    } catch (error) {
+        console.log("Lỗi khi cập nhật ảnh cho tin nhắn", error)
+    }
+}

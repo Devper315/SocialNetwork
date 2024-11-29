@@ -42,9 +42,7 @@ public class PostService {
 
     public List<PostResponse> getApprovalPostsByGroup(Long groupId, Long approvalStatus) {
         List<Post> posts = postRepo.findByApprovalStatusAndGroupId(groupId,approvalStatus);
-        return posts.stream()
-                .map(PostResponse::new)
-                .collect(Collectors.toList());
+        return posts.stream().map(PostResponse::new).toList();
     }
 
     public PostResponse createPost(PostCreateRequest request) {
@@ -72,27 +70,21 @@ public class PostService {
         if (existingPost == null) {
             throw new RuntimeException("Bài viết không tìm thấy");
         }
-
         existingPost.setContent(request.getContent());
-
         if (request.getStatus() != null) {
             existingPost.setStatus(request.getStatus());
         }
-
         postRepo.save(existingPost);
         imageService.updatePostImages(request.getImageUrls(), existingPost);
         return new PostResponse(existingPost);
     }
-
 
     public void deletePost(Long id) {
         postRepo.deleteById(id);
     }
     public List<PostResponse> getPostsByGroup(Long groupId) {
         return postRepo.findByGroupId(groupId)
-                .stream()
-                .map(PostResponse::new)
-                .collect(Collectors.toList());
+                .stream().map(PostResponse::new).toList();
     }
 
     public PostResponse updateApprovalStatus(Long postId) {

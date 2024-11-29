@@ -35,19 +35,16 @@
     transition: background-color 0.3s;
 }
 
-.call-button:hover {
-    background-color: #0d6efd; /* Màu xanh giống Messenger */
+.call-button .MuiSvgIcon-root {
+    color: #1976d2;
 }
 
-.call-button:hover .MuiSvgIcon-root {
-    color: #0056b3; /* Đổi màu icon khi hover */
-}
-
-.call-icon, .call-icon-video {
-    font-size: 20px; /* Kích thước icon */
+.call-icon,
+.call-icon-video {
+    font-size: 20px;
+    /* Kích thước icon */
     color: #000;
 }
-
 
 .close-button {
     padding: 8px;
@@ -58,10 +55,9 @@
     cursor: pointer;
 }
 
-.close-button:hover {
-    color: #0056b3; /* Màu đỏ khi hover */
+.close-button {
+    color: #0056b3;
 }
-
 
 .chat-body {
     flex: 1;
@@ -143,27 +139,6 @@
     resize: none;
     overflow: hidden;
     font-family: sans-serif;
-}
-
-.send-button {
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #eaecf1;
-}
-
-.send-button:hover {
-    background-color: #a09e9e;
-}
-
-.send-icon {
-    width: 20px;
-    height: 20px;
 }
 
 .call-icon {

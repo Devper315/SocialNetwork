@@ -24,7 +24,6 @@ public class ChatSocketController {
 
     @MessageMapping("/private/send")
     public void send(MessageDTO request) {
-        conversationService.createMessage(request);
         messagingTemplate.convertAndSendToUser(
                 request.getRecipient(),
                 "/private/reply",

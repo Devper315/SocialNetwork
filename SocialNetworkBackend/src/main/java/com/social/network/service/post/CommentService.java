@@ -23,23 +23,17 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CommentService {
     CommentRepo commentRepo;
-
-    @Autowired
     UserService userService;
-
     PostService postService;
     CommentMapper commentMapper;
-
 
     public Comment getById(Long id) {
         return commentRepo.findById(id).orElse(null);
     }
 
-
     public CommentResponse createComment(CommentCreateRequest request) {
         User currentUser = userService.getCurrentUser();
         Post post = postService.getById(request.getPostId());
-
         Comment comment = Comment.builder()
                 .content(request.getContent())
                 .imageUrl(request.getImageUrl())
@@ -47,7 +41,6 @@ public class CommentService {
                 .post(post)
                 .time(LocalDateTime.now())
                 .build();
-
         comment = commentRepo.save(comment);
         return commentMapper.toResponse(comment);
     }
@@ -63,7 +56,6 @@ public class CommentService {
 
     public void deleteComment(Long commentId) {
         commentRepo.deleteById(commentId);
-
     }
 
     public List<CommentResponse> getCommentsByPostId(Long postId) {

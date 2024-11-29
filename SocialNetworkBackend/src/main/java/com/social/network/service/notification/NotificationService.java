@@ -104,7 +104,7 @@ public class NotificationService {
     public List<Notification> getMyNotifications(Long lastId) {
         User requestor = userService.getCurrentUser();
         Pageable pageable = PageRequest.of(0, 10);
-        return notificationRepo.findByRecipient(requestor.getUsername(), lastId, pageable).getContent();
+        return notificationRepo.findByRecipient(requestor.getUsername(), lastId, pageable);
     }
 
     public void markAsRead(Long id) {
