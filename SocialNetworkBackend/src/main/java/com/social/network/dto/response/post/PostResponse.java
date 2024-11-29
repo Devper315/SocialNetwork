@@ -32,7 +32,7 @@ public class PostResponse {
                 .orElseGet(ArrayList::new).stream().map(Image::getUrl).toList();
         this.time = DateUtils.reFormatDateTime(post.getCreatedTime());
         this.groupId = post.getGroup() != null ? post.getGroup().getId() : null;
-        this.userName = post.getAuthor().getUsername();
+        this.userName = post.getAuthor().getFullName();
         this.approval= post.getApprovalStatus();
     }
 

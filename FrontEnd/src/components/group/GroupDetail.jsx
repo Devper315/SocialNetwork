@@ -8,6 +8,7 @@ import {
     removeGroupMember,
     changeRole,
     checkUser,
+    leaveGroup
 } from "../../services/groupService";
 import {
     getPostsByGroup,
@@ -18,11 +19,14 @@ import GroupEditModal from "./GroupEditModal";
 import GroupJoinRequests from "./GroupJoinRequests";
 import PostPage from "../../components/post/PostPage";
 import "../../assets/styles/group/GroupDetail.css";
+import { uploadImage } from "../../services/imageService";
 
 const GroupDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [group, setGroup] = useState({});
+    const [showLeaveGroupPopup, setShowLeaveGroupPopup] = useState(false);
+
     const [state, setState] = useState({
         showModal: false,
         showMembers: false,
@@ -33,6 +37,7 @@ const GroupDetail = () => {
         posts: [],
         newPostContent: "",
         imageFiles: [],
+
     });
     
 
@@ -66,22 +71,76 @@ const GroupDetail = () => {
     const handleCreatePost = async (e) => {
         e.preventDefault();
         try {
-            await createPost({ groupId: id, content: state.newPostContent, imageUrls: state.imageFiles });
-            alert("Bài viết đã được gửi cho Kiểm duyệt viên");
-            updateState({ newPostContent: "", imageFiles: [] });
+            const approvalStatus = state.userStatus === 1 || state.userStatus === 2 ? 1 : 0;
+            await createPost({ groupId: id, content: state.newPostContent, imageUrls: state.imageFiles, approvalStatus });
+            const successMessage = approvalStatus === 1
+                ? "Bài viết đã được thêm thành công"
+                : "Bài viết đã được gửi cho quản trị viên phê duyệt.";
+            alert(successMessage);
+            const postsData = await getPendingPostsByGroup(id, 1);
+            setState((prev) => ({
+                ...prev,
+                posts: postsData || [],
+                newPostContent: "",
+                imageFiles: [],
+            }));
         } catch (error) {
             alert("Có lỗi xảy ra khi thêm bài viết.");
         }
     };
 
+    const handleLeaveGroup = async () => {
+        if (state.userStatus === 1) {
+            alert("Nhường tư cách Quản trị viên trước khi rời nhóm");
+            return;
+        }
+        try {
+            const result = await leaveGroup(id);
+            if (result) {
+                alert("Bạn đã rời nhóm thành công.");
+                setGroup((prev) => ({ ...prev, joined: false }));
+                setState((prev) => ({ ...prev, userStatus: null }));
+            } else {
+                alert("Có lỗi xảy ra, vui lòng thử lại.");
+            }
+        } catch (error) {
+            console.error("Error leaving group:", error);
+            alert("Có lỗi xảy ra.");
+        } finally {
+            setShowLeaveGroupPopup(false);
+        }
+    };
+
+
+
+
+
+
     const handleAction = async (action, args, successMessage) => {
         try {
             await action(...args);
             alert(successMessage);
+            if (action === sendJoinGroupRequest) {
+                updateState({ isRequestPending: true });
+            }
         } catch (error) {
             alert("Có lỗi xảy ra.");
         }
     };
+
+
+
+
+    const renderConfirmPopup = () => (
+        <div className="popup">
+            <div className="popup-content">
+                <p>Bạn có chắc chắn muốn rời nhóm?</p>
+                <button onClick={handleLeaveGroup}>Đồng ý</button>
+                <button onClick={() => updateState({ showConfirmLeavePopup: false })}>Hủy</button>
+            </div>
+        </div>
+    );
+
 
     const renderMemberActions = (member) => {
         const isCreator = member.role === 1;
@@ -115,7 +174,7 @@ const GroupDetail = () => {
                     <button disabled>Đang chờ phê duyệt</button>
                 ) : group.joined ? (
                     <>
-                        <button>Rời nhóm</button>
+                        <button onClick={() => setShowLeaveGroupPopup(true)}>Rời nhóm</button>
                         {state.userStatus === 1 && (
                             <>
                                 <button onClick={() => updateState({ showModal: true })}>Sửa thông tin nhóm</button>
@@ -131,7 +190,19 @@ const GroupDetail = () => {
                         Yêu cầu tham gia nhóm
                     </button>
                 )}
+
+                {showLeaveGroupPopup && (
+                    <div className="popup-overlay">
+                        <div className="popup-content">
+                            <p>Bạn có chắc chắn muốn rời nhóm?</p>
+                            <button onClick={handleLeaveGroup}>Đồng ý</button>
+                            <button onClick={() => setShowLeaveGroupPopup(false)}>Hủy</button>
+                        </div>
+                    </div>
+                )}
+
             </div>
+
 
             {state.showMembers && (
                 <div className="members-list">
@@ -140,7 +211,7 @@ const GroupDetail = () => {
                         {state.members.map((member) => (
                             <li key={member.id}>
                                 <span>{member.fullName}</span>
-                                <span className="role-label">{member.role === 1 ? "Người tạo nhóm" : member.role === 2 ? "Người kiểm duyệt" : ""}</span>
+                                <span className="role-label">{member.role === 1 ? "Quản trị viên" : member.role === 2 ? "Kiểm duyệt viên" : ""}</span>
                                 {renderMemberActions(member)}
                             </li>
                         ))}

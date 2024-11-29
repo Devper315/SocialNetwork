@@ -46,34 +46,50 @@ public class NotificationService {
     }
 
     public void notifyFriendRequest(User requestor, User recipient) {
+        String url="/profile/" + requestor.getId();
         String content = requestor.getFullName() + " đã gửi lời mời kết bạn.";
-        createNotification(requestor, recipient, content);
+        createNotification(requestor, recipient, content,url);
     }
 
     public void notifyAcceptFriend(User requestor, User recipient) {
+        String url="/profile/" + requestor.getId();
         String content = requestor.getFullName() + " đã chấp nhận kết bạn";
-        createNotification(requestor, recipient, content);
+        createNotification(requestor, recipient, content,url);
     }
 
     public void notifyGroupRequest(User requestor, User recipient, Group group) {
+        String url="/group-detail/" + group.getId();
         String content = requestor.getFullName() + " đã gửi lời mời tham gia nhóm "+group.getName();
-        createNotification(requestor, recipient, content);
+        createNotification(requestor, recipient, content,url);
     }
     public void notifyAcceptGroupRequest(User requestor, User recipient, Group group) {
+        String url="/group-detail/" + group.getId();
         String content = requestor.getFullName() + " đã chấp nhận lời mời tham gia nhóm "+group.getName();
-        createNotification(requestor, recipient, content);
+        createNotification(requestor, recipient, content,url);
     }
     public void notifyRefuseGroupRequest(User requestor, User recipient, Group group) {
+        String url="/group-detail/" + group.getId();
         String content = requestor.getFullName() + " đã từ chối lời mời tham gia nhóm "+group.getName();
-        createNotification(requestor, recipient, content);
+        createNotification(requestor, recipient, content,url);
+    }
+    public void notifyAcceptPost(User requestor, User recipient, Group group) {
+        String url="/group-detail/" + group.getId();
+        String content = requestor.getFullName() + " đã phê duyệt bài viết của bạn";
+        createNotification(requestor, recipient, content,url);
+    }
+    public void sendPost(User requestor, User recipient, Group group) {
+        String url="/group-detail/" + group.getId();
+        String content = requestor.getFullName() + " đã gửi 1 bài viết cần phê duyệt";
+        createNotification(requestor, recipient, content,url);
     }
 
 
-    private void createNotification(User requestor, User recipient, String content){
+
+    private void createNotification(User requestor, User recipient, String content, String url){
         Notification notification = Notification.builder()
                 .content(content)
                 .recipient(recipient.getUsername())
-                .navigateUrl("/profile/" + requestor.getId())
+                .navigateUrl(url)
                 .isRead(false)
                 .time(LocalDateTime.now())
                 .build();
