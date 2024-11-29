@@ -34,6 +34,7 @@ const GroupDetail = () => {
         newPostContent: "",
         imageFiles: [],
     });
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -147,7 +148,8 @@ const GroupDetail = () => {
                 </div>
             )}
 
-            {state.showJoinRequests && <GroupJoinRequests groupId={id} closeRequests={() => updateState({ showJoinRequests: false })} />}
+            {state.showJoinRequests &&
+                <GroupJoinRequests groupId={id} closeRequests={() => updateState({ showJoinRequests: false })} />}
 
             {!state.showMembers && !state.showJoinRequests && (
                 <>

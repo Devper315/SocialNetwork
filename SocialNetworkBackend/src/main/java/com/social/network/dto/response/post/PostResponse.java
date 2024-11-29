@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
@@ -27,12 +28,8 @@ public class PostResponse {
     public PostResponse(Post post) {
         this.id = post.getId();
         this.content = post.getContent();
-        this.imageUrls = (post.getImageList() != null) ?
-                post.getImageList().stream()
-                        .map(Image::getUrl)
-                        .collect(Collectors.toList())
-                : new ArrayList<>();
-
+        this.imageUrls = Optional.ofNullable(post.getImageList())
+                .orElseGet(ArrayList::new).stream().map(Image::getUrl).toList();
         this.time = DateUtils.reFormatDateTime(post.getCreatedTime());
         this.groupId = post.getGroup() != null ? post.getGroup().getId() : null;
         this.userName = post.getAuthor().getUsername();

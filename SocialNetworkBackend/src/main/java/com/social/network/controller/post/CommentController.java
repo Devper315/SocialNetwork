@@ -20,8 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/api/user/post/comments")
-public class CommentController
-{
+public class CommentController {
     CommentService commentService;
 
     @GetMapping("/{id}")
@@ -58,9 +57,8 @@ public class CommentController
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteComment(@PathVariable Long id) {
+    public void deleteComment(@PathVariable Long id) {
         commentService.deleteComment(id);
-        return ApiResponse.<Void>builder().build();
     }
 
 

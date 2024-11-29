@@ -15,7 +15,7 @@ public interface NotificationRepo extends JpaRepository<Notification, Long> {
     @Query("SELECT n FROM Notification n " +
             "WHERE (:lastId = 0 OR n.id < :lastId) AND n.recipient = :requestor " +
             "ORDER BY n.time DESC")
-    Page<Notification> findByRecipient(String requestor, Long lastId, Pageable pageable);
+    List<Notification> findByRecipient(String requestor, Long lastId, Pageable pageable);
 
     @Query("SELECT COUNT(n.id) FROM Notification n " +
             "WHERE n.recipient = :recipient AND n.isRead = false ")

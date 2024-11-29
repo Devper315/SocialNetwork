@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ImageRepo extends JpaRepository<Image, Long> {
     List<Image> findByMessage(MessageCustom message);
-    public List<Image> findByPost(Post post);
+    List<Image> findByPost(Post post);
 
 
 }

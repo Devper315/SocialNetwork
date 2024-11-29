@@ -25,7 +25,6 @@ const PostPage = ({ postId }) => {
             setPost({ content, imageUrls, userName });
             setEditedContent(content);
             setImageFiles(imageUrls);
-
         };
 
         const fetchCheckUser = async () => {

@@ -1,10 +1,12 @@
 package com.social.network.service.message;
 
 import com.social.network.dto.request.MessageDTO;
+import com.social.network.entity.image.Image;
 import com.social.network.entity.message.Conversation;
 import com.social.network.entity.message.MessageCustom;
 import com.social.network.entity.message.MessageStatus;
 import com.social.network.repository.message.MessageRepo;
+import com.social.network.service.image.ImageService;
 import com.social.network.service.user.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.List;
 public class MessageService {
     MessageRepo messageRepo;
     UserService userService;
+    ImageService imageService;
     public MessageCustom createMessage(MessageDTO request, Conversation conversation){
         LocalDateTime currentTime = LocalDateTime.now();
         MessageCustom newMessageCustom = MessageCustom.builder()
@@ -33,13 +36,13 @@ public class MessageService {
 
     public List<MessageCustom> getByConversation(Conversation conversation, Long lastId){
         Pageable pageable = PageRequest.of(0, 10);
-        return messageRepo.findByConversation(conversation, lastId, pageable).getContent();
+        List<MessageCustom> messages = messageRepo.findByConversation(conversation, lastId, pageable);
+        for (MessageCustom message: messages){
+            message.setImageList(imageService.getByMessage(message));
+        }
+        return messages;
     }
 
-    public MessageCustom getLastMessage(Conversation conversation) {
-        Pageable pageable = PageRequest.of(0, 1);
-        return messageRepo.getLastMessage(conversation, pageable).stream().findFirst().orElse(null);
-    }
 
     public void markAsRead(MessageDTO message) {
         messageRepo.markAsRead(message.getId(), message.getConversationId());
@@ -47,5 +50,13 @@ public class MessageService {
 
     private MessageCustom getById(Long id) {
         return messageRepo.findById(id).orElse(null);
+    }
+
+    public void updateMessageImage(MessageDTO request) {
+        MessageCustom message = getById(request.getId());
+        List<Image> images = request.getImageUrls().stream().map(url ->
+                Image.builder().message(message).url(url)
+                     .build()).toList();
+        imageService.saveAll(images);
     }
 }

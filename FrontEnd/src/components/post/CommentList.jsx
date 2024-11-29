@@ -213,7 +213,7 @@ const CommentList = ({ postId }) => {
                                         maxWidth: "100%",
                                         maxHeight: "200px",
                                         borderRadius: "8px",
-                                    }}/>
+                                    }} />
                             )}
                         </Box>
                     )}

@@ -45,7 +45,7 @@ const PendingPostsPage = () => {
         <div>
             <h1>Danh sách bài viết chờ phê duyệt</h1>
             <ul>
-                {posts.length > 0 ? (
+                {posts && posts.length > 0 ? (
                     posts.map((post) => (
                         <li key={post.id} style={{ marginBottom: "1rem" }}>
                             <PostPage postId={post.id} />

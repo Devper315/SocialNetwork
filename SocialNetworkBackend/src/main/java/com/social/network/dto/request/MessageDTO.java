@@ -4,6 +4,8 @@ import com.social.network.dto.response.message.ConversationResponse;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 
 @Data
 @Builder
@@ -19,4 +21,5 @@ public class MessageDTO {
     ConversationResponse conversation;
     String content;
     String time;
+    List<String> imageUrls;
 }

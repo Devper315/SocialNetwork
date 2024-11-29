@@ -93,9 +93,7 @@ public class ImageService {
         return blob.getMediaLink();
     }
 
-
-
-
-
-
+    public void saveAll(List<Image> images) {
+        imageRepo.saveAll(images);
+    }
 }

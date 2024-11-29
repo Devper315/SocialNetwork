@@ -35,8 +35,6 @@ public class MessageResponse {
         this.status = messageCustom.getStatus();
         this.imageUrls = Optional.ofNullable(messageCustom.getImageList())
                 .orElse(Collections.emptyList())
-                .stream()
-                .map(Image::getUrl)
-                .collect(Collectors.toList());
+                .stream().map(Image::getUrl).toList();
     }
 }

@@ -41,7 +41,7 @@ public class GroupService {
                 .createTime(LocalDateTime.now())
                 .build();
         group = groupRepo.save(group);
-        groupMemberService.addGroupMember(group, user, 0L);
+        groupMemberService.addGroupMember(group, user, 1L);
         return group;
     }
 
