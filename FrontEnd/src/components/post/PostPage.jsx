@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { getPostById, updatePost, checkUser } from '../../services/postService';
 import { getCommentsByPostId, createComment } from '../../services/commentService';
 import { useParams } from 'react-router-dom';
-import '../../assets/styles/post/PostPage.css';
+import { Button, TextField, Box, Typography } from '@mui/material';
 import CommentList from '../../components/post/CommentList';
 
 const PostPage = ({ postId }) => {
     const { id: urlId } = useParams();
     const id = postId || urlId;
+
     const [post, setPost] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const [editedContent, setEditedContent] = useState('');
@@ -19,27 +20,21 @@ const PostPage = ({ postId }) => {
     const [newCommentImage, setNewCommentImage] = useState(null);
     const [userPermission, setUserPermission] = useState(null);
 
+
     useEffect(() => {
-        const fetchPost = async () => {
-            const { content, imageUrls = [], userName } = await getPostById(id);
-            setPost({ content, imageUrls, userName });
-            setEditedContent(content);
-            setImageFiles(imageUrls);
-
-        };
-
-        const fetchCheckUser = async () => {
+        const fetchData = async () => {
             try {
+
+                const { content, imageUrls = [], userName } = await getPostById(id);
+                setPost({ content, imageUrls, userName });
+                setEditedContent(content);
+                setImageFiles(imageUrls);
+
+
                 const result = await checkUser(id);
                 setUserPermission(result);
-            } catch (error) {
-                console.error(error);
-            }
-        };
 
 
-        const fetchComments = async () => {
-            try {
                 const commentsData = await getCommentsByPostId(id);
                 setComments(commentsData);
             } catch (error) {
@@ -47,9 +42,7 @@ const PostPage = ({ postId }) => {
             }
         };
 
-        fetchPost();
-        fetchComments();
-        fetchCheckUser();
+        fetchData();
     }, [id]);
 
     const handleEditToggle = () => {
@@ -65,14 +58,13 @@ const PostPage = ({ postId }) => {
                 imageUrls: imageFiles,
             };
             await updatePost(currentPost);
-            setPost((prevPost) => ({
+            setPost(prevPost => ({
                 ...prevPost,
                 content: editedContent,
                 imageUrls: imageFiles,
             }));
             setEditMode(false);
             setMessage("Chỉnh sửa bài viết thành công!");
-
         } catch (error) {
             console.error(error);
             setMessage("Có lỗi xảy ra, vui lòng thử lại!");
@@ -106,80 +98,98 @@ const PostPage = ({ postId }) => {
     };
 
     if (!post) {
-        return <p>Đang tải bài viết...</p>;
+        return <Typography>Khôg có bài viết nào</Typography>;
     }
 
     return (
-        <div className="post-container" >
-            <div className="post-author">
+        <Box className="post-container" sx={{ padding: 2 }}>
+            <Typography variant="h6" gutterBottom>
                 {post.userName}
-            </div>
-            <div className="post-content">
-                <div className="post-options">
+            </Typography>
+            <Box className="post-content" sx={{ marginBottom: 2 }}>
+                <Box className="post-options" sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                     {userPermission === 1 && (
-                        <button onClick={editMode ? handleSave : handleEditToggle}>
+                        <Button onClick={editMode ? handleSave : handleEditToggle} variant="contained">
                             {editMode ? "Lưu" : "Sửa bài viết"}
-                        </button>
+                        </Button>
                     )}
-
-
-                </div>
+                </Box>
                 {editMode ? (
-                    <textarea
+                    <TextField
                         value={editedContent}
                         onChange={e => setEditedContent(e.target.value)}
-                        className="post-edit-input"
+                        variant="outlined"
+                        multiline
+                        fullWidth
                         rows={5}
                     />
                 ) : (
-                    <div>
-                        <div
-                            className={`post-text`}
-                            style={{
+                    <Box>
+                        <Typography
+                            variant="body1"
+                            sx={{
                                 whiteSpace: 'normal',
                                 overflow: showFullContent ? 'auto' : 'hidden',
-                                maxHeight: showFullContent ? 'none' : '60px'
+                                maxHeight: showFullContent ? 'none' : '60px',
                             }}>
                             {post.content}
-                        </div>
+                        </Typography>
                         {!showFullContent && post.content.length > 250 && (
-                            <button onClick={() => setShowFullContent(true)} className="view-full-content-button">
+                            <Button onClick={() => setShowFullContent(true)} sx={{ marginTop: 1 }}>
                                 Xem thêm
-                            </button>
+                            </Button>
                         )}
-                    </div>
+                    </Box>
                 )}
-            </div>
+            </Box>
 
-            <div className="post-images" style={{ padding: '10px', overflowY: 'auto' }}>
+            <Box className="post-images" sx={{ padding: 2 }}>
                 {imageFiles.map((url, index) => (
-                    <div key={index} className="post-image-container">
-                        <img src={url} alt={`ảnh ${index}`} className="post-image" />
-                        {editMode && <button onClick={() => handleRemoveImage(index)} className="remove-image-button">Xóa</button>}
-                    </div>
+                    <Box key={index} sx={{ position: 'relative', display: 'inline-block', marginRight: 2 }}>
+                        <img src={url} alt={`ảnh ${index}`} className="post-image" style={{ maxWidth: '200px', borderRadius: '8px' }} />
+                        {editMode && (
+                            <Button
+                                onClick={() => handleRemoveImage(index)}
+                                sx={{
+                                    position: 'absolute',
+                                    top: '0',
+                                    right: '0',
+                                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                                    color: 'white',
+                                    fontSize: '12px',
+                                    borderRadius: '50%',
+                                }}>
+                                Xóa
+                            </Button>
+                        )}
+                    </Box>
                 ))}
                 {editMode && <input type="file" multiple accept="image/*" onChange={handleImageChange} />}
-            </div>
+            </Box>
 
-            {message && <div className="success-message">{message}</div>}
+            {message && <Typography variant="body2" sx={{ color: 'green', marginBottom: 2 }}>{message}</Typography>}
 
-            {comments.length > 0 && (
-                <CommentList postId={id} />
-            )}
+            {comments.length > 0 && <CommentList postId={id} />}
 
-            <div className="new-comment-container">
-                <textarea
+            <Box className="new-comment-container" sx={{ marginTop: 2 }}>
+                <TextField
                     value={newComment}
                     onChange={handleNewCommentChange}
-                    className="new-comment-input"
+                    variant="outlined"
                     placeholder="Nhập bình luận của bạn..."
+                    multiline
+                    fullWidth
                     rows={3}
                 />
                 <input type="file" accept="image/*" onChange={handleNewCommentImageChange} />
-                <button onClick={handleCreateComment} className="create-comment-button">Thêm bình luận</button>
-                {newCommentImage && <img src={newCommentImage} alt="Hình bình luận" className="comment-preview" />}
-            </div>
-        </div>
+                <Button onClick={handleCreateComment} variant="contained" sx={{ marginTop: 2 }}>
+                    Thêm bình luận
+                </Button>
+                {newCommentImage && (
+                    <img src={newCommentImage} alt="Hình bình luận" className="comment-preview" style={{ maxWidth: '100px', marginTop: '10px' }} />
+                )}
+            </Box>
+        </Box>
     );
 };
 

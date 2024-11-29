@@ -75,7 +75,16 @@ export const removeGroupMember = async (groupId, userId) => {
         console.log(error);
     }
 };
-
+export const leaveGroup = async (groupId) => {
+    try {
+        const response = await httpClient.delete(`${API.GROUP}/leave-group`, {
+            params: { groupId }
+        });
+        return response.data.result;
+    } catch (error) {
+        console.log(error);
+    }
+};
 export const getGroupMembers = async (groupId) => {
     try {
         const response = await httpClient.get(`${API.GROUP}/members/${groupId}`);

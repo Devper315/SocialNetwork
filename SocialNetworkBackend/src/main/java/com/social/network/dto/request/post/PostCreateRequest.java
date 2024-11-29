@@ -14,4 +14,5 @@ public class PostCreateRequest {
     String content;
     List<String> imageUrls;
     Long groupId;
+    Long approvalStatus;
 }

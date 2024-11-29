@@ -78,6 +78,12 @@ public class GroupController {
                 .result(groupService.removeGroupMember(groupId, userId))
                 .build();
     }
+    @DeleteMapping("/leave-group")
+    public ApiResponse<Boolean> removeMember(@RequestParam Long groupId) {
+        return ApiResponse.<Boolean>builder()
+                .result(groupService.leaveGroup(groupId))
+                .build();
+    }
 
     @PostMapping
     public ApiResponse<Group> createGroup(@RequestBody GroupRequest request) {
