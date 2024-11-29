@@ -41,19 +41,27 @@ public class GroupService {
                 .createTime(LocalDateTime.now())
                 .build();
         group = groupRepo.save(group);
-        groupMemberService.addGroupMember(group, user, 0L);
+        groupMemberService.addGroupMember(group, user, 1L);
         return group;
     }
 
     public boolean addGroupMember(Long groupId, Long userId){
         User user = userService.getById(userId);
         Group group = getById(groupId);
-        return groupMemberService.addGroupMember(group, user, 2L);
+        return groupMemberService.addGroupMember(group, user, 3L);
     }
 
     public boolean removeGroupMember(Long groupId, Long userId){
         User user = userService.getById(userId);
         Group group = getById(groupId);
+        groupMemberService.changeMemberRole(group, user, null);
+        return groupMemberService.removeGroupMember(group, user);
+    }
+
+    public boolean leaveGroup(Long groupId){
+        User user = userService.getCurrentUser();
+        Group group = getById(groupId);
+        groupMemberService.changeMemberRole(group, user, null);
         return groupMemberService.removeGroupMember(group, user);
     }
 
@@ -93,7 +101,6 @@ public class GroupService {
         Group group = groupRepo.findById(groupId).orElse(null);
         User currentUser = userService.getCurrentUser();
         return groupMemberService.getUserRoleInGroup(group, currentUser);
-
     }
 
     public boolean changeMemberRole(Long groupId, Long userId, Long newRoleId) {

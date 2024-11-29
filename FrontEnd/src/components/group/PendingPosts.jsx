@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getPendingPostsByGroup, updateApprovalStatus, deletePost } from '../../services/postService';
 import PostPage from "../../components/post/PostPage";
+import { Box, Button, Typography, List, ListItem, CircularProgress } from '@mui/material';
 
 const PendingPostsPage = () => {
     const { groupId } = useParams();
     const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -14,6 +16,8 @@ const PendingPostsPage = () => {
                 setPosts(result);
             } catch (error) {
                 console.error("Lỗi khi lấy bài viết cần phê duyệt:", error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchPosts();
@@ -42,47 +46,48 @@ const PendingPostsPage = () => {
     };
 
     return (
-        <div>
-            <h1>Danh sách bài viết chờ phê duyệt</h1>
-            <ul>
-                {posts.length > 0 ? (
-                    posts.map((post) => (
-                        <li key={post.id} style={{ marginBottom: "1rem" }}>
-                            <PostPage postId={post.id} />
-                            <div style={{ marginTop: "0.5rem" }}>
-                                <button
-                                    onClick={() => handleApprove(post.id)}
-                                    style={{
-                                        marginRight: "0.5rem",
-                                        backgroundColor: "green",
-                                        color: "white",
-                                        border: "none",
-                                        padding: "0.5rem",
-                                        cursor: "pointer",
-                                    }}
-                                >
-                                    Phê duyệt
-                                </button>
-                                <button
-                                    onClick={() => handleReject(post.id)}
-                                    style={{
-                                        backgroundColor: "red",
-                                        color: "white",
-                                        border: "none",
-                                        padding: "0.5rem",
-                                        cursor: "pointer",
-                                    }}
-                                >
-                                    Từ chối
-                                </button>
-                            </div>
-                        </li>
-                    ))
-                ) : (
-                    <div>Không có bài viết nào.</div>
-                )}
-            </ul>
-        </div>
+        <Box sx={{ maxWidth: 800, mx: "auto", px: 2, py: 3 }}>
+            <Typography variant="h4" gutterBottom>
+                Danh sách bài viết chờ phê duyệt
+            </Typography>
+
+            {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 5 }}>
+                    <CircularProgress />
+                </Box>
+            ) : (
+                <List>
+                    {posts.length > 0 ? (
+                        posts.map((post) => (
+                            <ListItem key={post.id} sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>
+                                <PostPage postId={post.id} />
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                                    <Button
+                                        onClick={() => handleApprove(post.id)}
+                                        variant="contained"
+                                        color="success"
+                                        sx={{ mr: 1 }}
+                                    >
+                                        Phê duyệt
+                                    </Button>
+                                    <Button
+                                        onClick={() => handleReject(post.id)}
+                                        variant="contained"
+                                        color="error"
+                                    >
+                                        Từ chối
+                                    </Button>
+                                </Box>
+                            </ListItem>
+                        ))
+                    ) : (
+                        <Typography variant="body1" color="text.secondary">
+                            Không có bài viết nào.
+                        </Typography>
+                    )}
+                </List>
+            )}
+        </Box>
     );
 };
 

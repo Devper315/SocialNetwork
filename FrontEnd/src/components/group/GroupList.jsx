@@ -38,9 +38,17 @@ const GroupList = () => {
     } else {
       data = await fetchGroups(page, keyword);
     }
+
+
+    if (data.length === 0) {
+      setHasMore(false);
+      return;
+    }
+
+
     setHasMore(data.length === 10);
-    setGroups([...groups, ...data]);
-    setPage(page + 1);
+    setGroups((prevGroups) => [...prevGroups, ...data]);
+    setPage((prevPage) => prevPage + 1);
   };
 
   const switchToFindAll = () => {

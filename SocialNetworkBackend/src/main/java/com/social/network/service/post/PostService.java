@@ -9,6 +9,7 @@ import com.social.network.entity.user.User;
 import com.social.network.repository.post.PostRepo;
 import com.social.network.service.group.GroupService;
 import com.social.network.service.image.ImageService;
+import com.social.network.service.notification.NotificationService;
 import com.social.network.service.user.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +28,11 @@ public class PostService {
     UserService userService;
     ImageService imageService;
     GroupService groupService;
+    NotificationService notificationService;
 
     public Post getById(Long id) {
         return postRepo.findById(id).orElse(null);
     }
-
-
 
     public List<PostResponse> getMyPost() {
         User requestor = userService.getCurrentUser();
@@ -47,24 +47,23 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-
-
     public PostResponse createPost(PostCreateRequest request) {
         User currentUser = userService.getCurrentUser();
         Group group = groupService.getById(request.getGroupId());
+        User receiver= userService.getById(group.getCreateUserId());
         if (group == null) {
-            throw new RuntimeException("Nhóm không tồn tại");
+            group = null;
         }
         Post post = Post.builder()
                 .content(request.getContent())
                 .author(currentUser)
                 .group(group)
                 .createdTime(LocalDateTime.now())
-                .approvalStatus(0L)
+                .approvalStatus(request.getApprovalStatus())
                 .build();
-
         post = postRepo.save(post);
         imageService.createForPost(post, request.getImageUrls());
+        if(request.getApprovalStatus()==0) notificationService.sendPost(currentUser,receiver,group);
         return new PostResponse(post);
     }
 
@@ -98,8 +97,12 @@ public class PostService {
 
     public PostResponse updateApprovalStatus(Long postId) {
         Post post = getById(postId);
+        User requestor = userService.getCurrentUser();
+        User receiver = userService.getById(post.getAuthor().getId());
+        Group group = groupService.getById(post.getGroup().getId());
         post.setApprovalStatus(1L);
         post = postRepo.save(post);
+        notificationService.notifyAcceptPost(requestor,receiver,group);
         return new PostResponse(post);
     }
 

@@ -35,7 +35,7 @@ public class PostResponse {
 
         this.time = DateUtils.reFormatDateTime(post.getCreatedTime());
         this.groupId = post.getGroup() != null ? post.getGroup().getId() : null;
-        this.userName = post.getAuthor().getUsername();
+        this.userName = post.getAuthor().getFullName();
         this.approval= post.getApprovalStatus();
     }
 

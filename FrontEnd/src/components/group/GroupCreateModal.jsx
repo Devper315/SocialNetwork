@@ -13,6 +13,7 @@ const GroupCreateModal = ({ show, handleClose }) => {
     const handleCreateGroup = () => {
         createGroup(formData);
         handleClose();
+
     };
 
     return (
