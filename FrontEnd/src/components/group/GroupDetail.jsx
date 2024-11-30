@@ -8,7 +8,9 @@ import {
     removeGroupMember,
     changeRole,
     checkUser,
-    leaveGroup
+    leaveGroup,
+    changeCreateUserId,
+    dissolve
 } from "../../services/groupService";
 import {
     getPostsByGroup,
@@ -26,6 +28,13 @@ const GroupDetail = () => {
     const navigate = useNavigate();
     const [group, setGroup] = useState({});
     const [showLeaveGroupPopup, setShowLeaveGroupPopup] = useState(false);
+    const [showDissolveGroupPopup, setShowDissolveGroupPopup] = useState(false);
+
+    const [confirmAdminTransfer, setConfirmAdminTransfer] = useState({
+        show: false,
+        memberId: null,
+    });
+
 
     const [state, setState] = useState({
         showModal: false,
@@ -39,7 +48,7 @@ const GroupDetail = () => {
         imageFiles: [],
 
     });
-    
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -88,6 +97,22 @@ const GroupDetail = () => {
             alert("Có lỗi xảy ra khi thêm bài viết.");
         }
     };
+    const handleDissolveGroup = async () => {
+        try {
+            const result = await dissolve(id);
+            if (result) {
+                alert("Nhóm đã được giải tán thành công.");
+            } else {
+                alert("Có lỗi xảy ra khi giải tán nhóm.");
+            }
+        } catch (error) {
+            console.error("Error dissolving group:", error);
+            alert("Có lỗi xảy ra.");
+        } finally {
+            setShowDissolveGroupPopup(false);
+        }
+    };
+
 
     const handleLeaveGroup = async () => {
         if (state.userStatus === 1) {
@@ -129,6 +154,17 @@ const GroupDetail = () => {
     };
 
 
+    const renderDissolveGroupPopup = () => (
+        showDissolveGroupPopup && (
+            <div className="popup-overlay">
+                <div className="popup-content">
+                    <p>Bạn có chắc chắn muốn giải tán nhóm? Hành động này không thể hoàn tác.</p>
+                    <button onClick={handleDissolveGroup}>Đồng ý</button>
+                    <button onClick={() => setShowDissolveGroupPopup(false)}>Hủy</button>
+                </div>
+            </div>
+        )
+    );
 
 
     const renderConfirmPopup = () => (
@@ -140,6 +176,37 @@ const GroupDetail = () => {
             </div>
         </div>
     );
+    const handleAdminTransfer = (memberId) => {
+        setConfirmAdminTransfer({ show: true, memberId });
+    };
+
+    const renderAdminTransferPopup = () => (
+        confirmAdminTransfer.show && (
+            <div className="popup-overlay">
+                <div className="popup-content">
+                    <p>Bạn có chắc chắn muốn ủy quyền quản trị viên cho thành viên này?</p>
+                    <button
+                        onClick={async () => {
+                            try {
+                                await changeRole(group.id, confirmAdminTransfer.memberId, 1);
+                                await changeCreateUserId(group.id, confirmAdminTransfer.memberId);
+                                alert("Đã ủy quyền quản trị viên thành công.");
+                                setConfirmAdminTransfer({ show: false, memberId: null });
+                                const membersData = await getGroupMembers(group.id);
+                                updateState({ members: membersData });
+                            } catch (error) {
+                                alert("Có lỗi xảy ra khi ủy quyền quản trị viên.");
+                            }
+                        }}
+                    >
+                        Đồng ý
+                    </button>
+                    <button onClick={() => setConfirmAdminTransfer({ show: false, memberId: null })}>Hủy</button>
+                </div>
+            </div>
+        )
+    );
+
 
 
     const renderMemberActions = (member) => {
@@ -149,11 +216,9 @@ const GroupDetail = () => {
             !isCreator && (
                 <>
                     {isModerator ? (
-                        <>
-                            <button onClick={() => handleAction(changeRole, [group.id, member.id, 3], "Vai trò đã thay đổi")}>
-                                Hủy tư cách kiểm duyệt
-                            </button>
-                        </>
+                        <button onClick={() => handleAction(changeRole, [group.id, member.id, 3], "Vai trò đã thay đổi")}>
+                            Hủy tư cách kiểm duyệt
+                        </button>
                     ) : (
                         <button onClick={() => handleAction(changeRole, [group.id, member.id, 2], "Đã chọn làm kiểm duyệt")}>
                             Chọn làm người kiểm duyệt
@@ -162,10 +227,14 @@ const GroupDetail = () => {
                     <button onClick={() => handleAction(removeGroupMember, [group.id, member.id], "Đã xóa thành viên")}>
                         Xóa thành viên
                     </button>
+                    <button onClick={() => handleAdminTransfer(member.id)}>
+                        Ủy quyền quản trị viên
+                    </button>
                 </>
             )
         );
     };
+
 
     return (
         <div className="group-detail-container">
@@ -181,6 +250,8 @@ const GroupDetail = () => {
                                 <button onClick={() => updateState({ showMembers: !state.showMembers })}>Danh sách thành viên</button>
                                 <button onClick={() => updateState({ showJoinRequests: true })}>Danh sách lời mời</button>
                                 <button onClick={() => navigate(`/pending-posts/${id}`)}>Bài viết chờ</button>
+                                <button onClick={() => setShowDissolveGroupPopup(true)}>Giải tán nhóm</button>
+
                             </>
                         )}
                         {state.userStatus === 2 && <button onClick={() => navigate(`/pending-posts/${id}`)}>Bài viết chờ</button>}
@@ -190,6 +261,9 @@ const GroupDetail = () => {
                         Yêu cầu tham gia nhóm
                     </button>
                 )}
+                {renderAdminTransferPopup()}
+                {renderDissolveGroupPopup()}
+
 
                 {showLeaveGroupPopup && (
                     <div className="popup-overlay">
