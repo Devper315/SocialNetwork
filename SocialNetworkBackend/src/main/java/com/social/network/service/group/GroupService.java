@@ -1,14 +1,12 @@
 package com.social.network.service.group;
 
 import com.social.network.dto.request.group.GroupRequest;
-import com.social.network.dto.response.post.PostResponse;
 import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.group.Group;
 import com.social.network.entity.group.GroupMember;
 import com.social.network.entity.post.Post;
 import com.social.network.entity.user.User;
 import com.social.network.repository.group.GroupRepo;
-import com.social.network.repository.post.PostRepo;
 import com.social.network.repository.user.UserRepo;
 import com.social.network.service.user.UserService;
 import com.social.network.utils.PageableUtils;

@@ -9,9 +9,9 @@ const HomePage = () => {
     return (
         <div>
             {!isLoggedIn && <Login />}
-            <PostList/>
+            {isLoggedIn && <PostList />}
         </div>
-    );
-};
+    )
+}
 
 export default HomePage;

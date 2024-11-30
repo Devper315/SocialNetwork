@@ -4,7 +4,7 @@ import React from "react";
 const ZoomImage = ({ open, onClose, imageSrc }) => {
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md">
-            <Box component="img" src={imageSrc} alt="Zoom Image"
+            <Box component="img" src={imageSrc}
                 sx={{
                     width: '100%', height: 'auto',
                 }} />

@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAX-0G8BJ6n6ekzj1wM8ETeb_Tw6Ku-JcI",
@@ -20,4 +20,13 @@ const uploadFileToFirebase = async(file, filename) => {
     const downloadURL = await getDownloadURL(storageRef);
     return downloadURL;
 }
-export { uploadFileToFirebase };
+
+const deleteFileFirebase = async(file) => {
+    const storageRef = ref(storage, file.filePath)
+    try {
+        deleteObject(storageRef)
+    } catch (error) {
+        console.log("Lỗi khi xóa file", error)
+    }
+}
+export { uploadFileToFirebase, deleteFileFirebase };

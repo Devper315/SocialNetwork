@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
         }
     }, [])
 
-    // được gọi từ component Login khi đăng nhập thành công
     const loginSuccess = (token) => {
         localStorage.setItem("token", token)
         getInfoFromToken(token)

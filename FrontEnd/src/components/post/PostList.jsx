@@ -1,94 +1,116 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getPosts } from "../../services/postService";
-import { Box, Typography, Grid, Card, CardContent, CardMedia, CircularProgress } from "@mui/material";
+import { deletePost, getPosts } from "../../services/postService";
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import PostPage from "./PostPage";
+import CreatePost from "./CreatePost";
+import { deleteFileFirebase } from "../../configs/firebaseSDK";
 
 const PostList = () => {
     const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+    const [headLoading, setHeadLoading] = useState(false)
+    const [footLoading, setFootLoading] = useState(true)
+    const [openDeleteSuccess, setOpenDeleteSuccess] = useState(false)
+    const [postToDelete, setPostToDelete] = useState(null)
+    const [showConfirmDelete, setShowConfirmDelete] = useState(false)
 
     useEffect(() => {
         const fetchPosts = async () => {
             const response = await getPosts();
             setPosts(response);
-            setLoading(false);
+            setFootLoading(false);
         }
         fetchPosts();
-    }, []);
+    }, [])
 
-    const handlePostClick = (postId) => {
-        navigate(`/postpage/${postId}`);
-    };
-
-    if (loading) {
-        return (
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-                <CircularProgress />
-            </Box>
-        );
+    const addPostToList = (newPost) => {
+        setPosts([newPost, ...posts])
     }
 
-    if (posts.length === 0) {
-        return (
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-                <Typography variant="body1" color="text.secondary">
-                    Không có bài viết nào để hiển thị.
-                </Typography>
-            </Box>
-        )
+    const editPostInList = (editedPost) => {
+        setPosts(posts.map(p => p.id === editedPost.id ? editedPost : p))
+    }
+
+    const removePostFromList = (post) => {
+        setPosts(posts.filter(p => p.id !== post.id))
+    }
+
+    const closeDeleteSuccess = () => {
+        setOpenDeleteSuccess(false)
+    }
+
+    const confirmDelete = async () => {
+        setShowConfirmDelete(false)
+        setHeadLoading(true)
+        postToDelete.images.forEach(image => {
+            deleteFileFirebase(image)
+        })
+        deletePost(postToDelete.id)
+        removePostFromList(postToDelete)
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        setHeadLoading(false)
+        setPostToDelete(null)
+        setOpenDeleteSuccess(true)
+    }
+
+    const closeConfirmDelete = () => {
+        setShowConfirmDelete(false)
+        setPostToDelete(null)
     }
 
     return (
-        <Box sx={{ padding: "16px" }}>
-            {posts.map((post) => (
-                <Card
-                    key={post.id}
-                    sx={{
-                        marginBottom: "16px",
-                        cursor: "pointer",
-                        "&:hover": { boxShadow: "0px 4px 12px rgba(0,0,0,0.2)" },
-                    }}
-                    onClick={() => handlePostClick(post.id)}>
-                    {post.imageUrls && post.imageUrls[0] ? (
-                        <CardMedia
-                            component="img"
-                            height="200"
-                            image={post.imageUrls[0]}
-                            alt={`Ảnh bài viết ${post.id}`}
-                        />
-                    ) : (
-                        <Box
-                            sx={{
-                                height: "200px",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                backgroundColor: "#f0f0f0",
-                            }}>
-                            <Typography variant="body2" color="text.secondary">
-                                Không có ảnh
-                            </Typography>
-                        </Box>
-                    )}
-                    <CardContent>
-                        <Typography
-                            variant="body1"
-                            sx={{
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                                marginBottom: "8px",
-                            }}>
-                            {post.content}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                            {new Date(post.time).toLocaleString()}
-                        </Typography>
-                    </CardContent>
-                </Card>
-            ))}
-        </Box>
+        <>
+            <CreatePost addPostToList={addPostToList} setHeadLoading={setHeadLoading} />
+            {headLoading &&
+                <Box sx={{ display: "flex", justifyContent: "center", minHeight: "50px" }}>
+                    <CircularProgress />
+                </Box>}
+            <Box sx={{ padding: "16px" }}>
+                {posts.map((post, index) => (
+                    <PostPage post={post} key={index} editPostInList={editPostInList}
+                        setShowConfirmDelete={setShowConfirmDelete} setPostToDelete={setPostToDelete} />
+                ))}
+                {footLoading &&
+                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+                        <CircularProgress />
+                    </Box>}
+            </Box>
+
+            <Dialog open={showConfirmDelete} onClose={closeConfirmDelete} maxWidth={false}
+                sx={{ bottom: "150px" }}>
+                <DialogTitle sx={{ borderBottom: '2px solid #ccc', display: 'flex', fontWeight: "bold" }}>
+                    Thông báo
+                </DialogTitle>
+                <DialogContent sx={{ width: 500, fontSize: "18px" }}>
+                    <p>Bạn có chắc muốn xóa bài viết này ?</p>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={confirmDelete} variant="contained">
+                        Xác nhận
+                    </Button>
+                    <Button onClick={closeConfirmDelete} variant="outlined">
+                        Hủy
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+
+            <Dialog open={openDeleteSuccess} onClose={closeDeleteSuccess} maxWidth={false}
+                sx={{ bottom: "150px" }}>
+                <DialogTitle sx={{ borderBottom: '2px solid #ccc', display: 'flex', fontWeight: "bold" }}>
+                    Thông báo
+                </DialogTitle>
+                <DialogContent sx={{ width: 500, fontSize: "18px" }}>
+                    <p>Bài viết đã được xóa thành công!</p>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closeDeleteSuccess} variant="contained">
+                        Đóng
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+
+        </>
     )
 }
 

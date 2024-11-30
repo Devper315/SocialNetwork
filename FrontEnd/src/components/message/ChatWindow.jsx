@@ -82,7 +82,7 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
         newMessage = await createMessage(newMessage)
         if (messageImages.length > 0) {
             const uploadPromises = messageImages.map((image, index) => {
-                const filename = `images/${newMessage.id}-${index}`
+                const filename = `message/${newMessage.id}-${index}`
                 return uploadFileToFirebase(image, filename);
             })
             const imageUrls = await Promise.all(uploadPromises)

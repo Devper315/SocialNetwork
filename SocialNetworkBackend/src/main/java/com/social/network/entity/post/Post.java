@@ -33,7 +33,6 @@ public class Post {
     LocalDateTime createdTime;
     LocalDateTime updatedTime;
 
-    String status;
 
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = true)

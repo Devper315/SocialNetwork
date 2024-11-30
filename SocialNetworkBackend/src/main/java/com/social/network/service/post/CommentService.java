@@ -1,18 +1,14 @@
 package com.social.network.service.post;
 
-import com.social.network.dto.request.post.CommentCreateRequest;
-import com.social.network.dto.request.post.CommentUpdateRequest;
-import com.social.network.dto.response.post.CommentResponse;
+import com.social.network.dto.post.CommentDTO;
 import com.social.network.entity.post.Comment;
 import com.social.network.entity.post.Post;
 import com.social.network.entity.user.User;
-import com.social.network.mapper.CommentMapper;
 import com.social.network.repository.post.CommentRepo;
 import com.social.network.service.user.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,13 +21,12 @@ public class CommentService {
     CommentRepo commentRepo;
     UserService userService;
     PostService postService;
-    CommentMapper commentMapper;
 
     public Comment getById(Long id) {
         return commentRepo.findById(id).orElse(null);
     }
 
-    public CommentResponse createComment(CommentCreateRequest request) {
+    public CommentDTO createComment(CommentDTO request) {
         User currentUser = userService.getCurrentUser();
         Post post = postService.getById(request.getPostId());
         Comment comment = Comment.builder()
@@ -42,26 +37,26 @@ public class CommentService {
                 .time(LocalDateTime.now())
                 .build();
         comment = commentRepo.save(comment);
-        return commentMapper.toResponse(comment);
+        return new CommentDTO(comment);
     }
 
-    public CommentResponse updateComment(Long commentId, CommentUpdateRequest request) {
+    public CommentDTO updateComment(Long commentId, CommentDTO request) {
         Comment existingComment = commentRepo.getById(commentId);
         existingComment.setContent(request.getContent());
         existingComment.setImageUrl(request.getImageUrl());
         existingComment.setTime(request.getTime());
         Comment updatedComment = commentRepo.save(existingComment);
-        return commentMapper.toResponse(updatedComment);
+        return new CommentDTO(updatedComment);
     }
 
     public void deleteComment(Long commentId) {
         commentRepo.deleteById(commentId);
     }
 
-    public List<CommentResponse> getCommentsByPostId(Long postId) {
+    public List<CommentDTO> getCommentsByPostId(Long postId) {
         List<Comment> comments = commentRepo.findByPostId(postId);
         return comments.stream()
-                .map(commentMapper::toResponse)
+                .map(CommentDTO::new)
                 .toList();
     }
 

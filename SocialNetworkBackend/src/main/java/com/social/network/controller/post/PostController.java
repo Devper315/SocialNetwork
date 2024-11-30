@@ -1,9 +1,7 @@
 package com.social.network.controller.post;
 
-import com.social.network.dto.request.post.PostCreateRequest;
-import com.social.network.dto.request.post.PostUpdateRequest;
+import com.social.network.dto.post.PostDTO;
 import com.social.network.dto.response.ApiResponse;
-import com.social.network.dto.response.post.PostResponse;
 import com.social.network.entity.post.Post;
 import com.social.network.service.image.ImageService;
 import com.social.network.service.post.CommentService;
@@ -11,7 +9,6 @@ import com.social.network.service.post.PostService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,70 +22,68 @@ public class PostController {
     CommentService commentService;
     ImageService imageService;
     @GetMapping
-    public ApiResponse<List<PostResponse>> getMyPost(){
-        return ApiResponse.<List<PostResponse>>builder()
+    public ApiResponse<List<PostDTO>> getMyPost(){
+        return ApiResponse.<List<PostDTO>>builder()
                 .result(postService.getMyPost())
                 .build();
     }
     @GetMapping("/{id}")
-    public ApiResponse<PostResponse> getPostById(@PathVariable Long id) {
-        PostResponse postResponse = new PostResponse(postService.getById(id));
-        return ApiResponse.<PostResponse>builder()
+    public ApiResponse<PostDTO> getPostById(@PathVariable Long id) {
+        PostDTO postResponse = new PostDTO(postService.getById(id));
+        return ApiResponse.<PostDTO>builder()
                 .result(postResponse)
                 .build();
     }
 
     @PostMapping
-    public ApiResponse<PostResponse> createPost(@RequestBody PostCreateRequest request){
-        return ApiResponse.<PostResponse>builder()
+    public ApiResponse<PostDTO> createPost(@RequestBody PostDTO request){
+        return ApiResponse.<PostDTO>builder()
                 .result(postService.createPost(request))
                 .build();
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deletePost(@PathVariable Long id) {
+    public void deletePost(@PathVariable Long id) {
         Post post = postService.getById(id);
         commentService.deleteAllCommentsByPostId(id);
         imageService.deleteAllImagesByPostId(post);
         postService.deletePost(id);
-        return ApiResponse.<Void>builder().build();
     }
 
 
-    @PutMapping("/{id}")
-    public ApiResponse<PostResponse> updatePost(@PathVariable Long id, @RequestBody PostUpdateRequest request) {
-        request.setId(id);
-        return ApiResponse.<PostResponse>builder()
+    @PutMapping
+    public ApiResponse<PostDTO> updatePost(@RequestBody PostDTO request) {
+        return ApiResponse.<PostDTO>builder()
                 .result(postService.updatePost(request))
                 .build();
     }
     @GetMapping("/group/{groupId}")
-    public ApiResponse<List<PostResponse>> getPostsByGroup(@PathVariable Long groupId) {
-        List<PostResponse> posts = postService.getPostsByGroup(groupId);
+    public ApiResponse<List<PostDTO>> getPostsByGroup(@PathVariable Long groupId) {
+        List<PostDTO> posts = postService.getPostsByGroup(groupId);
         if (posts.isEmpty()) {
-            return ApiResponse.<List<PostResponse>>builder()
+            return ApiResponse.<List<PostDTO>>builder()
                     .message("Không có bài viết nào cho nhóm này.")
                     .build();
         }
-        return ApiResponse.<List<PostResponse>>builder()
+        return ApiResponse.<List<PostDTO>>builder()
                 .result(posts)
                 .build();
     }
 
     @GetMapping("/group/{groupId}/pending-approval/{approvalStatus}")
-    public ApiResponse<List<PostResponse>> getPendingApprovalPostsByGroup(@PathVariable Long groupId,@PathVariable Long approvalStatus) {
-        List<PostResponse> posts = postService.getApprovalPostsByGroup(approvalStatus,groupId);
+    public ApiResponse<List<PostDTO>> getPendingApprovalPostsByGroup(@PathVariable Long groupId,@PathVariable Long approvalStatus) {
+        List<PostDTO> posts = postService.getApprovalPostsByGroup(approvalStatus,groupId);
         if (posts.isEmpty()) {
-            return ApiResponse.<List<PostResponse>>builder()
+            return ApiResponse.<List<PostDTO>>builder()
                     .build();
         }
-        return ApiResponse.<List<PostResponse>>builder()
+        return ApiResponse.<List<PostDTO>>builder()
                 .result(posts)
                 .build();
     }
 
     @PatchMapping("/{postId}/approval-status")
-    public PostResponse updateApprovalStatus(@PathVariable Long postId) {
+    public PostDTO updateApprovalStatus(@PathVariable Long postId) {
         return postService.updateApprovalStatus(postId);
     }
 

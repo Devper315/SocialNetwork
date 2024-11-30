@@ -2,10 +2,8 @@ package com.social.network.controller.group;
 
 import com.social.network.dto.request.group.GroupRequest;
 import com.social.network.dto.response.ApiResponse;
-import com.social.network.dto.response.post.PostResponse;
 import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.group.Group;
-import com.social.network.entity.user.User;
 import com.social.network.service.group.GroupMemberService;
 import com.social.network.service.group.GroupService;
 import com.social.network.service.notification.NotificationService;

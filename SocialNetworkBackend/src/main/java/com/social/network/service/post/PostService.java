@@ -1,8 +1,6 @@
 package com.social.network.service.post;
 
-import com.social.network.dto.request.post.PostCreateRequest;
-import com.social.network.dto.request.post.PostUpdateRequest;
-import com.social.network.dto.response.post.PostResponse;
+import com.social.network.dto.post.PostDTO;
 import com.social.network.entity.group.Group;
 import com.social.network.entity.post.Post;
 import com.social.network.entity.user.User;
@@ -34,74 +32,65 @@ public class PostService {
         return postRepo.findById(id).orElse(null);
     }
 
-    public List<PostResponse> getMyPost() {
+    public List<PostDTO> getMyPost() {
         User requestor = userService.getCurrentUser();
         List<Post> posts = postRepo.findByAuthor(requestor);
-        return posts.stream().map(PostResponse::new).collect(Collectors.toList());
+        return posts.stream().map(PostDTO::new).collect(Collectors.toList());
     }
 
-    public List<PostResponse> getApprovalPostsByGroup(Long groupId, Long approvalStatus) {
-        List<Post> posts = postRepo.findByApprovalStatusAndGroupId(groupId,approvalStatus);
-        return posts.stream().map(PostResponse::new).toList();
+    public List<PostDTO> getApprovalPostsByGroup(Long groupId, Long approvalStatus) {
+        List<Post> posts = postRepo.findByApprovalStatusAndGroupId(groupId, approvalStatus);
+        return posts.stream().map(PostDTO::new).toList();
     }
 
-    public PostResponse createPost(PostCreateRequest request) {
+    public PostDTO createPost(PostDTO request) {
         User currentUser = userService.getCurrentUser();
-        Group group = groupService.getById(request.getGroupId());
-        User receiver= userService.getById(group.getCreateUserId());
-        if (group == null) {
-            group = null;
-        }
+//        Group group = groupService.getById(request.getGroupId());
+//        User receiver = userService.getById(group.getCreateUserId());
         Post post = Post.builder()
                 .content(request.getContent())
                 .author(currentUser)
-                .group(group)
+//                .group(group)
                 .createdTime(LocalDateTime.now())
                 .approvalStatus(request.getApprovalStatus())
                 .build();
         post = postRepo.save(post);
-        imageService.createForPost(post, request.getImageUrls());
-        if(request.getApprovalStatus()==0) notificationService.sendPost(currentUser,receiver,group);
-        return new PostResponse(post);
+//        if (request.getApprovalStatus() == 0) notificationService.sendPost(currentUser, receiver, group);
+        return new PostDTO(post);
     }
 
-    public PostResponse updatePost(PostUpdateRequest request) {
+    public PostDTO updatePost(PostDTO request) {
         Post existingPost = getById(request.getId());
-        if (existingPost == null) {
-            throw new RuntimeException("Bài viết không tìm thấy");
-        }
         existingPost.setContent(request.getContent());
-        if (request.getStatus() != null) {
-            existingPost.setStatus(request.getStatus());
-        }
         postRepo.save(existingPost);
-        imageService.updatePostImages(request.getImageUrls(), existingPost);
-        return new PostResponse(existingPost);
+        imageService.updatePostImages(request, existingPost);
+        return new PostDTO(existingPost);
     }
 
     public void deletePost(Long id) {
         postRepo.deleteById(id);
     }
-    public List<PostResponse> getPostsByGroup(Long groupId) {
+
+    public List<PostDTO> getPostsByGroup(Long groupId) {
         return postRepo.findByGroupId(groupId)
-                .stream().map(PostResponse::new).toList();
+                .stream().map(PostDTO::new).toList();
     }
 
-    public PostResponse updateApprovalStatus(Long postId) {
+    public PostDTO updateApprovalStatus(Long postId) {
         Post post = getById(postId);
         User requestor = userService.getCurrentUser();
         User receiver = userService.getById(post.getAuthor().getId());
         Group group = groupService.getById(post.getGroup().getId());
         post.setApprovalStatus(1L);
         post = postRepo.save(post);
-        notificationService.notifyAcceptPost(requestor,receiver,group);
-        return new PostResponse(post);
+        notificationService.notifyAcceptPost(requestor, receiver, group);
+        return new PostDTO(post);
     }
 
     public Long checkUser(Long postId) {
         Post post = getById(postId);
         User user = userService.getCurrentUser();
-        if(post.getAuthor().equals(user)) return 1L;
+        if (post.getAuthor().equals(user)) return 1L;
         else return 0L;
     }
 

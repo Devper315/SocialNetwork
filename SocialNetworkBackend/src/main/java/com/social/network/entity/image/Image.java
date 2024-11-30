@@ -19,6 +19,7 @@ public class Image {
 
     @Column(length = 1000)
     String url;
+    String filePath;
 
     @ManyToOne
     Post post;

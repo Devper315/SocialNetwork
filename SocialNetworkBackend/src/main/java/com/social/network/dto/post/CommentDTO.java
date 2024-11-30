@@ -1,4 +1,4 @@
-package com.social.network.dto.response.post;
+package com.social.network.dto.post;
 
 import com.social.network.entity.post.Comment;
 import lombok.*;
@@ -11,23 +11,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CommentResponse {
+public class CommentDTO {
     Long id;
     String content;
     String imageUrl;
-    Long userId;
-    LocalDateTime time;
     Long postId;
-    String userName;
+    LocalDateTime time;
 
-    public CommentResponse(Comment comment) {
+    public CommentDTO(Comment comment){
         this.id = comment.getId();
         this.content = comment.getContent();
         this.imageUrl = comment.getImageUrl();
-        this.time = comment.getTime();
-        this.userId = comment.getAuthor().getId();
-        this.userName = comment.getAuthor().getFullName();
         this.postId = comment.getPost().getId();
-
+        this.time = comment.getTime();
     }
 }

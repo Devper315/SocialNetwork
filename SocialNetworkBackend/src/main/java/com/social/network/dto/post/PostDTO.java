@@ -1,4 +1,4 @@
-package com.social.network.dto.response.post;
+package com.social.network.dto.post;
 
 import com.social.network.entity.image.Image;
 import com.social.network.entity.post.Post;
@@ -9,31 +9,31 @@ import lombok.experimental.FieldDefaults;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostResponse {
+public class PostDTO {
     Long id;
     String content;
-    List<String> imageUrls;
+    List<ImageDTO> images;
+    List<ImageDTO> newImages;
+    List<ImageDTO> deleteImages;
     String time;
-    String userName;
+    String author;
     Long groupId;
-    Long approval;
+    Long approvalStatus;
 
-    public PostResponse(Post post) {
+    public PostDTO(Post post) {
         this.id = post.getId();
         this.content = post.getContent();
-        this.imageUrls = Optional.ofNullable(post.getImageList())
-                .orElseGet(ArrayList::new).stream().map(Image::getUrl).toList();
+        this.images = Optional.ofNullable(post.getImageList())
+                .orElseGet(ArrayList::new).stream().map(ImageDTO::new).toList();
         this.time = DateUtils.reFormatDateTime(post.getCreatedTime());
         this.groupId = post.getGroup() != null ? post.getGroup().getId() : null;
-        this.userName = post.getAuthor().getFullName();
-        this.approval= post.getApprovalStatus();
+        this.author = post.getAuthor().getFullName();
+        this.approvalStatus = post.getApprovalStatus();
     }
-
 }
