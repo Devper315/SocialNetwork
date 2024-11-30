@@ -1,27 +1,25 @@
 package com.social.network.service.group;
 
 import com.social.network.dto.request.group.GroupRequest;
-import com.social.network.dto.response.post.PostResponse;
 import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.group.Group;
-import com.social.network.entity.group.GroupMember;
-import com.social.network.entity.post.Post;
 import com.social.network.entity.user.User;
 import com.social.network.repository.group.GroupRepo;
 import com.social.network.repository.post.PostRepo;
 import com.social.network.repository.user.UserRepo;
 import com.social.network.service.user.UserService;
 import com.social.network.utils.PageableUtils;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +29,7 @@ public class GroupService {
     UserService userService;
     GroupMemberService groupMemberService;
     UserRepo userRepo;
+    private final PostRepo postRepo;
 
 
     public Group createGroup(GroupRequest request) {
@@ -114,6 +113,28 @@ public class GroupService {
         User user = userRepo.findById(userId).orElse(null);
         return groupMemberService.getUserRoleInGroup(group, user);
     }
+
+    public boolean changeCreateUserId(Long groupId,Long userId){
+        Group group = getById(groupId);
+        User user = userRepo.findById(userId).orElse(null);
+        User createUser= userService.getById(group.getCreateUserId());
+        groupMemberService.changeMemberRole(group,createUser,3L);
+        groupMemberService.changeCreateUserId(group,user);
+
+        return true;
+    }
+
+    @Transactional
+    @Modifying
+    public boolean dissolveGroup(Long groupId) {
+        Group group = getById(groupId);
+        groupMemberService.removeAllGroupMembers(group);
+        postRepo.deleteByGroupId(groupId);
+        groupRepo.delete(group);
+        return true;
+    }
+
+
 
 
 }

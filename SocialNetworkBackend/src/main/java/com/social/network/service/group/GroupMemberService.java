@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class GroupMemberService {
     GroupMemberRepo groupMemberRepo;
+    private final GroupRepo groupRepo;
+
     public boolean addGroupMember(Group group, User user, Long role) {
         GroupMember groupMember = GroupMember.builder()
                 .group(group)
@@ -69,4 +72,14 @@ public class GroupMemberService {
         GroupMember groupMember = groupMemberRepo.findByGroupAndMember(group, user);
         return groupMember.getRole();
     }
+
+    public void changeCreateUserId(Group group,User user){
+        group.setCreateUserId(user.getId());
+        groupRepo.save(group);
+    }
+
+    public void removeAllGroupMembers(Group group) {
+        groupMemberRepo.deleteByGroup(group);
+    }
+
 }
