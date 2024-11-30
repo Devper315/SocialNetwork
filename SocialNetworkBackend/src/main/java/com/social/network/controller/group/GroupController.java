@@ -116,4 +116,18 @@ public class GroupController {
                 .build();
     }
 
+    @PostMapping("/change-createUserId/{groupId}/{userId}")
+    public ApiResponse<Boolean> changCreateUserId( @PathVariable Long groupId,@PathVariable Long userId) {
+        return ApiResponse.<Boolean>builder()
+                .result(groupService.changeCreateUserId(groupId,userId))
+                .build();
+    }
+
+    @DeleteMapping("/dissolve/{groupId}")
+    public ApiResponse<Boolean> dissolveGroup( @PathVariable Long groupId) {
+        return ApiResponse.<Boolean>builder()
+                .result(groupService.dissolveGroup(groupId))
+                .build();
+    }
+
 }
