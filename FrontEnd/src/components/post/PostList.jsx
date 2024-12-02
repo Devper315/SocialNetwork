@@ -4,6 +4,7 @@ import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Di
 import PostPage from "./PostPage";
 import CreatePost from "./CreatePost";
 import { deleteFileFirebase } from "../../configs/firebaseSDK";
+import DialogNotification from "../common/DialogNotification";
 
 const PostList = () => {
     const [posts, setPosts] = useState([]);
@@ -92,24 +93,8 @@ const PostList = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-
-
-            <Dialog open={openDeleteSuccess} onClose={closeDeleteSuccess} maxWidth={false}
-                sx={{ bottom: "150px" }}>
-                <DialogTitle sx={{ borderBottom: '2px solid #ccc', display: 'flex', fontWeight: "bold" }}>
-                    Thông báo
-                </DialogTitle>
-                <DialogContent sx={{ width: 500, fontSize: "18px" }}>
-                    <p>Bài viết đã được xóa thành công!</p>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={closeDeleteSuccess} variant="contained">
-                        Đóng
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
-
+            <DialogNotification open={openDeleteSuccess} onClose={closeDeleteSuccess}
+                content="Bài viết đã được xóa thành công!" />
         </>
     )
 }

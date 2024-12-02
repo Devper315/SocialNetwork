@@ -120,5 +120,4 @@ public class NotificationService {
         return notificationRepo.getUnreadTotal(requestor.getUsername());
     }
 
-
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { TextField, IconButton, Box } from "@mui/material";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import ImageIcon from "@mui/icons-material/Image";
@@ -7,8 +7,9 @@ import { fetchEmoji } from "../../services/conversationService";
 import { handleScroll } from "../../services/infiniteScroll";
 import UploadedImage from "./UploadedImage";
 
-const TextInput = ({ handleSubmit, type }) => {
-    const [text, setText] = useState('')
+const TextInput = ({ handleSubmit, type, editingComment }) => {
+    const [text, setText] = useState((editingComment && editingComment.content) || "")
+    const textareaRef = useRef(null)
     const [commentImage, setCommentImage] = useState(null);
     const [messageImages, setMessageImages] = useState([])
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -27,6 +28,7 @@ const TextInput = ({ handleSubmit, type }) => {
 
     useEffect(() => {
         loadMoreEmojis()
+        textareaRef.current.focus()
     }, [])
 
     const handleEmojiClick = (emoji) => {
@@ -49,7 +51,9 @@ const TextInput = ({ handleSubmit, type }) => {
 
     const onSubmit = () => {
         setShowEmojiPicker(false)
-        handleSubmit(text, messageImages)
+        if (type === 'message')
+            handleSubmit(text, messageImages)
+        else handleSubmit(text, commentImage)
         setText('')
         setMessageImages([])
         setCommentImage(null)
@@ -63,20 +67,20 @@ const TextInput = ({ handleSubmit, type }) => {
     };
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, marginBottom: "10px" }}>
             {(messageImages.length > 0 || commentImage) &&
                 <Box sx={{
                     display: "flex", alignItems: "center",
                     width: "auto", gap: 1, padding: "5px", border: "1px solid #ddd",
                     borderRadius: "8px", backgroundColor: "rgba(0,0,0,0)", marginLeft: "5px"
                 }}>
-                    {type === "message" && messageImages.length > 0 && 
+                    {type === "message" && messageImages.length > 0 &&
                         messageImages.map((image, index) =>
-                        <UploadedImage key={index} image={image} 
-                            handleDelete={() => handleRemoveMessageImage(index)}/>)}
-                    {type === "comment" && commentImage && 
-                        <UploadedImage image={commentImage} 
-                        handleDelete={() => setCommentImage(null)}/>}
+                            <UploadedImage key={index} image={image}
+                                handleDelete={() => handleRemoveMessageImage(index)} />)}
+                    {type === "comment" && commentImage &&
+                        <UploadedImage image={commentImage} url={editingComment && editingComment.imageUrl}
+                            handleDelete={() => setCommentImage(null)} />}
                 </Box>
             }
 
@@ -109,14 +113,19 @@ const TextInput = ({ handleSubmit, type }) => {
                     {type === "comment" &&
                         <input type="file" accept="image/*" hidden onChange={handleCommentImageUpload} />}
                 </IconButton>
-                <Box sx={{ position: "relative", flexGrow: 1 }}>
-                    <TextField value={text} onChange={(e) => setText(e.target.value)} rows={1}
-                        onKeyDown={handleKeyDown} placeholder="Aa" fullWidth multiline variant="outlined"
+                <Box sx={{ position: "relative", width: "100%" }}>
+                    <TextField inputRef={textareaRef} maxRows={5} value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        onKeyDown={handleKeyDown} placeholder={type === 'message' ? 'Aa' : 'Nhập bình luận của bạn'}
+                        fullWidth multiline variant="outlined"
                         sx={{
                             "& .MuiOutlinedInput-root": {
-                                borderRadius: 5,
-                                fontSize: 13,
-                            }
+                                borderRadius: 5, fontSize: "14px", paddingRight: "40px",
+                            },
+                            "& textarea": {
+                                overflowY: "auto",
+                                resize: "none",
+                            },
                         }} />
                     <IconButton
                         onClick={() => setShowEmojiPicker(!showEmojiPicker)}
@@ -129,7 +138,6 @@ const TextInput = ({ handleSubmit, type }) => {
                     </IconButton>
                 </Box>
 
-                {/* Send Button */}
                 <IconButton
                     onClick={onSubmit}
                     sx={{

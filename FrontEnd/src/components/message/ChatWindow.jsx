@@ -9,6 +9,7 @@ import { createMessage, fetchMessagesByConversationId, updateMessageImage } from
 import { handleScrollReverse } from '../../services/infiniteScroll';
 import CallIcon from '@mui/icons-material/Call';
 import VideocamIcon from '@mui/icons-material/Videocam';
+import CloseIcon from '@mui/icons-material/Close';
 import '../../assets/styles/message/ChatWindow.css';
 import TextInput from '../common/TextInput';
 import { uploadFileToFirebase } from '../../configs/firebaseSDK';
@@ -27,6 +28,7 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
     useEffect(() => {
         const loadFirstMessageList = async () => {
             const data = await fetchMessagesByConversationId(conversation.id, 0);
+            console.log(data)
             setHasMore(data.length === 10);
             setMessageList(data);
             if (data.length === 10) {
@@ -104,24 +106,29 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
         <Box className="chat-window">
             <Box className="chat-header">
                 <Typography variant="h6" className="recipient-name">{conversation.name}</Typography>
-                <IconButton onClick={() => startVideoCall(conversation.recipient)} className="call-button">
-                    <VideocamIcon className="call-icon-video" />
+                <IconButton onClick={() => startVideoCall({
+                    username: conversation.recipient,
+                    fullName: conversation.name
+                })}
+                    className="header-button">
+                    <VideocamIcon />
                 </IconButton>
-                <IconButton onClick={() => startAudioCall(conversation.recipient)} className="call-button">
-                    <CallIcon className="call-icon" />
+                <IconButton onClick={() => startAudioCall({
+                    username: conversation.recipient,
+                    fullName: conversation.name
+                })}
+                    className="header-button">
+                    <CallIcon />
                 </IconButton>
-                <IconButton onClick={onClose} className="close-button">
-                    <Typography variant="h5">×</Typography>
+                <IconButton onClick={onClose} className="header-button">
+                    <CloseIcon />
                 </IconButton>
             </Box>
             <Box
                 className="chat-body"
                 ref={chatBodyRef}
-                onScroll={scrollReverse}
-                sx={{
-                    flex: 1, padding: 2, overflowY: 'auto',
-                    maxHeight: 'calc(100% - 140px)',
-                }}>
+                onScroll={scrollReverse}>
+
                 {messageList.map((msg, index) => (
                     <>
                         {msg.content !== '' &&
@@ -133,11 +140,11 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
                                 }}>
                                 <Box className="message-content"
                                     sx={{
-                                        fontSize: "14px", borderRadius: 2, maxWidth: '100%',
+                                        fontSize: "14px", borderRadius: 3, maxWidth: '100%',
                                         backgroundColor: msg.sender === user.username ? '#cac6c6' : '#007bff',
                                         color: msg.sender === user.username ? '#000' : '#fff'
                                     }}>
-                                    {msg.content}
+                                    {msg.content.split("\n").map((str, i) => <><span key={i}>{str}</span><br /></>)}
                                 </Box>
                                 <Typography variant="caption" className="message-time">
                                     {msg.time ? msg.time : MessageStatusTranslation[msg.status]}

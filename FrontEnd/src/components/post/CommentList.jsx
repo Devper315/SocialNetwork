@@ -1,231 +1,90 @@
-import React, { useEffect, useState } from "react";
-import { getCommentsByPostId, updateComment, deleteComment } from "../../services/commentService";
-import { uploadImage } from "../../services/imageService";
-import { Box, Typography, IconButton, Menu, MenuItem, TextField, Button, Avatar, } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import ImageIcon from "@mui/icons-material/Image";
+import React, { useContext, useEffect, useState } from "react";
+import { Dialog, DialogTitle, DialogContent, IconButton, Typography, Box, CircularProgress } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import Comment from "./Comment";
+import TextInput from "../common/TextInput"
+import { format } from "date-fns";
+import { createComment, deleteComment, deleteCommentById, fetchCommentsByPostId, updateComment } from "../../services/commentService";
+import { AuthContext } from "../../contexts/AuthContext"
+import { uploadFileToFirebase } from "../../configs/firebaseSDK";
 
-const CommentList = ({ postId }) => {
-    const [comments, setComments] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [editCommentId, setEditCommentId] = useState(null);
-    const [editedContent, setEditedContent] = useState("");
-    const [editedImageFile, setEditedImageFile] = useState(null);
-    const [currentImageUrl, setCurrentImageUrl] = useState("");
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [menuCommentId, setMenuCommentId] = useState(null);
+const CommentList = ({ post, open, onClose }) => {
+    const [comments, setComments] = useState([])
+    const [headLoading, setHeadLoading] = useState(false)
+    const [footLoading, setFootLoading] = useState(false)
 
     useEffect(() => {
-        const fetchComments = async () => {
-            setLoading(true);
-            try {
-                const response = await getCommentsByPostId(postId);
-                setComments(response || []);
-            } catch (error) {
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchComments();
-    }, [postId]);
-
-    const handleEditToggle = (commentId, content, imageUrl) => {
-        setEditCommentId(commentId);
-        setEditedContent(content);
-        setEditedImageFile(null);
-        setCurrentImageUrl(imageUrl);
-    };
-
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setEditedImageFile(file);
-            setCurrentImageUrl(URL.createObjectURL(file));
+        if (!open) {
+            setComments([])
+            return
         }
-    };
-
-    const handleSave = async () => {
-        if (editCommentId === null) return;
-        let imageUrl = currentImageUrl;
-        if (editedImageFile) {
-            try {
-                imageUrl = await uploadImage(editedImageFile);
-            } catch (error) {
-                console.error("Failed to upload image:", error);
-                return;
-            }
+        const getCommentsByPost = async () => {
+            setHeadLoading(true)
+            const commentData = await fetchCommentsByPostId(post.id)
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            setComments(commentData)
+            setHeadLoading(false)
         }
-        const commentToUpdate = {
-            id: editCommentId,
-            content: editedContent || "",
-            imageUrl: imageUrl || null,
-        };
+        getCommentsByPost()
+    }, [open])
 
-        try {
-            const updatedComment = await updateComment(commentToUpdate);
-            setComments((prev) =>
-                prev.map((comment) => (comment.id === editCommentId ? updatedComment : comment))
-            );
-            setEditCommentId(null);
-            setEditedContent("");
-            setEditedImageFile(null);
-            setCurrentImageUrl("");
-        } catch (error) {
-            console.error("Failed to update comment:", error);
+    const handleAddComment = async (text, image) => {
+        setFootLoading(true)
+        if (text.trim() === "") return;
+        let newComment = {
+            postId: post.id,
+            content: text,
         }
-    };
-
-    const handleDelete = async (commentId) => {
-        try {
-            await deleteComment(commentId);
-            setComments((prev) => prev.filter((comment) => comment.id !== commentId));
-        } catch (error) {
-            console.error("Failed to delete comment:", error);
+        newComment = await createComment(newComment)
+        console.log(newComment)
+        if (image) {
+            const filePath = `comment/${newComment.id}`
+            const imageUrl = await uploadFileToFirebase(image, filePath)
+            newComment.imageUrl = imageUrl
         }
-    };
+        console.log(newComment)
+        await new Promise(resolve => setTimeout(resolve, 500))
+        setFootLoading(false)
+        updateComment(newComment)
+        setComments([...comments, newComment])
+    }
 
-    const handleMenuClick = (event, commentId) => {
-        setAnchorEl(event.currentTarget);
-        setMenuCommentId(commentId);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-        setMenuCommentId(null);
-    };
-
+    const removeCommentFromList = (comment) => {
+        setComments(comments.filter(c => c.id !== comment.id))
+        deleteCommentById(comment.id)
+    }
     return (
-        <Box sx={{ width: "100%", padding: "16px", backgroundColor: "#f9f9f9" }}>
-            {comments.map(({ id, userName, content, imageUrl, time }) => (
-                <Box
-                    key={id}
-                    sx={{
-                        backgroundColor: "#fff",
-                        borderRadius: "8px",
-                        boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                        padding: "16px",
-                        marginBottom: "16px",
-                        position: "relative",
-                    }}
-                >
-                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                            <Avatar sx={{ bgcolor: "#1976d2" }}>{userName.charAt(0)}</Avatar>
-                            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                                {userName}
-                            </Typography>
-                        </Box>
+        <Dialog open={open} onClose={onClose} fullWidth>
+            <DialogTitle fontWeight={"bold"}>
+                Bình luận cho bài viết của {post.author}
+                <IconButton
+                    aria-label="close"
+                    onClick={onClose}
+                    style={{ position: "absolute", right: 8, top: 8 }}>
+                    <CloseIcon />
+                </IconButton>
+            </DialogTitle>
+            <DialogContent sx={{ minHeight: "120px" }}>
+                {headLoading &&
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        <CircularProgress size={30} />
+                    </Box>}
+                {open && comments.length === 0 && !headLoading &&
+                    <Typography variant="body1" color="text.secondary" sx={{ textAlign: "center", marginTop: "20px" }}>
+                        Chưa có bình luận nào
+                    </Typography>}
+                {comments.length > 0 && comments.map(comment => (
+                    <Comment key={comment.id} comment={comment}
+                        removeCommentFromList={removeCommentFromList} />
+                ))}
+                {footLoading &&
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        <CircularProgress size={30} />
+                    </Box>}
+            </DialogContent>
+            <TextInput handleSubmit={handleAddComment} type="comment" />
+        </Dialog>
+    )
+}
 
-                        <IconButton
-                            aria-label="options"
-                            onClick={(event) => handleMenuClick(event, id)}>
-                            <MoreVertIcon />
-                        </IconButton>
-                        <Menu
-                            anchorEl={anchorEl}
-                            open={menuCommentId === id}
-                            onClose={handleMenuClose}>
-                            <MenuItem
-                                onClick={() => {
-                                    handleEditToggle(id, content, imageUrl);
-                                    handleMenuClose();
-                                }}>
-                                <EditIcon sx={{ marginRight: "8px" }} />
-                                Sửa
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    handleDelete(id);
-                                    handleMenuClose();
-                                }}>
-                                <DeleteIcon sx={{ marginRight: "8px" }} />
-                                Xóa
-                            </MenuItem>
-                        </Menu>
-                    </Box>
-
-                    {editCommentId === id ? (
-                        <Box sx={{ marginTop: "16px" }}>
-                            <TextField
-                                multiline
-                                rows={3}
-                                fullWidth
-                                value={editedContent}
-                                onChange={(e) => setEditedContent(e.target.value)}
-                                placeholder="Chỉnh sửa bình luận..."
-                                sx={{ marginBottom: "16px" }}
-                            />
-                            {currentImageUrl && (
-                                <Box sx={{ marginBottom: "16px", position: "relative" }}>
-                                    <img
-                                        src={currentImageUrl}
-                                        alt="Preview"
-                                        style={{
-                                            maxWidth: "100%",
-                                            maxHeight: "200px",
-                                            borderRadius: "8px",
-                                        }}
-                                    />
-                                    <Button
-                                        variant="outlined"
-                                        color="error"
-                                        sx={{ marginTop: "8px" }}
-                                        onClick={() => setCurrentImageUrl("")}
-                                    >
-                                        Xóa ảnh
-                                    </Button>
-                                </Box>
-                            )}
-                            <Button
-                                variant="outlined"
-                                component="label"
-                                startIcon={<ImageIcon />}
-                                sx={{ marginBottom: "16px" }}>
-                                Chọn ảnh
-                                <input type="file" hidden onChange={handleImageChange} accept="image/*" />
-                            </Button>
-                            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleSave}
-                                >
-                                    Lưu
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    onClick={() => setEditCommentId(null)}
-                                >
-                                    Hủy
-                                </Button>
-                            </Box>
-                        </Box>
-                    ) : (
-                        <Box sx={{ marginTop: "16px" }}>
-                            <Typography variant="body2" sx={{ marginBottom: "8px" }}>
-                                {content}
-                            </Typography>
-                            {imageUrl && (
-                                <img src={imageUrl} alt={`Comment ${id}`}
-                                    style={{
-                                        maxWidth: "100%",
-                                        maxHeight: "200px",
-                                        borderRadius: "8px",
-                                    }} />
-                            )}
-                        </Box>
-                    )}
-                    <Typography
-                        variant="caption"
-                        sx={{ color: "gray", display: "block", marginTop: "8px" }}>
-                        Thời gian: {new Date(time).toLocaleString()}
-                    </Typography>
-                </Box>
-            ))}
-        </Box>
-    );
-};
-
-export default CommentList;
+export default CommentList

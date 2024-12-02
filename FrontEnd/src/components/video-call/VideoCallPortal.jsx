@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, Autocomplete } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import '../../assets/styles/user/video-call/VideoCallModal.css';
@@ -9,8 +9,8 @@ import MicOffIcon from '@mui/icons-material/MicOff';
 import { AuthContext } from '../../contexts/AuthContext';
 
 const VideoCallPortal = ({ localVideoRef, remoteVideoRef, handleCloseVideoCall, isCameraOn, toggleCamera,
-    isMicOn, toggleMic, remoteCameraOn, remoteMicOn, sendSignal, action, recipientRef, startVideoStream, show,
-    callType }) => {
+    isMicOn, toggleMic, remoteCameraOn, remoteMicOn, sendSignal, action, recipientRef, recipientFullName,
+    startVideoStream, show, callType }) => {
     const { user } = useContext(AuthContext)
     useEffect(() => {
         const startVideo = async () => {
@@ -35,7 +35,7 @@ const VideoCallPortal = ({ localVideoRef, remoteVideoRef, handleCloseVideoCall, 
                 borderBottom: '2px solid #ccc', display: 'flex',
                 justifyContent: 'space-between', alignItems: 'center'
             }}>
-                Video call
+                {`Cuộc gọi với ${recipientFullName}`}
                 <IconButton edge="end" color="inherit" onClick={handleCloseVideoCall} aria-label="close">
                     <CloseIcon />
                 </IconButton>
@@ -66,12 +66,12 @@ const VideoCallPortal = ({ localVideoRef, remoteVideoRef, handleCloseVideoCall, 
                 <IconButton onClick={toggleMic} sx={{ color: isMicOn ? 'black' : 'gray' }}>
                     {isMicOn ? <MicIcon /> : <MicOffIcon />}
                 </IconButton>
-                <Button onClick={handleCloseVideoCall} variant="outlined">
+                <Button onClick={handleCloseVideoCall} variant="contained">
                     Kết thúc cuộc gọi
                 </Button>
             </DialogActions>
         </Dialog>
-    );
-};
+    )
+}
 
 export default VideoCallPortal;

@@ -40,13 +40,13 @@ public class CommentService {
         return new CommentDTO(comment);
     }
 
-    public CommentDTO updateComment(Long commentId, CommentDTO request) {
-        Comment existingComment = commentRepo.getById(commentId);
+    public Boolean updateComment(CommentDTO request) {
+        Comment existingComment = commentRepo.getById(request.getId());
         existingComment.setContent(request.getContent());
         existingComment.setImageUrl(request.getImageUrl());
-        existingComment.setTime(request.getTime());
-        Comment updatedComment = commentRepo.save(existingComment);
-        return new CommentDTO(updatedComment);
+        existingComment.setTime(LocalDateTime.now());
+        commentRepo.save(existingComment);
+        return true;
     }
 
     public void deleteComment(Long commentId) {

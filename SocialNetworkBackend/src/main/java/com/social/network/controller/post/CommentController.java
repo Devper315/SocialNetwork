@@ -36,17 +36,16 @@ public class CommentController {
     }
 
     @PostMapping
-    public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO request) {
-        CommentDTO commentResponse = commentService.createComment(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentResponse);
+    public ApiResponse<CommentDTO> createComment(@RequestBody CommentDTO request) {
+        return ApiResponse.<CommentDTO>builder()
+                .result(commentService.createComment(request))
+                .build();
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<CommentDTO> updateComment(@PathVariable Long id, @RequestBody CommentDTO request) {
-        CommentDTO updatedComment = commentService.updateComment(id, request);
-        return ApiResponse.<CommentDTO>builder()
-                .result(updatedComment)
-                .message("Cập nhật bình luận thành công")
+    public ApiResponse<Boolean> updateComment(@RequestBody CommentDTO request) {
+        return ApiResponse.<Boolean>builder()
+                .result(commentService.updateComment(request))
                 .build();
     }
 

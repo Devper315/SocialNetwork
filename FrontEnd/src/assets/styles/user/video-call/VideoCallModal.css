@@ -11,22 +11,23 @@
 
 .video-container .icon-wrapper {
     position: absolute;
-    bottom: 20px; 
+    bottom: 20px;
     left: 50%;
-    transform: translateX(-50%); /* Căn giữa theo trục ngang */
+    transform: translateX(-50%);
     display: flex;
-    gap: 20px; /* Khoảng cách giữa các icon */
+    gap: 20px;
 }
 
 .video-container .icon-wrapper .icon {
     width: 40px;
     height: 40px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 50%; /* Làm tròn */
+    border-radius: 50%;
+    /* Làm tròn */
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white; /* Màu icon */
+    color: white;
+    /* Màu icon */
 }
 
 .remote-video {
@@ -35,25 +36,25 @@
 }
 
 .local-video {
-    position: absolute; 
-    bottom: -21px; 
-    right: -1px; 
-    width: 30%; 
-    border: 1px solid white; 
-    z-index: 1; 
+    position: absolute;
+    bottom: -21px;
+    right: -1px;
+    width: 30%;
+    border: 1px solid white;
+    z-index: 1;
     height: 150px;
     width: 200px;
 }
 
-
 .no-remote-video {
-    background-color: black; /* Khung đen khi không có video */
-    height: 500px; /* Same height as normal video */
-    width: 100%;  /* Same width as normal video */
+    background-color: black;
+    /* Khung đen khi không có video */
+    height: 500px;
+    /* Same height as normal video */
+    width: 100%;
+    /* Same width as normal video */
 }
 
 .hidden {
     display: none;
 }
-
-

@@ -3,6 +3,8 @@ import { AuthContext } from "./AuthContext"
 import { CONFIG } from "../configs/config"
 import IncomingCallPortal from "../components/video-call/IncomingCallPortal"
 import VideoCallPortal from "../components/video-call/VideoCallPortal"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
+import DialogNotification from "../components/common/DialogNotification"
 
 
 export const VideoCallSocketContext = createContext()
@@ -14,6 +16,7 @@ export const VideoCallProvider = ({ children }) => {
     const [incoming, setIncoming] = useState(false)
     const [openInComing, setOpenIncoming] = useState(false)
     const recipientRef = useRef(null)
+    const [recipientFullName, setRecipientFullName] = useState(null)
     const [action, setAction] = useState(null)
     const [openingVideoCall, setOpeningVideoCall] = useState(false)
     const localVideoRef = useRef(null)
@@ -24,6 +27,8 @@ export const VideoCallProvider = ({ children }) => {
     const [remoteCameraOn, setRemoteCameraOn] = useState(false)
     const [remoteMicOn, setRemoteMicOn] = useState(false)
     const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] }
+    const [showNotify, setShowNotify] = useState(false)
+    const [notification, setNotification] = useState('')
     useEffect(() => {
         if (user) {
             connectVideoCallSocket()
@@ -66,7 +71,7 @@ export const VideoCallProvider = ({ children }) => {
         }
         else if (data.type === 'reject') {
             handleCloseVideoCall()
-            console.log(`${recipientRef.current} đã từ chối cuộc gọi`)
+            setShowNotify(true)
         }
         else if (data.type === 'candidate') {
             console.log("Nhận được candidate mới")
@@ -89,37 +94,42 @@ export const VideoCallProvider = ({ children }) => {
             setRemoteCameraOn(data.isCameraOn)
             setRemoteMicOn(data.isMicOn)
         }
-        else if (data.type === 'end'){
+        else if (data.type === 'end' && peerConnection.current){
             stopVideoStream()
             setOpeningVideoCall(false)
             peerConnection.current = null
+            setNotification("Cuộc gọi đã kết thúc.")
+            setShowNotify(true)
         }
     }
 
-    const startAudioCall = (recipientUsername) => {
+    const startAudioCall = (recipient) => {
         setCallType('audio')
         setIsMicOn(true)
         setRemoteMicOn(true)
-        startCall(recipientUsername)
+        startCall(recipient)
     }
 
-    const startVideoCall = (recipientUsername) => {
+    const startVideoCall = (recipient) => {
         setCallType('video')
         setIsCameraOn(true)
         setIsMicOn(true)
         setRemoteMicOn(true)
         setRemoteCameraOn(true)
-        startCall(recipientUsername)
+        startCall(recipient)
     }
 
-    const startCall = (recipientUsername) => {
-        recipientRef.current = recipientUsername
+    const startCall = (recipient) => {
+        setRecipientFullName(recipient.fullName)
+        setNotification(`${recipient.fullName} đã từ chối cuộc gọi.`)
+        recipientRef.current = recipient.username
         setAction("request-call")
         setOpeningVideoCall(true)
         console.log(`Đã gửi yêu cầu gọi tới ${recipientRef.current}`);
     }
 
     const handleAcceptCall = () => {
+        setRecipientFullName(incoming.callerName)
         recipientRef.current = incoming.callFrom
         setOpenIncoming(false);
         const callType = incoming.type
@@ -326,7 +336,10 @@ export const VideoCallProvider = ({ children }) => {
                 isCameraOn={isCameraOn} toggleCamera={toggleCamera}
                 isMicOn={isMicOn} toggleMic={toggleMic}
                 remoteCameraOn={remoteCameraOn} remoteMicOn={remoteMicOn}
-                sendSignal={sendSignal} action={action} recipientRef={recipientRef} />
+                sendSignal={sendSignal} action={action} recipientRef={recipientRef} 
+                recipientFullName={recipientFullName}/>
+            <DialogNotification open={showNotify} onClose={() => setShowNotify(false)}
+                content={notification} />
         </VideoCallSocketContext.Provider>
     )
 }

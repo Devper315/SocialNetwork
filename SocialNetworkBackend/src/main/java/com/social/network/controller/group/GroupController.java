@@ -7,6 +7,7 @@ import com.social.network.entity.group.Group;
 import com.social.network.service.group.GroupMemberService;
 import com.social.network.service.group.GroupService;
 import com.social.network.service.notification.NotificationService;
+import com.social.network.service.post.PostService;
 import com.social.network.service.user.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,7 @@ import java.util.List;
 @RequestMapping("/api/user/group")
 public class GroupController {
     GroupService groupService;
-    UserService userService;
-    NotificationService notificationService;
-    GroupMemberService groupMemberService;
+    PostService postService;
 
     @GetMapping
     public ApiResponse<List<Group>> search(

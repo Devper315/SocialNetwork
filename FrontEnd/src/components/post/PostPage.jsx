@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardMedia, Grid, IconButton, MenuItem, Paper, Popper, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, CardMedia, Divider, Grid, IconButton, MenuItem, Paper, Popper, Typography } from '@mui/material';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete"
+import CommentIcon from "@mui/icons-material/Comment"
 import PostDialog from './PostDialog';
 import { uploadFileToFirebase, deleteFileFirebase } from "../../configs/firebaseSDK"
 import { updatePost } from "../../services/postService"
 import ZoomImage from '../common/ZoomImage';
+import CommentList from './CommentList';
 
 
 const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete, }) => {
@@ -15,6 +17,7 @@ const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete,
     const [isEditting, setIsEditing] = useState(false)
     const [zoom, setZoom] = useState(false)
     const [selectedUrl, setSelectedUrl] = useState(null)
+    const [showComment, setShowComment] = useState(false)
 
     const handleZoom = (image) => {
         setSelectedUrl(image.url);
@@ -44,7 +47,6 @@ const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete,
         setPostToDelete(post)
         handleMenuClose()
     }
-
 
     const handleUpdatePost = async (data) => {
         console.log(data)
@@ -119,7 +121,9 @@ const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete,
                     </Typography>
 
                     <Typography variant="body1" sx={{ marginTop: "8px", marginBottom: "16px", textAlign: "left" }}>
-                        {post.content}
+                        {post.content.split("\n").map(p =>
+                            <>{p} <br /></>
+                        )}
                     </Typography>
 
                     {post.images && post.images.length > 0 && (
@@ -139,9 +143,23 @@ const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete,
                                 ))}
                         </Grid>
                     )}
+                    <Divider sx={{ marginY: 2, borderWidth: "1.5px" }} />
+
+                    <Button variant="contained" onClick={() => setShowComment(true)}
+                        sx={{ backgroundColor: "#3578E5", color: "#fff", borderRadius: "20px", 
+                            padding: "8px 16px", textTransform: "none", gap: "8px",
+                            "&:hover": {
+                                backgroundColor: "#2a65c8",
+                            }}}>
+                        <CommentIcon sx={{ fontSize: "20px" }} />
+                        Bình luận
+                    </Button>
+
                 </CardContent>
+
                 <PostDialog post={post} open={isEditting} onClose={() => setIsEditing(false)}
                     onSubmit={handleUpdatePost} />
+                <CommentList post={post} open={showComment} onClose={() => setShowComment(false)} />
             </Card>
 
         </>

@@ -5,6 +5,7 @@ import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.group.Group;
 import com.social.network.entity.user.User;
 import com.social.network.repository.group.GroupRepo;
+import com.social.network.repository.post.PostRepo;
 import com.social.network.repository.user.UserRepo;
 import com.social.network.service.user.UserService;
 import com.social.network.utils.PageableUtils;
@@ -28,7 +29,7 @@ public class GroupService {
     UserService userService;
     GroupMemberService groupMemberService;
     UserRepo userRepo;
-    private final PostRepo postRepo;
+    PostRepo postRepo;
 
 
     public Group createGroup(GroupRequest request) {
@@ -132,8 +133,4 @@ public class GroupService {
         groupRepo.delete(group);
         return true;
     }
-
-
-
-
 }

@@ -18,25 +18,16 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "content", length = 65535, nullable = false)
     String content;
 
-    @Column(name = "image_url")
     String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
+    @ManyToOne
     User author;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
+    @ManyToOne
     Post post;
 
-    @Column(name = "time", updatable = false)
     LocalDateTime time;
 
-    @PrePersist
-    protected void onCreate() {
-        this.time = LocalDateTime.now();
-    }
 }

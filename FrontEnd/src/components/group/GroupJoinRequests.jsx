@@ -34,7 +34,7 @@ const GroupJoinRequests = ({ groupId, closeRequests }) => {
                 {joinRequests.length > 0 ? (
                     joinRequests.map((request) => (
                         <li key={request.id}>
-                            {`${request.userFullname} đã gửi lời mời tham gia nhóm ${request.groupName}`}
+                            {`${request.userFullName} đã gửi lời mời tham gia nhóm ${request.groupName}`}
                             <div>
                                 <button onClick={() => handleActionJoinRequest(request.id, 1)}>Đồng ý</button>
                                 <button onClick={() => handleActionJoinRequest(request.id, 0)}>Từ chối</button>

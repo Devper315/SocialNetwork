@@ -13,12 +13,17 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const storage = getStorage(firebaseApp)
-const uploadFileToFirebase = async(file, filename) => {
+const uploadFileToFirebase = async(file, filePath) => {
     if (!file) return
-    const storageRef = ref(storage, filename);
+    const storageRef = ref(storage, filePath);
     await uploadBytes(storageRef, file);
     const downloadURL = await getDownloadURL(storageRef);
     return downloadURL;
+}
+
+const getFirebaseFileURL = async(filePath) => {
+    const storageRef = ref(storage, filePath);
+    return await getDownloadURL(storageRef)
 }
 
 const deleteFileFirebase = async(file) => {
@@ -29,4 +34,4 @@ const deleteFileFirebase = async(file) => {
         console.log("Lỗi khi xóa file", error)
     }
 }
-export { uploadFileToFirebase, deleteFileFirebase };
+export { uploadFileToFirebase, deleteFileFirebase, getFirebaseFileURL };

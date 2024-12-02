@@ -17,6 +17,9 @@ public class CommentDTO {
     String imageUrl;
     Long postId;
     LocalDateTime time;
+    String authorUsername;
+    String author;
+    String authorAvatar;
 
     public CommentDTO(Comment comment){
         this.id = comment.getId();
@@ -24,5 +27,8 @@ public class CommentDTO {
         this.imageUrl = comment.getImageUrl();
         this.postId = comment.getPost().getId();
         this.time = comment.getTime();
+        this.authorUsername = comment.getAuthor().getUsername();
+        this.author = comment.getAuthor().getFullName();
+        this.authorAvatar = comment.getAuthor().getAvatarUrl();
     }
 }
