@@ -2,7 +2,7 @@ import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/common/Header';
 import Homepage from './components/common/Homepage';
-import FriendList from './components/user/FriendList';
+import FriendList from './components/friend/FriendList';
 import Register from './components/common/Register';
 import PostPage from './components/post/PostPage';
 import Profile from './components/user/Profile';

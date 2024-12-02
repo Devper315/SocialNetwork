@@ -8,8 +8,8 @@ const HomePage = () => {
 
     return (
         <div>
-            {!isLoggedIn && <Login />}
             {isLoggedIn && <PostList />}
+            {!isLoggedIn && <Login />}
         </div>
     )
 }

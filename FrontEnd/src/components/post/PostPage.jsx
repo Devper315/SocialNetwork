@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Box, Button, Card, CardContent, CardMedia, Divider, Grid, IconButton, MenuItem, Paper, Popper, Typography } from '@mui/material';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
@@ -9,9 +9,11 @@ import { uploadFileToFirebase, deleteFileFirebase } from "../../configs/firebase
 import { updatePost } from "../../services/postService"
 import ZoomImage from '../common/ZoomImage';
 import CommentList from './CommentList';
+import { AuthContext } from '../../contexts/AuthContext';
 
 
 const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete, }) => {
+    const { user } = useContext(AuthContext)
     const [anchorEl, setAnchorEl] = useState(null);
     const [open, setOpen] = useState(false);
     const [isEditting, setIsEditing] = useState(false)
@@ -49,9 +51,8 @@ const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete,
     }
 
     const handleUpdatePost = async (data) => {
-        console.log(data)
         data.deleteImages.forEach(async (image) => {
-            await deleteFileFirebase(image)
+            await deleteFileFirebase(image.filePath)
         })
         if (data.newImages.length > 0) {
             const imageIndexes = data.images
@@ -88,10 +89,12 @@ const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete,
                             sx={{ fontWeight: "bold", textAlign: "left" }}>
                             {post.author}
                         </Typography>
+                        
                         <div style={{ position: "relative" }}>
-                            <IconButton onClick={handleMenuOpen}>
-                                <MoreVertIcon />
-                            </IconButton>
+                            {user.username === post.authorUsername &&
+                                <IconButton onClick={handleMenuOpen}>
+                                    <MoreVertIcon />
+                                </IconButton>}
                             <Popper open={open} anchorEl={anchorEl} placement="bottom-end">
                                 <Paper
                                     sx={{
@@ -146,11 +149,13 @@ const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete,
                     <Divider sx={{ marginY: 2, borderWidth: "1.5px" }} />
 
                     <Button variant="contained" onClick={() => setShowComment(true)}
-                        sx={{ backgroundColor: "#3578E5", color: "#fff", borderRadius: "20px", 
+                        sx={{
+                            backgroundColor: "#3578E5", color: "#fff", borderRadius: "20px",
                             padding: "8px 16px", textTransform: "none", gap: "8px",
                             "&:hover": {
                                 backgroundColor: "#2a65c8",
-                            }}}>
+                            }
+                        }}>
                         <CommentIcon sx={{ fontSize: "20px" }} />
                         Bình luận
                     </Button>

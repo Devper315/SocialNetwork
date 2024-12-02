@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import "../../assets/styles/common/Login.css";
+import { TextField, Button, CircularProgress, Typography, Box, Link as MuiLink } from "@mui/material";
 import { login } from "../../services/authService";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Link } from "react-router-dom";
@@ -23,47 +23,55 @@ const Login = () => {
     };
 
     const handleSubmit = async () => {
-        setIsLoading(true); // Bắt đầu trạng thái đang đăng nhập
-        setErrorMessage(''); // Xóa thông báo lỗi trước khi gửi yêu cầu
+        setIsLoading(true);
+        setErrorMessage('');
         try {
             const response = await login(form);
             const token = response.data.result.token;
             loginSuccess(token);
         } catch (error) {
-            console.log(error.response)
             setErrorMessage(error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
         } finally {
-            setIsLoading(false); // Hoàn thành đăng nhập, bỏ trạng thái loading
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="home-page">
-            <main className="main-content">
-                <h1>Chào mừng đến với mạng xã hội của chúng tôi!</h1>
-                <div className="login-form">
-                    {/* Hiển thị thông báo lỗi nếu có */}
-                    {errorMessage && <p className="error-message">{errorMessage}</p>}
+        <Box
+            sx={{
+                position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -20%)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center',
+                justifyContent: 'center', padding: 3, bgcolor: '#f5f5f5',
+            }}>
+            <Typography variant="h4" gutterBottom fontWeight={"bold"}>
+                Chào mừng đến với mạng xã hội của chúng tôi!
+            </Typography>
 
-                    <input name="username" type="text"
-                        value={form.username} onChange={handleInputChange}
-                        placeholder="Email hoặc số điện thoại" />
-                    <input name="password" type="password"
-                        value={form.password} onChange={handleInputChange}
-                        placeholder="Mật khẩu" />
+            <Box
+                sx={{
+                    maxWidth: 400, width: '100%', bgcolor: '#fff',
+                    p: 4, borderRadius: 2, boxShadow: 3
+                }}>
+                {errorMessage && (
+                    <Typography variant="body2" color="error" sx={{ mb: 2 }}>
+                        {errorMessage}
+                    </Typography>
+                )}
 
-                    <button
-                        onClick={handleSubmit}
-                        className="login-button"
-                        disabled={isLoading}>
-                        {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-                    </button>
-                </div>
-                <div className="footer-links">
-                    <Link to="/register" className="register-link">Bạn chưa có tài khoản? Đăng ký ngay!</Link>
-                </div>
-            </main>
-        </div>
+                <TextField name="username" label="Tên đăng nhập" fullWidth
+                    margin="normal" value={form.username} onChange={handleInputChange} />
+                <TextField name="password" label="Mật khẩu" type="password" fullWidth
+                    margin="normal" value={form.password} onChange={handleInputChange} />
+                <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}
+                    onClick={handleSubmit} disabled={isLoading}>
+                    {isLoading ? <CircularProgress size={24} /> : 'Đăng nhập'}
+                </Button>
+            </Box>
+
+            <MuiLink component={Link} to="/register" sx={{ mt: 2 }}>
+                Bạn chưa có tài khoản? Đăng ký ngay!
+            </MuiLink>
+        </Box>
     );
 };
 

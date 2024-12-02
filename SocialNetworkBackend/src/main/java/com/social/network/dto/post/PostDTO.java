@@ -23,6 +23,7 @@ public class PostDTO {
     List<ImageDTO> deleteImages;
     String time;
     String author;
+    String authorUsername;
     Long groupId;
     Long approvalStatus;
 
@@ -34,6 +35,7 @@ public class PostDTO {
         this.time = DateUtils.reFormatDateTime(post.getCreatedTime());
         this.groupId = post.getGroup() != null ? post.getGroup().getId() : null;
         this.author = post.getAuthor().getFullName();
+        this.authorUsername = post.getAuthor().getUsername();
         this.approvalStatus = post.getApprovalStatus();
     }
 }

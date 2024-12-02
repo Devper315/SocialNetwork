@@ -27,12 +27,10 @@ export const AuthProvider = ({ children }) => {
     const getInfoFromToken = async (token) => {
         const payload = jwtDecode(token)
         const claim = payload.customClaim
-        const avatarUrl = await getFirebaseFileURL(`avatars/${claim.username}`)
         let loggedInUser = {
             id: claim.id,
             fullName: claim.fullName,
             username: claim.username,
-            avatarUrl
         }
         setUser(loggedInUser)
         setIsLoggedIn(true)

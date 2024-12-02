@@ -26,10 +26,10 @@ const getFirebaseFileURL = async(filePath) => {
     return await getDownloadURL(storageRef)
 }
 
-const deleteFileFirebase = async(file) => {
-    const storageRef = ref(storage, file.filePath)
+const deleteFileFirebase = async(filePath) => {
+    const storageRef = ref(storage, filePath)
     try {
-        deleteObject(storageRef)
+        await deleteObject(storageRef)
     } catch (error) {
         console.log("Lỗi khi xóa file", error)
     }

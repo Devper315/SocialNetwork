@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import "../../assets/styles/common/Register.css";
+import { TextField, Button, Typography, Box, Grid, Modal } from '@mui/material';
 import { register } from '../../services/authService';
 import RegisterSuccessModal from './RegisterSuccessModal';
-import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-    const [success, setSuccess] = useState(false)
-    const navigate = useNavigate()
+    const [success, setSuccess] = useState(false);
     const formFields = {
         firstName: { label: 'Họ và tên đệm', type: 'text' },
         lastName: { label: 'Tên', type: 'text' },
@@ -24,7 +22,7 @@ const Register = () => {
         }, {})
     );
     const [errors, setErrors] = useState({});
-    const [registerError, setRegisterError] = useState('')
+    const [registerError, setRegisterError] = useState('');
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -45,7 +43,7 @@ const Register = () => {
             tempErrors.password = 'Mật khẩu có độ dài tối thiểu là 3';
         else {
             if (form.password !== form.confirmPassword)
-                tempErrors.confirmPassword = 'Mật khẩu xác nhận không khớp'
+                tempErrors.confirmPassword = 'Mật khẩu xác nhận không khớp';
         }
         if (!form.dateOfBirth) tempErrors.dateOfBirth = 'Ngày sinh không được trống';
         setErrors(tempErrors);
@@ -53,51 +51,90 @@ const Register = () => {
     };
 
     const handleSubmit = async (e) => {
-        setRegisterError(null)
+        setRegisterError(null);
         e.preventDefault();
         if (validateForm()) {
             try {
-                await register(form)
-                setSuccess(true)
+                await register(form);
+                setSuccess(true);
             } catch (error) {
-                const errorCode = error.response.status
-                if (errorCode === 400) setErrors(error.response.data)
-                else setRegisterError(error.response.data.message)
-                console.log(error.response.data)
+                const errorCode = error.response.status;
+                if (errorCode === 400) setErrors(error.response.data);
+                else setRegisterError(error.response.data.message);
+                console.log(error.response.data);
             }
         }
-    }
-
-    const handleNavigateLogin = () => {
-        setSuccess(false)
-        navigate("/")
-    }
+    };
 
     const handleCloseModal = () => {
-        setSuccess(false)
-    }
+        setSuccess(false);
+    };
 
     return (
-        <div className="register-container">
-            <form className="register-form" onSubmit={handleSubmit}>
-                {Object.keys(formFields).map(key => (
-                    <div className="form-group" key={key}>
-                        <label>{formFields[key].label}</label>
-                        <input
-                            type={formFields[key].type}
-                            name={key}
-                            value={form[key]}
-                            onChange={handleChange} />
-                        {errors[key] && <p className="error">{errors[key]}</p>}
-                    </div>
-                ))}
-                {registerError && <p className="register-error">{registerError}</p>}
-                <button type="submit" className="submit-btn">Đăng ký</button>
-            </form>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                minHeight: '100vh',
+                padding: 3,
+                bgcolor: '#f5f5f5',
+            }}
+        >
+            <Typography variant="h4" gutterBottom>
+                Đăng ký tài khoản mới
+            </Typography>
+            <Box
+                component="form"
+                onSubmit={handleSubmit}
+                sx={{
+                    width: '100%',
+                    maxWidth: 600,
+                    bgcolor: '#fff',
+                    p: 4,
+                    borderRadius: 2,
+                    boxShadow: 3,
+                }}
+            >
+                <Grid container spacing={2}>
+                    {Object.keys(formFields).map((key) => (
+                        <Grid item xs={12} sm={key === 'dateOfBirth' ? 12 : 6} key={key}>
+                            <TextField
+                                label={formFields[key].label}
+                                type={formFields[key].type}
+                                name={key}
+                                value={form[key]}
+                                onChange={handleChange}
+                                fullWidth
+                                error={!!errors[key]}
+                                helperText={errors[key]}
+                                InputLabelProps={formFields[key].type === 'date' && {
+                                    shrink: true,
+                                }}
+                            />
+                        </Grid>
+                    ))}
+                </Grid>
+                {registerError && (
+                    <Typography color="error" sx={{ mt: 2 }}>
+                        {registerError}
+                    </Typography>
+                )}
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    sx={{ mt: 3 }}
+                >
+                    Đăng ký
+                </Button>
+            </Box>
+
             <RegisterSuccessModal
                 show={success} registeredEmail={form.email}
                 handleCloseModal={handleCloseModal} />
-        </div>
+        </Box>
     );
 };
 

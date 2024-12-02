@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Avatar, Box, CardMedia, CircularProgress, Grid, IconButton, MenuItem, Paper, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete"
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ZoomImage from "../common/ZoomImage";
 import TextInput from "../common/TextInput";
+import { deleteFileFirebase, uploadFileToFirebase } from "../../configs/firebaseSDK";
+import { updateComment } from "../../services/commentService";
+import { AuthContext } from "../../contexts/AuthContext";
 
-const Comment = ({ comment, removeCommentFromList }) => {
+const Comment = ({ comment, removeCommentFromList, editCommentInList }) => {
+    const { user } = useContext(AuthContext)
     const [isEditing, setIsEditing] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false)
@@ -38,8 +42,17 @@ const Comment = ({ comment, removeCommentFromList }) => {
     const handleEditComment = async (editedComment) => {
         setIsEditing(false)
         setIsLoading(true)
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        const filePath = `comment/${editedComment.id}`
+        if (editedComment.newImage) {
+            const newImageUrl = await uploadFileToFirebase(editedComment.newImage, filePath)
+            editedComment.imageUrl = newImageUrl
+        }
+        if (!editedComment.imageUrl) {
+            deleteFileFirebase(filePath)
+        }
         setIsLoading(false)
+        updateComment(editedComment)
+        editCommentInList(editedComment)
     }
 
     return (
@@ -63,7 +76,7 @@ const Comment = ({ comment, removeCommentFromList }) => {
                         {"20:20 31/05/2024"}
                     </Typography>
                 </Box>
-                {isEditing && <TextInput handleSubmit={handleEditComment} type="comment" editingComment={comment} />}
+                {isEditing && <TextInput handleSubmit={handleEditComment} type="comment" comment={comment} />}
                 {isLoading &&
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
                         <CircularProgress size={30} />
@@ -73,15 +86,16 @@ const Comment = ({ comment, removeCommentFromList }) => {
                         <Typography variant="body2" color="text.secondary">
                             {comment.content}
                         </Typography>
-                        <IconButton onClick={() => setShowMenu(!showMenu)}
-                            sx={{
-                                position: "absolute",
-                                top: "50%",
-                                right: "-40px",
-                                transform: "translateY(-50%)",
-                            }}>
-                            <MoreVertIcon />
-                        </IconButton>
+                        {user.username === comment.authorUsername &&
+                            <IconButton onClick={() => setShowMenu(!showMenu)}
+                                sx={{
+                                    position: "absolute",
+                                    top: "50%",
+                                    right: "-40px",
+                                    transform: "translateY(-50%)",
+                                }}>
+                                <MoreVertIcon />
+                            </IconButton>}
                     </>}
                 {showMenu && <Box sx={{
                     position: "absolute", top: "80%",
@@ -111,7 +125,7 @@ const Comment = ({ comment, removeCommentFromList }) => {
             </Box>
 
             <Grid item xs={12} sm={6} md={4} sx={{ marginLeft: "25px", marginBottom: "12px" }} >
-                {comment.imageUrl &&
+                {!isEditing && !isLoading && comment.imageUrl &&
                     <>
                         <CardMedia component="img" image={comment.imageUrl} alt="Ảnh" onClick={handleZoom}
                             sx={{

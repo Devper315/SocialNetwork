@@ -34,8 +34,8 @@ public class PostService {
 
     public List<PostDTO> getMyPost() {
         User requestor = userService.getCurrentUser();
-        List<Post> posts = postRepo.findByAuthor(requestor);
-        return posts.stream().map(PostDTO::new).collect(Collectors.toList());
+        List<Post> posts = postRepo.findAll();
+        return posts.stream().map(PostDTO::new).toList();
     }
 
     public List<PostDTO> getApprovalPostsByGroup(Long groupId, Long approvalStatus) {

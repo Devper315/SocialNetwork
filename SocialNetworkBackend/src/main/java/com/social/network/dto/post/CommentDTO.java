@@ -1,5 +1,6 @@
 package com.social.network.dto.post;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.social.network.entity.post.Comment;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CommentDTO {
     Long id;
     String content;

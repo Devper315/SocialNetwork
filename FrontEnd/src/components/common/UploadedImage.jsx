@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-const UploadedImage = ({image, handleDelete}) => {
+const UploadedImage = ({image, url, handleDelete}) => {
     const [imagePreview, setImagePreview] = useState('')
     useEffect(() => {
         if (!image) return
@@ -13,7 +13,7 @@ const UploadedImage = ({image, handleDelete}) => {
     }, [image])
     return (
         <div style={{ position: "relative" }}>
-            <img src={imagePreview} alt="ảnh"
+            <img src={imagePreview || url} alt="ảnh"
                 style={{
                     height: 50, borderRadius: 4, width: '50px', objectFit: "cover"
                 }} />

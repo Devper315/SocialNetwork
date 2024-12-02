@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog, DialogTitle, DialogContent, IconButton, Typography, Box, CircularProgress } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Comment from "./Comment";
 import TextInput from "../common/TextInput"
-import { format } from "date-fns";
-import { createComment, deleteComment, deleteCommentById, fetchCommentsByPostId, updateComment } from "../../services/commentService";
-import { AuthContext } from "../../contexts/AuthContext"
-import { uploadFileToFirebase } from "../../configs/firebaseSDK";
+import { createComment, deleteCommentById, fetchCommentsByPostId, updateComment } from "../../services/commentService";
+import { deleteFileFirebase, uploadFileToFirebase } from "../../configs/firebaseSDK";
 
 const CommentList = ({ post, open, onClose }) => {
     const [comments, setComments] = useState([])
@@ -21,36 +19,39 @@ const CommentList = ({ post, open, onClose }) => {
         const getCommentsByPost = async () => {
             setHeadLoading(true)
             const commentData = await fetchCommentsByPostId(post.id)
-            await new Promise(resolve => setTimeout(resolve, 1000))
             setComments(commentData)
             setHeadLoading(false)
         }
         getCommentsByPost()
     }, [open])
 
-    const handleAddComment = async (text, image) => {
+    const handleAddComment = async (inputComment) => {
         setFootLoading(true)
-        if (text.trim() === "") return;
+        if (inputComment.content === "") return;
         let newComment = {
             postId: post.id,
-            content: text,
+            content: inputComment.content,
         }
         newComment = await createComment(newComment)
-        console.log(newComment)
-        if (image) {
+        if (inputComment.newImage) {
             const filePath = `comment/${newComment.id}`
-            const imageUrl = await uploadFileToFirebase(image, filePath)
+            const imageUrl = await uploadFileToFirebase(inputComment.newImage, filePath)
             newComment.imageUrl = imageUrl
         }
-        console.log(newComment)
         await new Promise(resolve => setTimeout(resolve, 500))
         setFootLoading(false)
+        console.log(newComment)
         updateComment(newComment)
         setComments([...comments, newComment])
     }
 
+    const editCommentInList = (editedComment) => {
+        setComments(comments.map(c => c.id === editedComment.id ? editedComment : c))
+    }
+
     const removeCommentFromList = (comment) => {
         setComments(comments.filter(c => c.id !== comment.id))
+        deleteFileFirebase(`comment/${comment.id}`)
         deleteCommentById(comment.id)
     }
     return (
@@ -74,7 +75,7 @@ const CommentList = ({ post, open, onClose }) => {
                         Chưa có bình luận nào
                     </Typography>}
                 {comments.length > 0 && comments.map(comment => (
-                    <Comment key={comment.id} comment={comment}
+                    <Comment key={comment.id} comment={comment} editCommentInList={editCommentInList}
                         removeCommentFromList={removeCommentFromList} />
                 ))}
                 {footLoading &&

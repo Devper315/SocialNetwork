@@ -7,10 +7,11 @@ import { fetchEmoji } from "../../services/conversationService";
 import { handleScroll } from "../../services/infiniteScroll";
 import UploadedImage from "./UploadedImage";
 
-const TextInput = ({ handleSubmit, type, editingComment }) => {
-    const [text, setText] = useState((editingComment && editingComment.content) || "")
+const TextInput = ({ handleSubmit, type, comment }) => {
+    const [text, setText] = useState((comment && comment.content) || "")
+    const [editingComment, setEditingComment] = useState(comment)
     const textareaRef = useRef(null)
-    const [commentImage, setCommentImage] = useState(null);
+    const [commentImage, setCommentImage] = useState(null)
     const [messageImages, setMessageImages] = useState([])
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [emojis, setEmojis] = useState([])
@@ -53,7 +54,9 @@ const TextInput = ({ handleSubmit, type, editingComment }) => {
         setShowEmojiPicker(false)
         if (type === 'message')
             handleSubmit(text, messageImages)
-        else handleSubmit(text, commentImage)
+        else {
+            handleSubmit({ ...editingComment, content: text, newImage: commentImage })
+        }
         setText('')
         setMessageImages([])
         setCommentImage(null)
@@ -64,11 +67,16 @@ const TextInput = ({ handleSubmit, type, editingComment }) => {
             e.preventDefault();
             onSubmit();
         }
-    };
+    }
+
+    const handleDeleteCommentImage = () => {
+        setEditingComment({ ...editingComment, imageUrl: undefined })
+        setCommentImage(null)
+    }
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, marginBottom: "10px" }}>
-            {(messageImages.length > 0 || commentImage) &&
+            {(messageImages.length > 0 || commentImage || (editingComment && editingComment.imageUrl)) &&
                 <Box sx={{
                     display: "flex", alignItems: "center",
                     width: "auto", gap: 1, padding: "5px", border: "1px solid #ddd",
@@ -78,29 +86,14 @@ const TextInput = ({ handleSubmit, type, editingComment }) => {
                         messageImages.map((image, index) =>
                             <UploadedImage key={index} image={image}
                                 handleDelete={() => handleRemoveMessageImage(index)} />)}
-                    {type === "comment" && commentImage &&
+                    {type === "comment" && (commentImage || (editingComment && editingComment.imageUrl)) &&
                         <UploadedImage image={commentImage} url={editingComment && editingComment.imageUrl}
-                            handleDelete={() => setCommentImage(null)} />}
+                            handleDelete={handleDeleteCommentImage} />}
                 </Box>
             }
 
-            {showEmojiPicker && (
-                <Box onScroll={(event) => handleScroll(event, loadMoreEmojis)}
-                    sx={{
-                        position: "relative", display: "grid", padding: 1, border: "1px solid #ddd",
-                        gridTemplateColumns: "repeat(8, 40px)", gridTemplateRows: "repeat(4, 40px)",
-                        width: "auto", height: "150px", overflow: "auto",
-                    }}>
-                    {emojis.map(
-                        (emoji) => (
-                            <IconButton key={emoji.id} onClick={() => handleEmojiClick(emoji)}
-                                sx={{ color: "#fff", "&:hover": { backgroundColor: "#f0f0f0" } }}>
-                                {emoji.content}
-                            </IconButton>)
-                    )}
-                </Box>
-            )}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+
                 <IconButton
                     component="label"
                     sx={{
@@ -136,6 +129,26 @@ const TextInput = ({ handleSubmit, type, editingComment }) => {
                         }}>
                         <EmojiEmotionsIcon />
                     </IconButton>
+                    {showEmojiPicker && (
+                        <Box onScroll={(event) => handleScroll(event, loadMoreEmojis)}
+                            sx={{
+                                position: "absolute", zIndex: 10, display: "grid",
+                                padding: 1, border: "1px solid #ddd",
+                                gridTemplateColumns: "repeat(8, 40px)", gridTemplateRows: "repeat(4, 40px)",
+                                width: "400x", height: "150px", overflow: "auto",
+                                backgroundColor: "#fff", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                                bottom: "105%", right: "-10%"
+
+                            }}>
+                            {emojis.map(
+                                (emoji) => (
+                                    <IconButton key={emoji.id} onClick={() => handleEmojiClick(emoji)}
+                                        sx={{ color: "#fff", "&:hover": { backgroundColor: "#f0f0f0" } }}>
+                                        {emoji.content}
+                                    </IconButton>)
+                            )}
+                        </Box>
+                    )}
                 </Box>
 
                 <IconButton

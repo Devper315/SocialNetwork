@@ -43,7 +43,7 @@ const PostList = () => {
         setShowConfirmDelete(false)
         setHeadLoading(true)
         postToDelete.images.forEach(image => {
-            deleteFileFirebase(image)
+            deleteFileFirebase(image.filePath)
         })
         deletePost(postToDelete.id)
         removePostFromList(postToDelete)
@@ -61,15 +61,18 @@ const PostList = () => {
     return (
         <>
             <CreatePost addPostToList={addPostToList} setHeadLoading={setHeadLoading} />
+
             {headLoading &&
                 <Box sx={{ display: "flex", justifyContent: "center", minHeight: "50px" }}>
                     <CircularProgress />
                 </Box>}
+
             <Box sx={{ padding: "16px" }}>
                 {posts.map((post, index) => (
                     <PostPage post={post} key={index} editPostInList={editPostInList}
                         setShowConfirmDelete={setShowConfirmDelete} setPostToDelete={setPostToDelete} />
                 ))}
+                
                 {footLoading &&
                     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
                         <CircularProgress />

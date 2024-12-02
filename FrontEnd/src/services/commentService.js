@@ -3,10 +3,11 @@ import httpClient from "../configs/httpClient";
 
 export const createComment = async(form) => {
     try {
+        console.log(form)
         const response = await httpClient.post(API.COMMENT, form);
         return response.data.result
     } catch (error) {
-        console.log("Lỗi khi tạo bình luận", error.response)
+        console.log("Lỗi khi tạo bình luận", error)
     }
 }
 
@@ -20,10 +21,10 @@ export const getCommentById = async(id) => {
 };
 export const updateComment = async(comment) => {
     try {
-        const response = await httpClient.put(`${API.COMMENT}/${comment.id}`, {});
+        const response = await httpClient.put(`${API.COMMENT}/${comment.id}`, comment);
         return response.data.result;
     } catch (error) {
-        console.log("Lỗi khi sửa comment", error.response)
+        console.log("Lỗi khi sửa comment", error)
     }
 }
 
