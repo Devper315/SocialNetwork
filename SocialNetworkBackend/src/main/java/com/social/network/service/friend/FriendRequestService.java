@@ -46,6 +46,7 @@ public class FriendRequestService {
         String result = "Từ chối kết bạn";
         if (accept) {
             friendshipService.createFriendShip(request);
+            notificationService.notifyAcceptFriend(request.getRequestor(), request.getRecipient());
             result = "Chấp nhận kết bạn";
         }
         friendRequestRepo.delete(request);

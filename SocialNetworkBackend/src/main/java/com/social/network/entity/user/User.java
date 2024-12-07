@@ -31,7 +31,4 @@ public class User {
 
     @ManyToMany
     List<Role> roles;
-
-
-
 }

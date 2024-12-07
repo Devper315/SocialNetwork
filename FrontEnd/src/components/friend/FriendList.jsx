@@ -1,59 +1,60 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { ChatSocketContext } from '../../contexts/ChatSocketContext';
-import { Tabs, Tab, Box, Pagination } from '@mui/material';
-import FriendTab from './FriendTab';
-import RequestTab from './RequestTab';
-import SearchTab from './SearchTab';
-import { fetchFriend, fetchFriendRequest, searchFriend, actionFriendRequestById } from '../../services/friendService';
+import React, { useContext, useEffect, useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { ChatSocketContext } from '../../contexts/ChatSocketContext'
+import { Tabs, Tab, Box, Pagination } from '@mui/material'
+import FriendTab from './FriendTab'
+import RequestTab from './RequestTab'
+import SearchTab from './SearchTab'
+import { fetchFriend, fetchFriendRequest, searchFriend, actionFriendRequestById } from '../../services/friendService'
 
 const FriendList = () => {
-    const { openChatByFriend } = useContext(ChatSocketContext);
-    const navigate = useNavigate();
-    const location = useLocation();
+    const { openChatByFriend } = useContext(ChatSocketContext)
+    const navigate = useNavigate()
+    const location = useLocation()
 
-    const [activeTab, setActiveTab] = useState(location.state?.activeTab || 0);
-    const [friends, setFriends] = useState([]);
-    const [requests, setRequests] = useState([]);
-    const [searchResults, setSearchResults] = useState([]);
-    const [pagination, setPagination] = useState({ page: 1, totalPages: null });
-    const [keyword, setKeyword] = useState(location.state?.keyword || '');
+    const [activeTab, setActiveTab] = useState(location.state?.activeTab || 0)
+    const [friends, setFriends] = useState([])
+    const [requests, setRequests] = useState([])
+    const [searchResults, setSearchResults] = useState([])
+    const [pagination, setPagination] = useState({ page: 1, totalPages: null })
+    const [keyword, setKeyword] = useState(location.state?.keyword || '')
 
     const fetchData = async () => {
         if (activeTab === 0) {
-            const data = await fetchFriend(pagination.page);
-            setFriends(data.result || []);
-            setPagination((prev) => ({ ...prev, totalPages: data.totalPages }));
+            const data = await fetchFriend(pagination.page)
+            setFriends(data.result || [])
+            setPagination({ ...pagination, totalPages: data.totalPages })
         } else if (activeTab === 1) {
-            const data = await fetchFriendRequest(pagination.page);
-            setRequests(data.result || []);
-            setPagination((prev) => ({ ...prev, totalPages: data.totalPages }));
+            const data = await fetchFriendRequest(pagination.page)
+            setRequests(data.result || [])
+            setPagination({ ...pagination, totalPages: data.totalPages })
         } else if (activeTab === 2 && keyword.trim()) {
-            const data = await searchFriend(keyword, pagination.page);
-            setSearchResults(data.result || []);
-            setPagination((prev) => ({ ...prev, totalPages: data.totalPages }));
+            const data = await searchFriend(keyword, pagination.page)
+            setSearchResults(data.result || [])
+            setPagination({ ...pagination, totalPages: data.totalPages })
         }
-    };
+    }
 
     useEffect(() => {
-        fetchData();
-    }, [activeTab, pagination.page]);
+        fetchData()
+    }, [activeTab, pagination.page])
 
     const handleSearch = () => {
-        fetchData();
-    };
+        fetchData()
+    }
 
     const updateFriendRequest = (requestId, accept) => {
-        actionFriendRequestById(requestId, accept);
-        setRequests((prev) =>
-            prev.map((item) => (item.id === requestId ? { ...item, status: accept ? 'Đã chấp nhận' : 'Đã từ chối' } : item))
-        );
-    };
+        actionFriendRequestById(requestId, accept)
+        setRequests(requests.map(item => 
+            item.id === requestId 
+            ? { ...item, status: accept ? 'Đã chấp nhận' : 'Đã từ chối' } 
+            : item))
+    }
 
     const handleTabChange = (_, newValue) => {
-        setActiveTab(newValue);
-        navigate(location.pathname, { state: { activeTab: newValue } });
-    };
+        setActiveTab(newValue)
+        navigate(location.pathname, { state: { activeTab: newValue } })
+    }
 
     return (
         <Box sx={{
@@ -82,7 +83,7 @@ const FriendList = () => {
                 />
             )}
         </Box>
-    );
-};
+    )
+}
 
-export default FriendList;
+export default FriendList

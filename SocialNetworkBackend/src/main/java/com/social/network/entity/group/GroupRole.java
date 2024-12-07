@@ -10,7 +10,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "group_role")
 public class GroupRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

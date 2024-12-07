@@ -26,5 +26,4 @@ public class Image {
 
     @ManyToOne
     MessageCustom message;
-
 }

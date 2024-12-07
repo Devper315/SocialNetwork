@@ -25,7 +25,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class GroupMemberService {
     GroupMemberRepo groupMemberRepo;
-    private final GroupRepo groupRepo;
+    GroupRepo groupRepo;
 
     public boolean addGroupMember(Group group, User user, Long role) {
         GroupMember groupMember = GroupMember.builder()

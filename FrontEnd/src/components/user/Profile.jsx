@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { createFriendRequest, actionFriendRequestByUserId, unfriend } from "../../services/friendService";
-import { fetchProfileById, updateMyProfile } from '../../services/profileService';
-import EditProfileModal from './EditProfileModal';
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { createFriendRequest, actionFriendRequestByUserId, unfriend } from "../../services/friendService"
+import { fetchProfileById, updateMyProfile } from '../../services/profileService'
+import EditProfileModal from './EditProfileModal'
 
 const Profile = () => {
-    const { id } = useParams();
-    const [profile, setProfile] = useState({});
-    const [showModal, setShowModal] = useState(false);
+    const { id } = useParams()
+    const [profile, setProfile] = useState({})
+    const [showModal, setShowModal] = useState(false)
 
     useEffect(() => {
         const getProfile = async () => {
-            const profileData = await fetchProfileById(id);
-            setProfile(profileData);
-        };
-        getProfile();
-    }, [id]);
+            const profileData = await fetchProfileById(id)
+            setProfile(profileData)
+        }
+        getProfile()
+    }, [id])
 
     const sendFriendRequest = () => {
-        createFriendRequest(profile.id);
-        setProfile(prev => ({ ...prev, sentFriendRequest: true }));
-    };
+        createFriendRequest(profile.id)
+        setProfile({ ...profile, sentFriendRequest: true })
+    }
 
     const updateFriendRequest = (accept) => {
         setProfile(prev => ({
@@ -28,22 +28,22 @@ const Profile = () => {
             friend: accept,
             hasFriendRequest: false,
             sentFriendRequest: false,
-        }));
-        actionFriendRequestByUserId(profile.id, accept);
-    };
+        }))
+        actionFriendRequestByUserId(profile.id, accept)
+    }
 
     const handleUnfriend = () => {
-        unfriend(profile.id);
-        setProfile(prev => ({ ...prev, friend: false }));
-    };
+        unfriend(profile.id)
+        setProfile(prev => ({ ...prev, friend: false }))
+    }
 
     const handleCloseModal = () => {
-        setShowModal(false);
-    };
+        setShowModal(false)
+    }
     const updateProfile = async (updatedData) => {
-        await updateMyProfile(updatedData);
-        setProfile(updatedData);
-    };
+        await updateMyProfile(updatedData)
+        setProfile(updatedData)
+    }
 
 
     return (
@@ -86,7 +86,7 @@ const Profile = () => {
                 profile={profile}
                 updateProfile={updateProfile} />
         </div>
-    );
-};
+    )
+}
 
-export default Profile;
+export default Profile
