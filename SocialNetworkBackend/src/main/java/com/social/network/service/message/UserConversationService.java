@@ -1,10 +1,9 @@
 package com.social.network.service.message;
 
-import com.social.network.dto.request.MessageDTO;
+import com.social.network.dto.conversation.MessageDTO;
 import com.social.network.entity.message.Conversation;
 import com.social.network.entity.message.UserConversation;
 import com.social.network.entity.user.User;
-import com.social.network.repository.message.ConversationRepo;
 import com.social.network.repository.message.UserConversationRepo;
 import com.social.network.service.user.UserService;
 import jakarta.persistence.Tuple;
@@ -15,8 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

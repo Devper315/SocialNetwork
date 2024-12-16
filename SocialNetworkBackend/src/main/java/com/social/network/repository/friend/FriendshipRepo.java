@@ -17,8 +17,10 @@ import java.util.List;
 
 @Repository
 public interface FriendshipRepo extends JpaRepository<Friendship, FriendshipId> {
-    @Query(value = "SELECT f FROM Friendship f WHERE f.user1 = :requestor OR f.user2 = :requestor")
-    Page<Friendship> findMyFriendships(User requestor, Pageable pageable);
+    @Query("SELECT u FROM Friendship f JOIN User u " +
+            "ON (u = f.user1 AND f.user2 = :requestor) " +
+            "OR (u = f.user2 AND f.user1 = :requestor)")
+    Page<User> findMyFriendships(User requestor, Pageable pageable);
 
     @Query("SELECT CASE WHEN COUNT(f) > 0 THEN TRUE ELSE FALSE END " +
             "FROM Friendship f " +

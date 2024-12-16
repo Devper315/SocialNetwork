@@ -1,13 +1,11 @@
 package com.social.network.dto.response.message;
 
-import com.social.network.dto.request.MessageDTO;
 import com.social.network.entity.message.Conversation;
 import com.social.network.entity.message.ConversationType;
 import com.social.network.entity.user.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 

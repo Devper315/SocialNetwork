@@ -1,10 +1,7 @@
 package com.social.network.service.user;
 
-import com.social.network.dto.request.user.ProfileUpdateRequest;
-import com.social.network.dto.response.user.ProfileResponse;
-import com.social.network.entity.user.FriendRequest;
+import com.social.network.dto.user.UserDTO;
 import com.social.network.entity.user.User;
-import com.social.network.mapper.UserMapper;
 import com.social.network.service.friend.FriendRequestService;
 import com.social.network.service.friend.FriendshipService;
 import lombok.AccessLevel;
@@ -19,16 +16,22 @@ public class ProfileService {
     UserService userService;
     FriendshipService friendshipService;
     FriendRequestService friendRequestService;
-    UserMapper userMapper;
 
-    public ProfileResponse getProfileById(Long id) {
+    public UserDTO getProfileById(Long id) {
         User requestor = userService.getCurrentUser();
-        User result = userService.getById(id);
-        ProfileResponse response = userMapper.toProfileResponse(result);
-        response.setMyProfile(requestor.getId().equals(result.getId()));
-        response.setFriend(friendshipService.existsByUsers(requestor, result));
-        response.setHasFriendRequest(friendRequestService.getRequestByUsers(result, requestor) != null);
-        response.setSentFriendRequest(friendRequestService.getRequestByUsers(requestor, result) != null);
+        User user = userService.getById(id);
+        UserDTO response = new UserDTO(user);
+        boolean myProfile, friend, toSendRequest, hasRequest, sentRequest;
+        myProfile = requestor.getId().equals(user.getId());
+        friend = friendshipService.existsByUsers(requestor, user);
+        hasRequest = friendRequestService.getRequestByUsers(user, requestor) != null;
+        sentRequest = friendRequestService.getRequestByUsers(requestor, user) != null;
+        toSendRequest = !myProfile && !friend && ! hasRequest && ! sentRequest;
+        response.setMyProfile(myProfile);
+        response.setFriend(friend);
+        response.setHasRequest(hasRequest);
+        response.setToSendRequest(toSendRequest);
+        response.setSentRequest(sentRequest);
         return response;
     }
 

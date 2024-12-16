@@ -1,4 +1,4 @@
-package com.social.network.dto.response.auth;
+package com.social.network.dto.auth;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +8,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class IntrospectResponse {
-	boolean valid;
+public class LoginResponse {
+	String token;
 }

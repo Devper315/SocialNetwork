@@ -1,12 +1,10 @@
 package com.social.network.controller.auth;
 
 
-import com.social.network.dto.request.auth.IntrospectRequest;
-import com.social.network.dto.request.auth.LoginRequest;
-import com.social.network.dto.request.user.UserCreateRequest;
+import com.social.network.dto.auth.LoginRequest;
+import com.social.network.dto.user.UserDTO;
 import com.social.network.dto.response.ApiResponse;
-import com.social.network.dto.response.auth.IntrospectResponse;
-import com.social.network.dto.response.auth.LoginResponse;
+import com.social.network.dto.auth.LoginResponse;
 import com.social.network.service.auth.AuthService;
 import com.social.network.service.user.UserService;
 import jakarta.validation.Valid;
@@ -31,14 +29,9 @@ public class AuthController {
                 .build();
     }
 
-    @PostMapping("/introspect")
-    public ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request){
-        IntrospectResponse result = authService.introspect(request);
-        return ApiResponse.<IntrospectResponse>builder().result(result).build();
-    }
 
     @PostMapping ("/register")
-    public void register(@Valid @RequestBody UserCreateRequest request){
+    public void register(@Valid @RequestBody UserDTO request){
         userService.createUser(request);
     }
 

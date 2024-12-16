@@ -6,10 +6,8 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.social.network.dto.request.auth.IntrospectRequest;
-import com.social.network.dto.request.auth.LoginRequest;
-import com.social.network.dto.response.auth.IntrospectResponse;
-import com.social.network.dto.response.auth.LoginResponse;
+import com.social.network.dto.auth.LoginRequest;
+import com.social.network.dto.auth.LoginResponse;
 import com.social.network.entity.user.User;
 import com.social.network.exception.AppException;
 import com.social.network.exception.ErrorCode;
@@ -22,7 +20,6 @@ import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.util.*;
@@ -57,18 +54,6 @@ public class AuthService {
                 .build();
     }
 
-    public IntrospectResponse introspect(IntrospectRequest request) {
-        String token = request.getToken();
-        boolean isValid = true;
-        try {
-            verifyToken(token, false);
-        } catch (Exception e) {
-            isValid = false;
-        }
-        return IntrospectResponse.builder()
-                .valid(isValid)
-                .build();
-    }
 
     public String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
@@ -114,11 +99,9 @@ public class AuthService {
 
     private String buildScope(User user) {
         StringJoiner joiner = new StringJoiner(" ");
-        if (!CollectionUtils.isEmpty(user.getRoles())) {
+        if (!user.getRoles().isEmpty()) {
             user.getRoles().forEach(role -> {
                 joiner.add("ROLE_" + role.getName());
-//				if (!role.getPermissionSet().isEmpty())
-//					role.getPermissionSet().forEach(permission -> joiner.add(permission.getName()));
             });
         }
         return joiner.toString();

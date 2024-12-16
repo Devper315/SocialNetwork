@@ -1,4 +1,4 @@
-package com.social.network.dto.request.auth;
+package com.social.network.dto.auth;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class IntrospectRequest {
-	String token;
+public class LoginRequest {
+	String username;
+	String password;
 }

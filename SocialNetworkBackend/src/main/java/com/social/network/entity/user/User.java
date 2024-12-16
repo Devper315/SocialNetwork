@@ -1,6 +1,6 @@
 package com.social.network.entity.user;
 
-import com.social.network.entity.image.Image;
+import com.social.network.dto.user.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -31,4 +31,13 @@ public class User {
 
     @ManyToMany
     List<Role> roles;
+
+    public User (UserDTO userDTO){
+        this.firstName = userDTO.getFirstName();
+        this.lastName = userDTO.getLastName();
+        this.username = userDTO.getUsername();
+        this.email = userDTO.getEmail();
+        this.password = userDTO.getPassword();
+        this.dateOfBirth = userDTO.getDateOfBirth();
+    }
 }

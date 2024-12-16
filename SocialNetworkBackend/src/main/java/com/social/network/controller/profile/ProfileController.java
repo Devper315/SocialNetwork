@@ -1,8 +1,8 @@
 package com.social.network.controller.profile;
 
-import com.social.network.dto.request.user.ProfileUpdateRequest;
+import com.social.network.dto.user.ProfileUpdateRequest;
 import com.social.network.dto.response.ApiResponse;
-import com.social.network.dto.response.user.ProfileResponse;
+import com.social.network.dto.user.UserDTO;
 import com.social.network.service.user.ProfileService;
 import com.social.network.service.user.UserService;
 import lombok.AccessLevel;
@@ -18,8 +18,8 @@ public class ProfileController {
     ProfileService profileService;
     UserService userService;
     @GetMapping("/{id}")
-    public ApiResponse<ProfileResponse> getProfile(@PathVariable Long id){
-        return ApiResponse.<ProfileResponse>builder()
+    public ApiResponse<UserDTO> getProfile(@PathVariable Long id){
+        return ApiResponse.<UserDTO>builder()
                 .result(profileService.getProfileById(id))
                 .build();
     }

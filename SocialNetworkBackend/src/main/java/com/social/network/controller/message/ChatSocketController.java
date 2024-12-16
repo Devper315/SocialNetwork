@@ -1,7 +1,7 @@
 package com.social.network.controller.message;
 
 
-import com.social.network.dto.request.MessageDTO;
+import com.social.network.dto.conversation.MessageDTO;
 import com.social.network.service.message.ConversationService;
 import com.social.network.service.message.MessageService;
 import lombok.AccessLevel;
@@ -10,8 +10,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor

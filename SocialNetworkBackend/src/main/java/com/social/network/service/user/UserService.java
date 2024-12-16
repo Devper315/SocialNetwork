@@ -1,16 +1,14 @@
 package com.social.network.service.user;
 
-import com.social.network.dto.request.user.ChangePasswordRequest;
-import com.social.network.dto.request.user.UserCreateRequest;
-import com.social.network.dto.request.user.ProfileUpdateRequest;
+import com.social.network.dto.user.ChangePasswordRequest;
+import com.social.network.dto.user.UserDTO;
+import com.social.network.dto.user.ProfileUpdateRequest;
 import com.social.network.dto.response.ApiResponse;
-import com.social.network.dto.response.user.UserResponse;
 import com.social.network.entity.user.EmailVerification;
 import com.social.network.entity.user.Role;
 import com.social.network.entity.user.User;
 import com.social.network.exception.AppException;
 import com.social.network.exception.ErrorCode;
-import com.social.network.mapper.UserMapper;
 import com.social.network.repository.user.EmailVerificationRepo;
 import com.social.network.repository.user.UserRepo;
 import com.social.network.service.EmailService;
@@ -36,7 +34,6 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
     UserRepo userRepo;
-    UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     RoleService roleService;
     EmailVerificationRepo emailVerificationRepo;
@@ -55,12 +52,12 @@ public class UserService {
         return userRepo.findAllById(ids);
     }
 
-    public void createUser(UserCreateRequest request) {
+    public void createUser(UserDTO request) {
         if (userRepo.existsByUsername(request.getUsername()))
             throw new AppException(ErrorCode.USER_EXISTED);
         if (userRepo.existsByEmail(request.getEmail()))
             throw new AppException(ErrorCode.EMAIL_USED);
-        User user = userMapper.toUser(request);
+        User user = new User(request);
         user.setFullName(user.getFirstName() + " " + user.getLastName());
         user.setEmail(user.getEmail().toLowerCase());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -74,11 +71,6 @@ public class UserService {
         userRepo.save(user);
         emailVerificationRepo.save(emailVerification);
         emailService.sendHtmlEmail(request.getEmail(), user.getFullName(), emailVerification.getToken());
-    }
-
-
-    public void deleteById(Long id) {
-        userRepo.deleteById(id);
     }
 
     public User getCurrentUser() {
@@ -102,7 +94,6 @@ public class UserService {
         user.setFullName(user.getFirstName() + " " + user.getLastName());
         user.setDateOfBirth(request.getDateOfBirth());
         userRepo.save(user);
-
         return true;
     }
 
@@ -118,12 +109,12 @@ public class UserService {
                 .build();
     }
 
-    public Page<UserResponse> search(String keyword, int page){
+    public Page<UserDTO> search(String keyword, int page, int size){
         User requestor = getCurrentUser();
-        Pageable pageable = PageableUtils.createPageable(page, 2, "lastName");
+        Pageable pageable = PageableUtils.createPageable(page, size, "lastName");
         keyword = "%" + keyword + "%";
         Page<User> resultPage = userRepo.search(requestor, keyword, pageable);
-        return resultPage.map(UserResponse::new);
+        return resultPage.map(UserDTO::new);
     }
 
 
@@ -138,4 +129,6 @@ public class UserService {
         }
         return false;
     }
+
+
 }

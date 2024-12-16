@@ -1,4 +1,4 @@
-package com.social.network.dto.request.user;
+package com.social.network.dto.user;
 
 import lombok.AccessLevel;
 import lombok.Builder;

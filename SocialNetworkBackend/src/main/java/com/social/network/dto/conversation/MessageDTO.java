@@ -1,4 +1,4 @@
-package com.social.network.dto.request;
+package com.social.network.dto.conversation;
 
 import com.social.network.dto.response.message.ConversationResponse;
 import lombok.*;

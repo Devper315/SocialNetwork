@@ -1,14 +1,10 @@
 package com.social.network.controller.group;
 
-import com.social.network.dto.request.group.GroupRequest;
+import com.social.network.dto.group.GroupDTO;
 import com.social.network.dto.response.ApiResponse;
-import com.social.network.dto.response.user.UserResponse;
+import com.social.network.dto.user.UserDTO;
 import com.social.network.entity.group.Group;
-import com.social.network.service.group.GroupMemberService;
 import com.social.network.service.group.GroupService;
-import com.social.network.service.notification.NotificationService;
-import com.social.network.service.post.PostService;
-import com.social.network.service.user.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,13 +19,12 @@ import java.util.List;
 @RequestMapping("/api/user/group")
 public class GroupController {
     GroupService groupService;
-    PostService postService;
 
     @GetMapping
     public ApiResponse<List<Group>> search(
             @RequestParam(defaultValue = "") String keyword,
-            @RequestParam int page) {
-        Page<Group> groupPage = groupService.search(keyword, page);
+            @RequestParam int page, @RequestParam int size) {
+        Page<Group> groupPage = groupService.search(keyword, page, size);
         return ApiResponse.<List<Group>>builder()
                 .result(groupPage.getContent())
                 .totalPages(groupPage.getTotalPages())
@@ -39,8 +34,8 @@ public class GroupController {
     @GetMapping("/my")
     public ApiResponse<List<Group>> getMyGroup(
             @RequestParam(defaultValue = "") String keyword,
-            @RequestParam int page) {
-        Page<Group> groupPage = groupService.searchMyGroups(keyword, page);
+            @RequestParam int page, @RequestParam int size) {
+        Page<Group> groupPage = groupService.searchMyGroups(keyword, page, size);
         return ApiResponse.<List<Group>>builder()
                 .result(groupPage.getContent())
                 .totalPages(groupPage.getTotalPages())
@@ -56,8 +51,8 @@ public class GroupController {
 
 
     @GetMapping("/members/{groupId}")
-    public ApiResponse<List<UserResponse>> getMembersByGroupId(@PathVariable Long groupId) {
-        return ApiResponse.<List<UserResponse>>builder()
+    public ApiResponse<List<UserDTO>> getMembersByGroupId(@PathVariable Long groupId) {
+        return ApiResponse.<List<UserDTO>>builder()
                 .result(groupService.getMembersByGroupId(groupId))
                 .build();
     }
@@ -83,14 +78,14 @@ public class GroupController {
     }
 
     @PostMapping
-    public ApiResponse<Group> createGroup(@RequestBody GroupRequest request) {
+    public ApiResponse<Group> createGroup(@RequestBody GroupDTO request) {
         return ApiResponse.<Group>builder()
                 .result(groupService.createGroup(request))
                 .build();
     }
 
     @PutMapping
-    public ApiResponse<Group> updateGroup(@RequestBody GroupRequest request) {
+    public ApiResponse<Group> updateGroup(@RequestBody GroupDTO request) {
         return ApiResponse.<Group>builder()
                 .result(groupService.updateGroup(request))
                 .build();

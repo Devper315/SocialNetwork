@@ -1,6 +1,6 @@
 package com.social.network.service.message;
 
-import com.social.network.dto.request.MessageDTO;
+import com.social.network.dto.conversation.MessageDTO;
 import com.social.network.entity.image.Image;
 import com.social.network.entity.message.Conversation;
 import com.social.network.entity.message.MessageCustom;
