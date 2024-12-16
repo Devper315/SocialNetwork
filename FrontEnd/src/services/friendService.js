@@ -1,9 +1,9 @@
 import { API } from "../configs/config"
 import httpClient from "../configs/httpClient"
 
-export const fetchFriend = async(page) => {
+export const fetchFriend = async(page, size) => {
     try {
-        const params = { page: page - 1 }
+        const params = { page: page - 1, size }
         const response = await httpClient.get(API.FRIEND, { params })
         return response.data
     } catch (error) {
@@ -12,10 +12,9 @@ export const fetchFriend = async(page) => {
     }
 }
 
-export const searchFriend = async(keyword, page) => {
+export const searchFriend = async(keyword, page, size) => {
     try {
-        page -= 1
-        const params = { keyword, page }
+        const params = { keyword, page: page - 1, size }
         const response = await httpClient.get(API.SEARCH_FRIEND, { params })
         return response.data
     } catch (error) {
@@ -23,10 +22,9 @@ export const searchFriend = async(keyword, page) => {
     }
 }
 
-export const fetchFriendRequest = async(page) => {
+export const fetchFriendRequest = async(page, size) => {
     try {
-        page -= 1
-        const params = { page }
+        const params = { page: page - 1, size }
         const response = await httpClient.get(API.FRIEND_REQUEST, { params })
         return response.data
     } catch (error) {
@@ -40,19 +38,6 @@ export const createFriendRequest = async(userId) => {
         return response
     } catch (error) {
         console.log("Lỗi khi gửi yêu cầu kết bạn:", error.response)
-    }
-}
-
-
-export const actionFriendRequestById = async(id, accept) => {
-    const params = {
-        accept
-    }
-    try {
-        const response = await httpClient.delete(`${API.FRIEND_REQUEST}/${id}`, { params })
-        return response
-    } catch (error) {
-        console.log("Lỗi khi thao tác yêu cầu kết bạn:", error.response)
     }
 }
 

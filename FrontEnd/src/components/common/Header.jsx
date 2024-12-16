@@ -4,7 +4,6 @@ import { AppBar, Toolbar, Box, IconButton, Tooltip, Menu, MenuItem, ListItemIcon
 import HomeIcon from "@mui/icons-material/Home";
 import PeopleIcon from "@mui/icons-material/People";
 import GroupsIcon from "@mui/icons-material/Groups";
-import PostAddIcon from "@mui/icons-material/PostAdd";
 import { AuthContext } from "../../contexts/AuthContext";
 import Conversation from "../message/Conversation";
 import Notification from "../user/Notification";
@@ -36,7 +35,6 @@ const Header = () => {
                         </IconButton>
                     </Tooltip>
 
-                    {/* Các Icon gần nhau hơn */}
                     <Box display="flex" alignItems="center" gap={10}>
                         {user && (
                             <>
@@ -63,8 +61,7 @@ const Header = () => {
 
                     {user && (
                         <>
-                            <IconButton color="inherit" onClick={handleMenuOpen} aria-controls="user-menu"
-                                aria-haspopup="true"
+                            <IconButton color="inherit" onClick={handleMenuOpen}
                                 sx={{
                                     transition: "transform 0.3s",
                                     transform: isMenuOpen ? "rotate(90deg)" : "rotate(0deg)",

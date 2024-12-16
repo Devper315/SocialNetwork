@@ -31,14 +31,14 @@ const CreatePost = ({ addPostToList, setHeadLoading }) => {
     }
 
     return (
-        <Box sx={{ padding: "5px", position: "relative", right: 160, textAlign: "center" }}>
+        <Box sx={{ mb: "20px", textAlign: "left" }}>
             <Button
                 variant="outlined"
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={handleCreate}
                 sx={{
-                    padding: "10px 20px", fontSize: "16px", fontWeight: "bold",
-                    borderRadius: "20px", marginTop: "16px", borderColor: "#1976d2", color: "#1976d2",
+                    fontSize: "16px", fontWeight: "bold",
+                    borderRadius: "20px", borderColor: "#1976d2", color: "#1976d2",
                     "&:hover": {
                         backgroundColor: "rgba(25, 118, 210, 0.1)",
                         borderColor: "#1565c0",

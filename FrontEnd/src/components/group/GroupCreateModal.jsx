@@ -27,7 +27,7 @@ const GroupCreateModal = ({ show, handleClose }) => {
                     value={formData.name || ''}
                     onChange={handleInputChange}
                     variant="outlined"
-                    sx={{ mb: 2 }}
+                    sx={{ mt: 1 }}
                 />
             </DialogContent>
             <DialogActions>

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { deletePost, getPosts } from "../../services/postService";
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import PostPage from "./PostPage";
 import CreatePost from "./CreatePost";
 import { deleteFileFirebase } from "../../configs/firebaseSDK";
 import DialogNotification from "../common/DialogNotification";
 
-const PostList = () => {
-    const [posts, setPosts] = useState([]);
+const PostList = ({ posts, setPosts }) => {
     const [headLoading, setHeadLoading] = useState(false)
     const [footLoading, setFootLoading] = useState(true)
     const [openDeleteSuccess, setOpenDeleteSuccess] = useState(false)
@@ -59,20 +58,17 @@ const PostList = () => {
     }
 
     return (
-        <>
+        <Box sx={{width: "600px", padding: "0 16px 0 16px"}}>
             <CreatePost addPostToList={addPostToList} setHeadLoading={setHeadLoading} />
 
-            {headLoading &&
-                <Box sx={{ display: "flex", justifyContent: "center", minHeight: "50px" }}>
-                    <CircularProgress />
-                </Box>}
+            {headLoading && <CircularProgress />}
 
-            <Box sx={{ padding: "16px" }}>
+            <Box>
                 {posts.map((post, index) => (
                     <PostPage post={post} key={index} editPostInList={editPostInList}
                         setShowConfirmDelete={setShowConfirmDelete} setPostToDelete={setPostToDelete} />
                 ))}
-                
+
                 {footLoading &&
                     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
                         <CircularProgress />
@@ -98,7 +94,7 @@ const PostList = () => {
             </Dialog>
             <DialogNotification open={openDeleteSuccess} onClose={closeDeleteSuccess}
                 content="Bài viết đã được xóa thành công!" />
-        </>
+        </Box>
     )
 }
 

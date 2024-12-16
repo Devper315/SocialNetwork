@@ -81,7 +81,7 @@ const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete,
     return (
         <>
             <Card key={post.id} sx={{
-                borderRadius: "8px", boxShadow: 3, maxWidth: "600px", margin: "0 auto 20px",
+                borderRadius: "8px", boxShadow: 3, margin: "0 auto 20px",
             }}>
                 <CardContent sx={{ paddingTop: "4px" }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -90,7 +90,7 @@ const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete,
                             {post.author}
                         </Typography>
                         
-                        <div style={{ position: "relative" }}>
+                        <Box sx={{ position: "relative" }}>
                             {user.username === post.authorUsername &&
                                 <IconButton onClick={handleMenuOpen}>
                                     <MoreVertIcon />
@@ -101,7 +101,7 @@ const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete,
                                         padding: "8px", borderRadius: "4px", boxShadow: 3, position: "relative",
                                         zIndex: 1, backgroundColor: "#f5f5f5",
                                     }}>
-                                    <div style={{
+                                    <Box sx={{
                                         position: "absolute", top: -10, right: 12, width: 0, height: 0,
                                         borderLeft: "8px solid transparent", borderRight: "8px solid transparent",
                                         borderBottom: "10px solid #f0f0f0",
@@ -116,7 +116,7 @@ const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete,
                                     </MenuItem>
                                 </Paper>
                             </Popper>
-                        </div>
+                        </Box>
                     </div>
 
                     <Typography variant="caption" color="text.secondary" sx={{ textAlign: "left", display: "block", }}>
@@ -151,7 +151,7 @@ const PostPage = ({ post, editPostInList, setShowConfirmDelete, setPostToDelete,
                     <Button variant="contained" onClick={() => setShowComment(true)}
                         sx={{
                             backgroundColor: "#3578E5", color: "#fff", borderRadius: "20px",
-                            padding: "8px 16px", textTransform: "none", gap: "8px",
+                            textTransform: "none", gap: "8px",
                             "&:hover": {
                                 backgroundColor: "#2a65c8",
                             }

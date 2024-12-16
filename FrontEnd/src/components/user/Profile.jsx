@@ -19,22 +19,23 @@ const Profile = () => {
 
     const sendFriendRequest = () => {
         createFriendRequest(profile.id)
-        setProfile({ ...profile, sentFriendRequest: true })
+        setProfile({ ...profile, sentRequest: true, toSendRequest: false })
     }
 
     const updateFriendRequest = (accept) => {
         setProfile(prev => ({
             ...prev,
             friend: accept,
-            hasFriendRequest: false,
-            sentFriendRequest: false,
+            hasRequest: false,
+            sentRequest: false,
+            toSendRequest: !accept
         }))
         actionFriendRequestByUserId(profile.id, accept)
     }
 
     const handleUnfriend = () => {
         unfriend(profile.id)
-        setProfile(prev => ({ ...prev, friend: false }))
+        setProfile({ ...profile, friend: false, toSendRequest: true })
     }
 
     const handleCloseModal = () => {
@@ -59,21 +60,21 @@ const Profile = () => {
                     <button onClick={() => setShowModal(true)}>Sửa trang cá nhân</button>
                 )}
 
-                {!profile.myProfile && profile.friend && (
+                {profile.friend && (
                     <button onClick={handleUnfriend}>Hủy kết bạn</button>
                 )}
 
-                {!profile.myProfile && !profile.friend && !profile.hasFriendRequest && !profile.sentFriendRequest && (
+                {profile.toSendRequest && (
                     <button onClick={sendFriendRequest}>Gửi kết bạn</button>
                 )}
 
-                {!profile.myProfile && profile.hasFriendRequest && (
+                {profile.hasRequest && (
                     <div>
                         <button onClick={() => updateFriendRequest(true)}>Chấp nhận kết bạn</button>
-                        <button onClick={() => updateFriendRequest(false)}>Xóa kết bạn</button>
+                        <button onClick={() => updateFriendRequest(false)}>Từ chối</button>
                     </div>
                 )}
-                {!profile.myProfile && profile.sentFriendRequest && (
+                {profile.sentRequest && (
                     <div>
                         <span>Đã gửi yêu cầu kết bạn</span>
                         <button onClick={() => updateFriendRequest(false)}>Hủy yêu cầu kết bạn</button>
