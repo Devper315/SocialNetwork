@@ -14,14 +14,8 @@ import java.util.Optional;
 @Repository
 public interface GroupRequestRepo extends JpaRepository<GroupRequest, Long> {
 
-    public List<GroupRequest> findByGroup(Group group);
+    List<GroupRequest> findByGroup(Group group);
 
+    boolean existsByGroupAndRequestor(Group group, User requestor);
 
-    List<GroupRequest> findByUser(User user);
-
-    Optional<GroupRequest> findByGroupAndUser(Group group, User user);
-
-    boolean existsByGroupAndUser(Group group, User user);
-
-    List<GroupRequest> findByGroupAndStatus(Group group, Integer status);
 }

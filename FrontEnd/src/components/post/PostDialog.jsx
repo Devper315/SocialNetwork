@@ -1,45 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"
 import {
     Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Box, IconButton,
-} from "@mui/material";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import CloseIcon from "@mui/icons-material/Close";
+} from "@mui/material"
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate"
+import CloseIcon from "@mui/icons-material/Close"
 
 const PostDialog = ({ open, onClose, onSubmit, post }) => {
-    const [content, setContent] = useState("");
+    const [content, setContent] = useState("")
     const [currentImages, setCurrentImages] = useState([])
     const [newImages, setNewImages] = useState([])
     const [deleteImages, setDeleteImages] = useState([])
 
     useEffect(() => {
         if (post) {
-            setContent(post.content || "");
+            setContent(post.content || "")
             setCurrentImages(
                 (post.images).map(image => ({
                     id: image.id, filePath: image.filePath, url: image.url,
                 }))
             )
         } else {
-            setContent("");
-            setCurrentImages([]);
+            setContent("")
+            setCurrentImages([])
         }
         return () => {
-            setContent("");
-            setCurrentImages([]);
+            setContent("")
+            setCurrentImages([])
             setNewImages([])
             setDeleteImages([])
         }
-    }, [post, open]);
+    }, [post, open])
 
     const handleAddImage = (e) => {
-        const files = Array.from(e.target.files);
+        const files = Array.from(e.target.files)
         files.forEach(file => {
-            const reader = new FileReader();
+            const reader = new FileReader()
             reader.onload = () => {
                 setCurrentImages(prev => [...prev, { file, url: reader.result }])
                 setNewImages(prev => [...prev, { file, url: reader.result }])
             }
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(file)
         })
     }
 
@@ -58,9 +58,7 @@ const PostDialog = ({ open, onClose, onSubmit, post }) => {
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
             <DialogTitle>
                 {post ? "Chỉnh sửa bài viết" : "Tạo mới bài viết"}
-                <IconButton
-                    sx={{ position: "absolute", right: 8, top: 8 }}
-                    onClick={onClose}>
+                <IconButton sx={{ position: "absolute", right: 8, top: 8 }} onClick={onClose}>
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
@@ -130,7 +128,7 @@ const PostDialog = ({ open, onClose, onSubmit, post }) => {
                 </Button>
             </DialogActions>
         </Dialog>
-    );
-};
+    )
+}
 
-export default PostDialog;
+export default PostDialog

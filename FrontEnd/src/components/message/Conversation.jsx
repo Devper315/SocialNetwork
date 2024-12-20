@@ -70,18 +70,17 @@ const Conversation = () => {
                         {conversations.length === 0 && <Typography variant="body2" sx={{ padding: 2 }}>Không có cuộc trò chuyện nào.</Typography>}
                         <Box sx={{ maxWidth: 320, margin: '0 auto' }}>
                             {conversations.length > 0 &&
-                                conversations.map((conversation) => (
+                                conversations.map(conversation => (
                                     <Card
                                         key={conversation.id}
                                         sx={{
-                                            marginBottom: 1, // Thu nhỏ khoảng cách giữa các thẻ
+                                            marginBottom: 1, 
                                             borderRadius: 1,
                                             boxShadow: conversation.read
                                                 ? 'none'
-                                                : '0 2px 6px rgba(0, 0, 0, 0.1)', // Bóng nhẹ hơn
+                                                : '0 2px 6px rgba(0, 0, 0, 0.1)', 
                                             backgroundColor: conversation.read ? '#f9f9f9' : '#e8f4fd',
-                                        }}
-                                    >
+                                        }}>
                                         <CardActionArea
                                             onClick={() => handleClickConversation(conversation)}
                                             sx={{
@@ -89,8 +88,7 @@ const Conversation = () => {
                                                 '&:hover': {
                                                     backgroundColor: '#cce7f9', // Hover nhẹ hơn
                                                 },
-                                            }}
-                                        >
+                                            }}>
                                             <CardContent sx={{ padding: '4px 8px' }}>
                                                 <Typography
                                                     variant="body1" // Font size nhỏ hơn

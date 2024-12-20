@@ -6,7 +6,7 @@ import CreatePost from "./CreatePost";
 import { deleteFileFirebase } from "../../configs/firebaseSDK";
 import DialogNotification from "../common/DialogNotification";
 
-const PostList = ({ posts, setPosts }) => {
+const PostList = ({ posts, setPosts, groupId }) => {
     const [headLoading, setHeadLoading] = useState(false)
     const [footLoading, setFootLoading] = useState(true)
     const [openDeleteSuccess, setOpenDeleteSuccess] = useState(false)
@@ -59,7 +59,7 @@ const PostList = ({ posts, setPosts }) => {
 
     return (
         <Box sx={{width: "600px", padding: "0 16px 0 16px"}}>
-            <CreatePost addPostToList={addPostToList} setHeadLoading={setHeadLoading} />
+            <CreatePost addPostToList={addPostToList} setHeadLoading={setHeadLoading} groupId={groupId}/>
 
             {headLoading && <CircularProgress />}
 

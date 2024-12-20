@@ -13,6 +13,7 @@ import { Box, IconButton, MenuItem, Tooltip, Typography } from '@mui/material';
 import Sidebar from './Sidebar';
 import { AuthContext } from '../contexts/AuthContext';
 import MenuIcon from "@mui/icons-material/Menu";
+import Login from './common/Login';
 
 const Body = () => {
     const { user } = useContext(AuthContext)
@@ -26,7 +27,7 @@ const Body = () => {
     return (
         <Box display={"flex"} mt={2}>
             {user &&
-                <Box>
+                <Box position="fixed" textAlign="left">
                     <Tooltip title={sidebarOpen ? "Đóng menu" : "Mở menu"}>
                         <IconButton color="inherit" onClick={toggleSidebarOpen} sx={{
                             transition: "transform 0.3s",
@@ -39,24 +40,29 @@ const Body = () => {
                     <Box sx={{
                         width: sidebarOpen ? "250px" : 0,
                         height: "500px", overflow: "auto", border: "1px solid gray",
-                        position: "fixed", transition: "width 0.3s"
+                        transition: "margin-left 0.3s ease"
                     }} >
                         <Sidebar />
                     </Box>
                 </Box>}
-
             <Routes>
                 <Route path='/' element={<Homepage />} />
-                <Route path='/friends' element={<FriendList />} />
-                <Route path='/group' element={<GroupList />} />
-                <Route path='/group-detail/:id' element={<GroupDetail />} />
-                <Route path='/messages' element={<Homepage />} />
-                <Route path='/profile/:id' element={<Profile />} />
-                <Route path='/register' element={<Register />} />
-                <Route path='/postpage/:id' element={<PostPage />} />
-                <Route path='/register/verify/' element={<EmailVerification />} />
-                <Route path="/pending-posts/:groupId" element={<PendingPosts />} />
+                <Route path='/login' element={<Login />} />
             </Routes>
+
+            <Box ml={sidebarOpen ? "350px" : "230px"} width="900px" transition="0.3s">
+                <Routes>
+                    <Route path='/friends' element={<FriendList />} />
+                    <Route path='/group' element={<GroupList />} />
+                    <Route path='/group-detail/:id' element={<GroupDetail />} />
+                    <Route path='/messages' element={<Homepage />} />
+                    <Route path='/profile/:id' element={<Profile />} />
+                    <Route path='/register' element={<Register />} />
+                    <Route path='/postpage/:id' element={<PostPage />} />
+                    <Route path='/register/verify/' element={<EmailVerification />} />
+                    <Route path="/pending-posts/:groupId" element={<PendingPosts />} />
+                </Routes>
+            </Box>
 
         </Box>
 

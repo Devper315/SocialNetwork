@@ -56,6 +56,7 @@ export const fetchEmoji = async(lastId) => {
 }
 
 export const createMessage = async(message) => {
+    console.log("Tin nhắn mới", message)
     try {
         const response = await httpClient.post(`${API.CONVERSATION}/message`, message)
         return response.data.result

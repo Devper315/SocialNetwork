@@ -3,7 +3,7 @@ package com.social.network.service.user;
 import com.social.network.dto.user.ChangePasswordRequest;
 import com.social.network.dto.user.UserDTO;
 import com.social.network.dto.user.ProfileUpdateRequest;
-import com.social.network.dto.response.ApiResponse;
+import com.social.network.dto.ApiResponse;
 import com.social.network.entity.user.EmailVerification;
 import com.social.network.entity.user.Role;
 import com.social.network.entity.user.User;

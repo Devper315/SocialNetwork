@@ -1,7 +1,7 @@
 package com.social.network.controller.friend;
 
 import com.social.network.dto.user.UserDTO;
-import com.social.network.dto.response.ApiResponse;
+import com.social.network.dto.ApiResponse;
 import com.social.network.entity.user.FriendRequest;
 import com.social.network.service.friend.FriendRequestService;
 import com.social.network.service.friend.FriendshipService;

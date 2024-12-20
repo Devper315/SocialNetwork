@@ -6,7 +6,6 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "group_requests")
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,12 +20,8 @@ public class GroupRequest {
     Group group;
 
     @ManyToOne
-    User user;
+    User requestor;
 
-    @Column(name = "request_time", nullable = false)
     LocalDateTime time;
-
-    @Column(name = "status", nullable = false)
-    Integer status; //0=dang cho, 1=dong y, 2=tu choi
 
 }

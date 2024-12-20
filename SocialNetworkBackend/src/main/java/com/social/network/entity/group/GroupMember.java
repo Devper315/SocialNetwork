@@ -21,7 +21,7 @@ public class GroupMember {
     @ManyToOne
     User member;
 
-    @Column(name = "group_role_id")
-    Long role;
+    @Enumerated
+    GroupRole role;
 }
 

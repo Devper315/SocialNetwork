@@ -1,9 +1,8 @@
 package com.social.network.controller.message;
 
-import com.social.network.dto.request.MessageDTO;
-import com.social.network.dto.response.ApiResponse;
-import com.social.network.dto.response.message.ConversationResponse;
-import com.social.network.dto.response.message.MessageResponse;
+import com.social.network.dto.conversation.MessageDTO;
+import com.social.network.dto.ApiResponse;
+import com.social.network.dto.conversation.ConversationDTO;
 import com.social.network.entity.message.Emoji;
 import com.social.network.service.message.ConversationService;
 import com.social.network.service.message.EmojiService;
@@ -13,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -26,31 +24,31 @@ public class ConversationController {
     MessageService messageService;
 
     @GetMapping("/friend/{friendId}")
-    public ApiResponse<ConversationResponse> getConversationByFriendId(@PathVariable Long friendId){
-        return ApiResponse.<ConversationResponse>builder()
+    public ApiResponse<ConversationDTO> getConversationByFriendId(@PathVariable Long friendId){
+        return ApiResponse.<ConversationDTO>builder()
                 .result(conversationService.getConversationByFriendId(friendId))
                 .build();
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<ConversationResponse> getConversationById(@PathVariable Long id){
-        return ApiResponse.<ConversationResponse>builder()
+    public ApiResponse<ConversationDTO> getConversationById(@PathVariable Long id){
+        return ApiResponse.<ConversationDTO>builder()
                 .result(conversationService.getResponseById(id))
                 .build();
     }
 
     @GetMapping
-    public ApiResponse<List<ConversationResponse>> getMyConversations(
+    public ApiResponse<List<ConversationDTO>> getMyConversations(
             @RequestParam(required = false) String lastUpdate){
-        return ApiResponse.<List<ConversationResponse>>builder()
+        return ApiResponse.<List<ConversationDTO>>builder()
                 .result(conversationService.getMyConversations(lastUpdate))
                 .build();
     }
 
     @GetMapping("/message/{conversationId}")
-    public ApiResponse<List<MessageResponse>> getMessageByConversationId(
+    public ApiResponse<List<MessageDTO>> getMessageByConversationId(
             @PathVariable Long conversationId, @RequestParam Long lastId){
-        return ApiResponse.<List<MessageResponse>>builder()
+        return ApiResponse.<List<MessageDTO>>builder()
                 .result(conversationService.getMessageByConversationId(conversationId, lastId))
                 .build();
     }

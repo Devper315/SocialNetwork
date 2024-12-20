@@ -1,4 +1,4 @@
-package com.social.network.dto.response;
+package com.social.network.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;

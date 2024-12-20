@@ -1,6 +1,7 @@
 package com.social.network.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.social.network.entity.group.GroupMember;
 import com.social.network.entity.user.User;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -43,9 +44,9 @@ public class UserDTO {
 
     String avatarUrl;
 
-    Long role;
+    String groupRole;
 
-    boolean myProfile, friend, toSendRequest, hasRequest, sentRequest;
+    Boolean myProfile, friend, toSendRequest, hasRequest, sentRequest;
 
 
     public UserDTO(User user) {
@@ -59,15 +60,13 @@ public class UserDTO {
         this.dateOfBirth = user.getDateOfBirth();
     }
 
-    public UserDTO(User user, Long role) {
+    public UserDTO(GroupMember member) {
+        User user = member.getMember();
         this.id = user.getId();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
         this.username = user.getUsername();
+        this.lastName = user.getLastName();
         this.fullName = user.getFullName();
-        this.email = user.getEmail();
         this.avatarUrl = user.getAvatarUrl();
-        this.dateOfBirth = user.getDateOfBirth();
-        this.role = role;
+        this.groupRole = member.getRole().toString();
     }
 }

@@ -1,6 +1,6 @@
 package com.social.network.exception;
 
-import com.social.network.dto.response.ApiResponse;
+import com.social.network.dto.ApiResponse;
 import jakarta.validation.ConstraintViolation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

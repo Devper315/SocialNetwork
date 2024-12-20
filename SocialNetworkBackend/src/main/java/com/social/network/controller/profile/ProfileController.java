@@ -1,7 +1,7 @@
 package com.social.network.controller.profile;
 
 import com.social.network.dto.user.ProfileUpdateRequest;
-import com.social.network.dto.response.ApiResponse;
+import com.social.network.dto.ApiResponse;
 import com.social.network.dto.user.UserDTO;
 import com.social.network.service.user.ProfileService;
 import com.social.network.service.user.UserService;

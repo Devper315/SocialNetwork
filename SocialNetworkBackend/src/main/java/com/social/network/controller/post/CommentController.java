@@ -1,7 +1,7 @@
 package com.social.network.controller.post;
 
 import com.social.network.dto.post.CommentDTO;
-import com.social.network.dto.response.ApiResponse;
+import com.social.network.dto.ApiResponse;
 import com.social.network.service.post.CommentService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

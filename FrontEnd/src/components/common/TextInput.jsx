@@ -52,8 +52,10 @@ const TextInput = ({ handleSubmit, type, comment }) => {
 
     const onSubmit = () => {
         setShowEmojiPicker(false)
-        if (type === 'message')
+        if (type === 'message') {
             handleSubmit(text, messageImages)
+        }
+
         else {
             handleSubmit({ ...editingComment, content: text, newImage: commentImage })
         }

@@ -1,10 +1,12 @@
 package com.social.network.controller.group;
 
 import com.social.network.dto.group.GroupDTO;
-import com.social.network.dto.response.ApiResponse;
+import com.social.network.dto.group.UserGroupContext;
+import com.social.network.dto.ApiResponse;
 import com.social.network.dto.user.UserDTO;
 import com.social.network.entity.group.Group;
 import com.social.network.service.group.GroupService;
+import com.social.network.service.group.UserGroupContextService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -16,9 +18,10 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/api/user/group")
+@RequestMapping("/api/group")
 public class GroupController {
     GroupService groupService;
+    UserGroupContextService userGroupContextService;
 
     @GetMapping
     public ApiResponse<List<Group>> search(
@@ -49,6 +52,12 @@ public class GroupController {
                 .build();
     }
 
+    @GetMapping("/context/{id}")
+    public ApiResponse<UserGroupContext> getUserGroupContext(@PathVariable Long id) {
+        return ApiResponse.<UserGroupContext>builder()
+                .result(userGroupContextService.getUserGroupContext(id))
+                .build();
+    }
 
     @GetMapping("/members/{groupId}")
     public ApiResponse<List<UserDTO>> getMembersByGroupId(@PathVariable Long groupId) {
@@ -70,8 +79,9 @@ public class GroupController {
                 .result(groupService.removeGroupMember(groupId, userId))
                 .build();
     }
+
     @DeleteMapping("/leave-group")
-    public ApiResponse<Boolean> removeMember(@RequestParam Long groupId) {
+    public ApiResponse<Boolean> leaveGroup(@RequestParam Long groupId) {
         return ApiResponse.<Boolean>builder()
                 .result(groupService.leaveGroup(groupId))
                 .build();
@@ -91,37 +101,25 @@ public class GroupController {
                 .build();
     }
 
-    @GetMapping("/check-user/{groupId}")
-    public Long isGroupCreator(@PathVariable Long groupId) {
-        return groupService.checkUser(groupId);
-    }
-
-    @PostMapping("/change-role/{groupId}/{userId}/{roleId}")
-    public ApiResponse<Boolean> changeRole( @PathVariable Long groupId,@PathVariable Long userId, @PathVariable Long roleId) {
+    @PostMapping("/change-role")
+    public ApiResponse<Boolean> changeRole(
+            @RequestParam Long groupId, @RequestParam Long userId, @RequestParam String newRole) {
         return ApiResponse.<Boolean>builder()
-                .result(groupService.changeMemberRole(groupId,userId,roleId))
+                .result(groupService.changeMemberRole(groupId, userId, newRole))
                 .build();
     }
 
-    @GetMapping("get-role/{groupId}/{userId}")
-    public ApiResponse<Long> getRole(@PathVariable Long groupId, @PathVariable Long userId) {
-        return ApiResponse.<Long>builder()
-                .result(groupService.getUserRoleInGroup(groupId,userId))
-                .build();
-    }
-
-    @PostMapping("/change-createUserId/{groupId}/{userId}")
-    public ApiResponse<Boolean> changCreateUserId( @PathVariable Long groupId,@PathVariable Long userId) {
+    @PostMapping("/change-owner")
+    public ApiResponse<Boolean> changeOwner(@RequestParam Long groupId, @RequestParam Long userId) {
         return ApiResponse.<Boolean>builder()
-                .result(groupService.changeCreateUserId(groupId,userId))
+                .result(groupService.changeOwner(groupId, userId))
                 .build();
     }
 
     @DeleteMapping("/dissolve/{groupId}")
-    public ApiResponse<Boolean> dissolveGroup( @PathVariable Long groupId) {
+    public ApiResponse<Boolean> dissolveGroup(@PathVariable Long groupId) {
         return ApiResponse.<Boolean>builder()
                 .result(groupService.dissolveGroup(groupId))
                 .build();
     }
-
 }

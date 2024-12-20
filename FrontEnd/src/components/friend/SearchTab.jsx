@@ -9,7 +9,7 @@ const SearchTab = () => {
     const [page, setPage] = useState(0)
     const [resetPage, setResetPage] = useState(false)
     const [totalPages, setTotalPages] = useState(0)
-    const [searchResults, setSearchResults] = useState([])
+    const [searchResults, setSearchResults] = useState(null)
     const inputRef = useRef(null)
 
     const fetchData = async () => {
@@ -46,20 +46,14 @@ const SearchTab = () => {
     }
 
     return (
-        <>
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <Box sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                marginBottom: 2,
+                display: 'flex', alignItems: 'center', gap: 2,
+                mb: 2, width: "60%"
             }}>
-                <TextField
-                    fullWidth inputRef={inputRef}
-                    placeholder="Nhập tên bạn..."
-                    value={keyword}
+                <TextField fullWidth inputRef={inputRef} placeholder="Nhập tên bạn..." value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
-                    variant="outlined"
-                    onKeyDown={handleKeyDown}
+                    variant="outlined" onKeyDown={handleKeyDown}
                     sx={{
                         "& .MuiOutlinedInput-root": {
                             borderRadius: 5, fontSize: "14px"
@@ -71,37 +65,28 @@ const SearchTab = () => {
                                 <SearchIcon color="action" />
                             </InputAdornment>
                         ),
-                    }}
-                />
-                <Button
-                    variant="contained"
-                    onClick={fetchData}
-                    sx={{ height: '54px' }}>
+                    }} />
+                <Button variant="contained" onClick={fetchData} sx={{ height: '45px' }}>
                     Tìm
                 </Button>
             </Box>
-            {searchResults.length > 0 &&
+            {searchResults && searchResults.length > 0 &&
                 <Box
-                    display="grid"
-                    gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))"
-                    gap={3}>
+                    display="grid" gap={3} width="90%"
+                    gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))">
                     {searchResults.map(friend => (
                         <Friend user={friend} />
                     ))}
                 </Box>}
-            {searchResults.length === 0 && <Typography>Không có kết quả tìm kiếm.</Typography>}
+            {searchResults && searchResults.length === 0 && <Typography>Không có kết quả tìm kiếm.</Typography>}
 
             {totalPages > 1 && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
-                    <Pagination
-                        count={totalPages}
-                        page={page}
-                        onChange={(_, newPage) => setPage(newPage)}
-                        color="primary"
-                    />
+                    <Pagination count={totalPages} page={page} 
+                        onChange={(_, newPage) => setPage(newPage)} color="primary" />
                 </Box>
             )}
-        </>
+        </Box>
 
     );
 };

@@ -1,8 +1,7 @@
 package com.social.network.service.message;
 
 import com.social.network.dto.conversation.MessageDTO;
-import com.social.network.dto.response.message.ConversationResponse;
-import com.social.network.dto.response.message.MessageResponse;
+import com.social.network.dto.conversation.ConversationDTO;
 import com.social.network.entity.message.Conversation;
 import com.social.network.entity.message.ConversationType;
 import com.social.network.entity.message.MessageCustom;
@@ -36,14 +35,14 @@ public class ConversationService {
         return conversationRepo.findById(id).orElse(null);
     }
 
-    public ConversationResponse getResponseById(Long id) {
+    public ConversationDTO getResponseById(Long id) {
         Conversation conversation = getById(id);
         User requestor = userService.getCurrentUser();
         conversation.setRead(userConversationService.checkConversationRead(conversation, requestor));
         return toConversationResponse(requestor, conversation);
     }
 
-    public List<ConversationResponse> getMyConversations(String lastUpdate) {
+    public List<ConversationDTO> getMyConversations(String lastUpdate) {
         User requestor = userService.getCurrentUser();
         Pageable pageable = PageRequest.of(0, 10);
         Page<Tuple> tuples = userConversationService.getByUser(requestor, lastUpdate, pageable);
@@ -67,12 +66,12 @@ public class ConversationService {
         userConversationService.markAsUnread(conversation.getId(), recipient.getId());
     }
 
-    private ConversationResponse toConversationResponse(User requestor, Conversation conversation) {
+    private ConversationDTO toConversationResponse(User requestor, Conversation conversation) {
         List<User> members = userConversationService.getByConversation(conversation);
-        return new ConversationResponse(conversation, members, requestor);
+        return new ConversationDTO(conversation, members, requestor);
     }
 
-    public ConversationResponse getConversationByFriendId(Long friendId) {
+    public ConversationDTO getConversationByFriendId(Long friendId) {
         User requestor = userService.getCurrentUser();
         User friend = userService.getById(friendId);
         Conversation conversation = conversationRepo.findConversation(requestor.getId(), friend.getId(), ConversationType.PRIVATE);
@@ -95,12 +94,12 @@ public class ConversationService {
         return conversation;
     }
 
-    public List<MessageResponse> getMessageByConversationId(Long conversationId, Long lastId) {
+    public List<MessageDTO> getMessageByConversationId(Long conversationId, Long lastId) {
         Conversation conversation = getById(conversationId);
         List<MessageCustom> messages = messageService.getByConversation(conversation, lastId);
         List<MessageCustom> sortableMessages = new ArrayList<>(messages);
         Collections.sort(sortableMessages);
-        return sortableMessages.stream().map(MessageResponse::new).toList();
+        return sortableMessages.stream().map(MessageDTO::new).toList();
     }
 
     public void markAsRead(MessageDTO messageDTO) {

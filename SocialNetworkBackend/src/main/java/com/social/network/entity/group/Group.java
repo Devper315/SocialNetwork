@@ -18,10 +18,10 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String name;
+
+    @Column(length = 315000)
+    String description;
     String imageUrl;
-    @Transient
-    boolean joined;
     Long createUserId;
     LocalDateTime createTime;
-
 }

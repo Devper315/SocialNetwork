@@ -1,7 +1,7 @@
 package com.social.network.controller.post;
 
 import com.social.network.dto.post.PostDTO;
-import com.social.network.dto.response.ApiResponse;
+import com.social.network.dto.ApiResponse;
 import com.social.network.entity.post.Post;
 import com.social.network.service.image.ImageService;
 import com.social.network.service.post.CommentService;

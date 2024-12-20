@@ -3,7 +3,7 @@ package com.social.network.controller.auth;
 
 import com.social.network.dto.auth.LoginRequest;
 import com.social.network.dto.user.UserDTO;
-import com.social.network.dto.response.ApiResponse;
+import com.social.network.dto.ApiResponse;
 import com.social.network.dto.auth.LoginResponse;
 import com.social.network.service.auth.AuthService;
 import com.social.network.service.user.UserService;

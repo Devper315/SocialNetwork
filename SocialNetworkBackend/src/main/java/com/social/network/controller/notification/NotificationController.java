@@ -1,6 +1,6 @@
 package com.social.network.controller.notification;
 
-import com.social.network.dto.response.ApiResponse;
+import com.social.network.dto.ApiResponse;
 import com.social.network.entity.notification.Notification;
 import com.social.network.service.notification.NotificationService;
 import lombok.AccessLevel;

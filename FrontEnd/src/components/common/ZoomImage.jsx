@@ -1,12 +1,12 @@
-import { Box, Dialog } from "@mui/material";
+import { Box, CardMedia, Dialog } from "@mui/material";
 import React from "react";
 
 const ZoomImage = ({ open, onClose, imageSrc }) => {
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md">
-            <Box component="img" src={imageSrc}
+        <Dialog open={open} onClose={onClose} maxWidth="md" sx={{overflow: "hidden"}}>
+            <CardMedia component="img" src={imageSrc}
                 sx={{
-                    width: '100%', height: 'auto',
+                    width: "auto", height: '550px',
                 }} />
         </Dialog>
     )

@@ -46,46 +46,44 @@ public class NotificationService {
     }
 
     public void notifyFriendRequest(User requestor, User recipient) {
-        String url="/profile/" + requestor.getId();
+        String url = "/profile/" + requestor.getId();
         String content = requestor.getFullName() + " đã gửi lời mời kết bạn.";
-        createNotification(requestor, recipient, content,url);
+        createNotification(requestor, recipient, content, url);
     }
 
     public void notifyAcceptFriend(User requestor, User recipient) {
-        String url="/profile/" + requestor.getId();
+        String url = "/profile/" + requestor.getId();
         String content = requestor.getFullName() + " đã chấp nhận kết bạn";
-        createNotification(requestor, recipient, content,url);
+        createNotification(requestor, recipient, content, url);
     }
 
     public void notifyGroupRequest(User requestor, User recipient, Group group) {
-        String url="/group-detail/" + group.getId();
-        String content = requestor.getFullName() + " đã gửi lời mời tham gia nhóm "+group.getName();
-        createNotification(requestor, recipient, content,url);
+        String url = "/group-detail/" + group.getId();
+        String content = requestor.getFullName() + " đã gửi yêu cầu tham gia nhóm " + group.getName();
+        createNotification(requestor, recipient, content, url);
     }
-    public void notifyAcceptGroupRequest(User requestor, User recipient, Group group) {
-        String url="/group-detail/" + group.getId();
-        String content = requestor.getFullName() + " đã chấp nhận lời mời tham gia nhóm "+group.getName();
-        createNotification(requestor, recipient, content,url);
+
+    public void notifyActionGroupRequest(User requestor, User recipient, Group group, boolean accept) {
+        String url = accept ? "/group-detail/" + group.getId() : null;
+        String content = requestor.getFullName() + " đã chấp nhận lời mời tham gia nhóm " + group.getName();
+        createNotification(requestor, recipient, content, url);
     }
-    public void notifyRefuseGroupRequest(User requestor, User recipient, Group group) {
-        String url="/group-detail/" + group.getId();
-        String content = requestor.getFullName() + " đã từ chối lời mời tham gia nhóm "+group.getName();
-        createNotification(requestor, recipient, content,url);
-    }
+
+
     public void notifyAcceptPost(User requestor, User recipient, Group group) {
-        String url="/group-detail/" + group.getId();
+        String url = "/group-detail/" + group.getId();
         String content = requestor.getFullName() + " đã phê duyệt bài viết của bạn";
-        createNotification(requestor, recipient, content,url);
+        createNotification(requestor, recipient, content, url);
     }
+
     public void sendPost(User requestor, User recipient, Group group) {
-        String url="/group-detail/" + group.getId();
+        String url = "/group-detail/" + group.getId();
         String content = requestor.getFullName() + " đã gửi 1 bài viết cần phê duyệt";
-        createNotification(requestor, recipient, content,url);
+        createNotification(requestor, recipient, content, url);
     }
 
 
-
-    private void createNotification(User requestor, User recipient, String content, String url){
+    private void createNotification(User requestor, User recipient, String content, String url) {
         Notification notification = Notification.builder()
                 .content(content)
                 .recipient(recipient.getUsername())
@@ -96,8 +94,8 @@ public class NotificationService {
         notificationRepo.save(notification);
         Mono.delay(Duration.ofSeconds(1))
                 .doOnSuccess(ignored ->
-                                Optional.ofNullable(notificationSinks.get(recipient.getUsername()))
-                                        .ifPresent(n -> n.tryEmitNext(notification)))
+                        Optional.ofNullable(notificationSinks.get(recipient.getUsername()))
+                                .ifPresent(n -> n.tryEmitNext(notification)))
                 .subscribe();
     }
 
@@ -115,7 +113,7 @@ public class NotificationService {
                 });
     }
 
-    public Long getUnreadTotal(){
+    public Long getUnreadTotal() {
         User requestor = userService.getCurrentUser();
         return notificationRepo.getUnreadTotal(requestor.getUsername());
     }

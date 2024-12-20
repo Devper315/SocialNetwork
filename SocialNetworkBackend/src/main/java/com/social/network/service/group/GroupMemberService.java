@@ -3,6 +3,7 @@ package com.social.network.service.group;
 import com.social.network.dto.user.UserDTO;
 import com.social.network.entity.group.Group;
 import com.social.network.entity.group.GroupMember;
+import com.social.network.entity.group.GroupRole;
 import com.social.network.entity.user.User;
 import com.social.network.repository.group.GroupMemberRepo;
 import com.social.network.repository.group.GroupRepo;
@@ -11,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,11 +21,9 @@ public class GroupMemberService {
     GroupMemberRepo groupMemberRepo;
     GroupRepo groupRepo;
 
-    public boolean addGroupMember(Group group, User user, Long role) {
+    public boolean addGroupMember(Group group, User user, String role) {
         GroupMember groupMember = GroupMember.builder()
-                .group(group)
-                .member(user)
-                .role(role)
+                .group(group).member(user).role(GroupRole.valueOf(role))
                 .build();
         groupMemberRepo.save(groupMember);
         return true;
@@ -42,34 +40,14 @@ public class GroupMemberService {
 
     public List<UserDTO> getByGroup(Group group) {
         List<GroupMember> groupMembers = groupMemberRepo.findByGroup(group);
-        return toUserDTOs(groupMembers);
+        return groupMembers.stream().map(UserDTO::new).toList();
     }
 
-    private List<UserDTO> toUserDTOs(List<GroupMember> groupMembers) {
-        List<UserDTO> responses = new ArrayList<>();
-        for (GroupMember groupMember : groupMembers) {
-            User user = groupMember.getMember();
-            Long role = groupMember.getRole();
-            responses.add(new UserDTO(user, role));
-        }
-        return responses;
-    }
-
-    public boolean changeMemberRole(Group group, User user, Long newRoleId) {
+    public boolean changeMemberRole(Group group, User user, String newRole) {
         GroupMember groupMember = groupMemberRepo.findByGroupAndMember(group, user);
-        groupMember.setRole(newRoleId);
+        groupMember.setRole(GroupRole.valueOf(newRole));
         groupMemberRepo.save(groupMember);
         return true;
-    }
-
-    public Long getUserRoleInGroup(Group group, User user) {
-        GroupMember groupMember = groupMemberRepo.findByGroupAndMember(group, user);
-        return groupMember.getRole();
-    }
-
-    public void changeCreateUserId(Group group, User user) {
-        group.setCreateUserId(user.getId());
-        groupRepo.save(group);
     }
 
     public void removeAllGroupMembers(Group group) {

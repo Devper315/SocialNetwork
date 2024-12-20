@@ -5,13 +5,14 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import { createPost, updatePost } from "../../services/postService"
 import { uploadFileToFirebase } from "../../configs/firebaseSDK"
 
-const CreatePost = ({ addPostToList, setHeadLoading }) => {
+const CreatePost = ({ addPostToList, setHeadLoading, groupId }) => {
     const [dialogOpen, setDialogOpen] = useState(false)
 
     const handleCreate = () => setDialogOpen(true)
 
     const handleSubmit = async (data) => {
         setHeadLoading(true)
+        data.groupId = groupId
         let newPost = await createPost(data)
         if (data.images.length > 0) {
             const uploadPromises = data.images.map(async (image, index) => {

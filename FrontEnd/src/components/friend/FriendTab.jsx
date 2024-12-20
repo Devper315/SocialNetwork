@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Pagination, Card, Box, CardHeader, IconButton } from '@mui/material';
-import { ChatSocketContext } from '../../contexts/ChatSocketContext';
+import React, { useEffect, useState } from 'react';
+import { Pagination, Box } from '@mui/material';
 import { fetchFriend } from '../../services/friendService';
 import Friend from './Friend';
 
@@ -10,7 +9,6 @@ const FriendTab = () => {
 
     const fetchData = async () => {
         const data = await fetchFriend(pagination.page, 10)
-        console.log(data.result)
         setFriends(data.result || [])
         setPagination({ ...pagination, totalPages: data.totalPages })
     }
@@ -21,10 +19,8 @@ const FriendTab = () => {
 
     return (
         <>
-            <Box
-                display="grid"
-                gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))"
-                gap={3}>
+            <Box display="grid" gap={3}
+                gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))">
                 {friends.map(friend => (
                     <Friend user={friend} />
                 ))}
@@ -32,11 +28,9 @@ const FriendTab = () => {
             {pagination.totalPages > 1 && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
                     <Pagination
-                        count={pagination.totalPages}
-                        page={pagination.page}
-                        onChange={(_, page) => setPagination(prev => ({ ...prev, page }))}
-                        color="primary"
-                    />
+                        count={pagination.totalPages} page={pagination.page}
+                        onChange={(_, page) => setPagination({ ...pagination, page })}
+                        color="primary" />
                 </Box>
             )}
         </>

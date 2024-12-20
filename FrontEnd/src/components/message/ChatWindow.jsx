@@ -28,14 +28,12 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
     useEffect(() => {
         const loadFirstMessageList = async () => {
             const data = await fetchMessagesByConversationId(conversation.id, 0);
-            console.log(data)
             setHasMore(data.length === 10);
             setMessageList(data);
             if (data.length === 10) {
                 setLastId(data.at(0).id);
                 setIsAtBottom(true);
             }
-            console.log(data.at(-1))
             if (data.length > 0 && !data.at(-1).isRead) {
                 let lastMessage = data.at(-1);
                 lastMessage.reader = conversation.sender;
@@ -77,7 +75,7 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
             sender: conversation.sender,
             recipient: conversation.recipient,
             content: message,
-            status: 'sending',
+            status: 'SENT',
             imageUrls: [],
             time: format(new Date(), 'HH:mm dd/MM/yyyy'),
         }

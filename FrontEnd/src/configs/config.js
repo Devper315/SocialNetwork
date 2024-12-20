@@ -14,5 +14,5 @@ export const API = {
     PROFILE: "/api/profile",
     COMMENT: "/api/user/post/comments",
     NOTIFICATION: "/api/notifications",
-    GROUP: "/api/user/group"
+    GROUP: "/api/group"
 }

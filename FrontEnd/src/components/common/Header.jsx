@@ -59,23 +59,24 @@ const Header = () => {
                         )}
                     </Box>
 
-                    {user && (
-                        <>
-                            <IconButton color="inherit" onClick={handleMenuOpen}
-                                sx={{
-                                    transition: "transform 0.3s",
-                                    transform: isMenuOpen ? "rotate(90deg)" : "rotate(0deg)",
-                                }}>
-                                <MenuIcon fontSize="large" />
-                            </IconButton>
-                            <Menu id="user-menu" anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose}
-                                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                                transformOrigin={{ vertical: "top", horizontal: "center" }}
-                                MenuListProps={{
-                                    sx: {
-                                        mt: 1,
-                                    },
-                                }}>
+                    <IconButton color="inherit" onClick={handleMenuOpen}
+                        sx={{
+                            transition: "transform 0.3s",
+                            transform: isMenuOpen ? "rotate(90deg)" : "rotate(0deg)",
+                        }}>
+                        <MenuIcon fontSize="large" />
+                    </IconButton>
+                    <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose}
+                        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                        transformOrigin={{ vertical: "top", horizontal: "center" }}>
+                        {!user && <MenuItem component={Link} to="/login" onClick={handleMenuClose}>
+                            <ListItemIcon>
+                                <PersonIcon fontSize="small" />
+                            </ListItemIcon>
+                            Đăng nhập
+                        </MenuItem>}
+                        {user &&
+                            <>
                                 <MenuItem component={Link} to={`/profile/${user.id}`} onClick={handleMenuClose}>
                                     <ListItemIcon>
                                         <PersonIcon fontSize="small" />
@@ -91,9 +92,8 @@ const Header = () => {
                                     </ListItemIcon>
                                     Đăng xuất
                                 </MenuItem>
-                            </Menu>
-                        </>
-                    )}
+                            </>}
+                    </Menu>
                 </Box>
             </Toolbar>
         </AppBar>

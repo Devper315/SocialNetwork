@@ -40,12 +40,21 @@ export const fetchGroupById = async(id) => {
     }
 }
 
-export const updateGroup = async(form) => {
+export const fetchUserGroupContext = async(groupId) => {
     try {
-        const response = await httpClient.put(API.GROUP, form)
+        const response = await httpClient.get(`${API.GROUP}/context/${groupId}`)
+        return response.data.result
+    } catch (error) {
+        console.log("Lỗi khi lấy dữ liệu context", error)
+    }
+}
+
+export const updateGroup = async(updatedGroup) => {
+    try {
+        const response = await httpClient.put(API.GROUP, updatedGroup)
         return response
     } catch (error) {
-        console.log(error)
+        console.log("Lỗi khi sửa group", error)
     }
 }
 
@@ -53,132 +62,96 @@ export const addGroupMember = async(groupId, userId) => {
     try {
         const response = await httpClient.post(`${API.GROUP}/add-member`, null, {
             params: { groupId, userId }
-        });
-        return response.data.result;
+        })
+        return response.data.result
     } catch (error) {
-        console.log(error);
+        console.log(error)
     }
-};
+}
 
 export const removeGroupMember = async(groupId, userId) => {
     try {
         const response = await httpClient.delete(`${API.GROUP}/remove-member`, {
             params: { groupId, userId }
-        });
-        return response.data.result;
+        })
+        return response.data.result
     } catch (error) {
-        console.log(error);
+        console.log(error)
     }
-};
+}
 export const leaveGroup = async(groupId) => {
     try {
         const response = await httpClient.delete(`${API.GROUP}/leave-group`, {
             params: { groupId }
-        });
-        return response.data.result;
+        })
+        return response.data.result
     } catch (error) {
-        console.log(error);
+        console.log(error)
     }
-};
+}
 
-export const getGroupMembers = async(groupId) => {
+export const fetchGroupMembers = async(groupId) => {
     try {
-        const response = await httpClient.get(`${API.GROUP}/members/${groupId}`);
-        return response.data.result;
+        const response = await httpClient.get(`${API.GROUP}/members/${groupId}`)
+        return response.data.result
     } catch (error) {
-        console.log(error);
+        console.log(error)
     }
-};
+}
 
-export const sendJoinGroupRequest = async(groupId) => {
+export const createGroupRequest = async(groupId) => {
     try {
-        const response = await httpClient.post(`${API.GROUP}/requests/${groupId}`);
-        console.log("Đã gửi yêu cầu tham gia nhóm", response.data.result);
-        return response;
+        const response = await httpClient.post(`${API.GROUP}/requests/${groupId}`)
+        return response.data.result
     } catch (error) {
-        console.log(error);
+        console.log("Lỗi khi gửi yêu cầu tham gia nhóm", error)
     }
-};
+}
 
 export const fetchGroupJoinRequests = async(groupId) => {
     try {
-        const response = await httpClient.get(`${API.GROUP}/requests/${groupId}/admin-requests`);
-        return response.data;
+        const response = await httpClient.get(`${API.GROUP}/requests/${groupId}/admin-requests`)
+        return response.data
     } catch (error) {
-        console.error(error.message);
-        throw error;
+        console.log("Lỗi khi lấy yêu cầu tham gia nhóm", error)
     }
-};
+}
 
 
-
-export const actionJoinGroupRequest = async(requestId, accept) => {
-    const response = await httpClient.post(`${API.GROUP}/requests/${requestId}/action/${accept}`);
-    console.log(response.data);
-    return response;
-
-};
-
-
-export const checkIfRequestExists = async(groupId) => {
+export const actionGroupRequest = async(requestId, accept) => {
+    const params = { requestId, accept }
     try {
-        const response = await httpClient.get(`${API.GROUP}/requests/exists/${groupId}`);
-        return response.data;
+        const response = await httpClient.put(`${API.GROUP}/requests/action/`, { params })
+        return response.data.result
     } catch (error) {
-        console.log(error);
-        return false;
+        console.log("Lỗi khi thao tác yêu cầu tham gia nhóm")
     }
-};
+}
 
-export const checkUser = async(groupId) => {
-    try {
-        const response = await httpClient.get(`${API.GROUP}/check-user/${groupId}`);
-        return response.data;
-    } catch (error) {
-        console.log(error);
-        return false;
-    }
-};
 
-export const getUserRoleInGroup = async(groupId, userId) => {
-    try {
-        const response = await httpClient.get(`${API.GROUP}/role/${groupId}/user/${userId}`);
-        return response.data.result;
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-};
 export const changeRole = async(groupId, userId, roleId) => {
     try {
-        const response = await httpClient.post(`${API.GROUP}/change-role/${groupId}/${userId}/${roleId}`);
-        return response.data.result;
+        const response = await httpClient.post(`${API.GROUP}/change-role/${groupId}/${userId}/${roleId}`)
+        return response.data.result
     } catch (error) {
-        console.error("Lỗi khi thay đổi vai trò:", error);
-        throw new Error("Không thể thay đổi vai trò của thành viên!");
+        console.error("Lỗi khi thay đổi vai trò:", error)
     }
-};
-export const getRole = async(groupId, userId) => {
-    try {
-        const response = await httpClient.get(`${API.GROUP}/get-role/${groupId}/${userId}`);
-        return response.data.result;
-    } catch (error) {
-        console.error("Lỗi khi lấy vai trò của thành viên:", error);
-        throw new Error("Không thể lấy vai trò của thành viên!");
-    }
-};
+}
+
 export const changeCreateUserId = async(groupId, userId) => {
     try {
-        const response = await httpClient.post(`${API.GROUP}/change-createUserId/${groupId}/${userId}`);
-        return response.data.result;
+        const response = await httpClient.post(`${API.GROUP}/change-createUserId/${groupId}/${userId}`)
+        return response.data.result
     } catch (error) {
-        console.error("Lỗi khi thay đổi vai trò:", error);
-        throw new Error("Không thể thay đổi vai trò của thành viên!");
+        console.error("Lỗi khi thay đổi vai trò:", error)
+        throw new Error("Không thể thay đổi vai trò của thành viên!")
     }
-};
+}
 export const dissolve = async(groupId) => {
     try {
-        const response = await httpClient.delete(`${API.GROUP}/dissolve/${groupId}`);
-        return response.data.result;
-    } catch (error) {}
-};
+        const response = await httpClient.delete(`${API.GROUP}/dissolve/${groupId}`)
+        return response.data.result
+    } catch (error) {
+        console.log("Lỗi khi giải tán nhóm", error)
+    }
+}

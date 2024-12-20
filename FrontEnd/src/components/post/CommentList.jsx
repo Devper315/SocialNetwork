@@ -56,31 +56,31 @@ const CommentList = ({ post, open, onClose }) => {
     }
     return (
         <Dialog open={open} onClose={onClose} fullWidth>
-            <DialogTitle fontWeight={"bold"}>
+            <DialogTitle fontWeight={"bold"} display="flex" justifyContent="space-between" alignItems="center">
                 Bình luận cho bài viết của {post.author}
-                <IconButton
-                    aria-label="close"
-                    onClick={onClose}
-                    style={{ position: "absolute", right: 8, top: 8 }}>
+                <IconButton onClick={onClose}>
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
+
             <DialogContent sx={{ minHeight: "120px" }}>
                 {headLoading &&
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
                         <CircularProgress size={30} />
                     </Box>}
+
                 {open && comments.length === 0 && !headLoading &&
                     <Typography variant="body1" color="text.secondary" sx={{ textAlign: "center", marginTop: "20px" }}>
                         Chưa có bình luận nào
                     </Typography>}
+
                 {comments.length > 0 && comments.map(comment => (
                     <Comment key={comment.id} comment={comment} editCommentInList={editCommentInList}
                         removeCommentFromList={removeCommentFromList} />
                 ))}
                 {footLoading &&
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <CircularProgress size={30} />
+                        <CircularProgress />
                     </Box>}
             </DialogContent>
             <TextInput handleSubmit={handleAddComment} type="comment" />
