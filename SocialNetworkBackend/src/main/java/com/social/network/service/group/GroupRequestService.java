@@ -39,11 +39,10 @@ public class GroupRequestService {
 
     public void actionRequestById(Long requestId, boolean accept) {
         GroupRequest request = getById(requestId);
-        User user = userService.getCurrentUser();
         User receiver = request.getRequestor();
         if (accept)
             groupService.addGroupMember(request.getGroup().getId(), receiver.getId());
-        notificationService.notifyActionGroupRequest(user, receiver, request.getGroup(), accept);
+        notificationService.notifyActionGroupRequest(receiver, request.getGroup(), accept);
         groupRequestRepo.delete(request);
     }
 

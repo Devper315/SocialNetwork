@@ -1,27 +1,30 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Typography, Avatar, Box, Tabs, Tab, CardMedia, CircularProgress, Button } from '@mui/material'
-import { useNavigate, useParams } from 'react-router-dom'
-import { createGroupRequest, fetchGroupById, fetchGroupMembers, fetchUserGroupContext } from '../../services/groupService'
+import { Typography, Avatar, Box, Tabs, Tab, CardMedia, CircularProgress, Button, Badge } from '@mui/material'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { createGroupRequest, fetchGroupById, fetchUserGroupContext } from '../../services/groupService'
 import ZoomImage from '../common/ZoomImage'
 import PostList from "../post/PostList"
 import { CheckCircle, GroupAdd } from '@mui/icons-material'
-import EditIcon from "@mui/icons-material/Edit";
-import GroupEditDialog from './GroupEditDialog'
 import GroupMember from './GroupMember'
 import GroupRequest from './GroupRequest'
+import GroupOption from './GroupOption'
 
 const GroupDetail = () => {
     const { id } = useParams()
+    const location = useLocation();
     const [zoom, setZoom] = useState(false)
     const [selectedUrl, setSelectedUrl] = useState('')
     const [group, setGroup] = useState({})
-    const [activeTabIndex, setActiveTabIndex] = useState(0)
-    const [activeTab, setActiveTab] = useState('discuss')
+    const [activeTabIndex, setActiveTabIndex] = useState(null)
+    const [activeTab, setActiveTab] = useState()
     const [posts, setPosts] = useState([])
+    const [pendingPosts, setPendingPosts] = useState([])
     const [userGroupContext, setUserGroupContext] = useState({})
     const [isLoading, setIsLoading] = useState(true)
-    const [editing, setEditing] = useState(false)
-    const [members, setMembers] = useState([])
+
+    const tabStyle = {
+        fontWeight: "bold", textTransform: 'none',
+    }
 
     const handleTabIndexChange = (_, newIndex) => {
         setActiveTabIndex(newIndex)
@@ -32,11 +35,24 @@ const GroupDetail = () => {
     }
 
     useEffect(() => {
+        const params = new URLSearchParams(location.search)
+        const tabIndex = {
+            discuss: 0, pending: 2, request: 3
+        }
+        let tab = "discuss"
+        if (params.size > 0) {
+            tab = params.get("tab")
+        }
+        setActiveTab(tab)
+        setActiveTabIndex(tabIndex[tab])
+    }, [location.search])
+
+    useEffect(() => {
         const getGroup = async () => {
             const groupData = await fetchGroupById(id)
+            console.log(groupData)
             const userGroupContextData = await fetchUserGroupContext(id)
             userGroupContextData.toRequest = !userGroupContextData.joined && !userGroupContextData.requestSent
-            console.log(userGroupContextData)
             setGroup(groupData)
             setUserGroupContext(userGroupContextData)
             window.scrollTo(0, 0)
@@ -44,6 +60,14 @@ const GroupDetail = () => {
         }
         getGroup()
     }, [])
+
+    useEffect(() => {
+        setGroup({ 
+            ...group, 
+            totalPending: pendingPosts.filter(p => !p.approvalAction).length })
+    }, [pendingPosts])
+
+
 
     const handleZoom = (url) => {
         setSelectedUrl(url)
@@ -55,19 +79,34 @@ const GroupDetail = () => {
         setSelectedUrl(null)
     }
 
-    const loadGroupMember = async () => {
-        handleTabChange("member")
-        const memberData = await fetchGroupMembers(id)
-        setMembers(memberData)
-
-    }
-
     const handleSendGroupRequest = () => {
         if (userGroupContext.toRequest) {
             createGroupRequest(id)
             setUserGroupContext({ ...userGroupContext, requestSent: true, toRequest: false })
         }
     }
+
+
+    const pendingLabel =
+        <>
+            Bài viết đang chờ
+            <Badge badgeContent={group.totalPending} color="error" overlap="circular"
+                sx={{
+                    position: "absolute", right: 10, top: 12,
+                }}>
+            </Badge>
+        </>
+
+    const requestLabel =
+        <>
+            Yêu cầu tham gia
+            <Badge badgeContent={group.totalRequest} color="error" overlap="circular"
+                sx={{
+                    position: "absolute", right: 10, top: 12,
+                }}>
+            </Badge>
+        </>
+
 
     return (
         <Box>
@@ -115,39 +154,36 @@ const GroupDetail = () => {
             {userGroupContext.joined &&
                 <>
                     <Tabs value={activeTabIndex} onChange={handleTabIndexChange} sx={{ mb: 2 }}>
-                        <Tab label="Thảo luận" sx={{ fontWeight: "bold", textTransform: 'none', padding: '0 8px 0 8px' }}
+                        <Tab label="Thảo luận" sx={{ ...tabStyle, padding: '0 8px 0 8px' }}
                             onClick={() => handleTabChange("discuss")} />
-                        <Tab label="Thành viên" sx={{ fontWeight: "bold", textTransform: 'none' }}
-                            onClick={loadGroupMember} />
+
+                        <Tab label="Thành viên" sx={tabStyle} onClick={() => handleTabChange("member")} />
+
+                        {(userGroupContext.owner || userGroupContext.approver) &&
+                            <Tab label={pendingLabel} sx={{ ...tabStyle, pr: group.totalPending > 0 ? 3 : 2 }}
+                                onClick={() => handleTabChange("pending")} />}
+
                         {userGroupContext.owner &&
-                            <Tab label="Yêu cầu tham gia" sx={{ fontWeight: "bold", textTransform: 'none' }}
+                            <Tab label={requestLabel} sx={{ ...tabStyle, pr: group.totalRequest > 0 ? 3 : 2 }}
                                 onClick={() => handleTabChange("request")} />}
-                        <Tab label="Tùy chọn" sx={{ fontWeight: "bold", textTransform: 'none' }}
-                            onClick={() => handleTabChange("option")} />
+
+                        <Tab label="Tùy chọn" sx={tabStyle} onClick={() => handleTabChange("option")} />
                     </Tabs>
                     <Box sx={{
-                        border: "1px solid #d3d3d3", borderRadius: 5, p: 2, width: "632px",
-                        display: "flex", justifyContent: "left"
+                        border: "1px solid #d3d3d3", borderRadius: 5, p: 2, width: "632px", minHeight: "250px"
                     }}>
-                        {activeTab === "discuss" && <PostList posts={posts} setPosts={setPosts} groupId={id} />}
+                        {activeTab === "discuss" &&
+                            <PostList posts={posts} setPosts={setPosts} status="APPROVED"
+                                group={group} userGroupContext={userGroupContext} />}
                         {activeTab === "member" &&
-                            <Box textAlign="left" height="500px">
-                                <Typography fontWeight="bold" sx={{ mb: 1 }}>Danh sách thành viên</Typography>
-                                {members.map(member =>
-                                    <GroupMember group={group} member={member} userGroupContext={userGroupContext} />
-                                )}
-                            </Box>
-                        }
-                        {activeTab === "request" && <GroupRequest group={group}/>}
+                            <GroupMember group={group} setGroup={setGroup} userGroupContext={userGroupContext}
+                                setUserGroupContext={setUserGroupContext} />}
+                        {activeTab === "request" && <GroupRequest group={group} setGroup={setGroup}
+                        />}
+                        {activeTab === "pending" &&
+                            <PostList posts={pendingPosts} setPosts={setPendingPosts} group={group} status="PENDING" />}
                         {activeTab === "option" &&
-                            <>
-                                <Button variant="outlined" sx={{ fontWeight: "bold", color: "#333333", borderRadius: 3 }}
-                                    startIcon={<EditIcon />} onClick={() => setEditing(true)}>
-                                    Sửa thông tin nhóm
-                                </Button>
-                                <GroupEditDialog show={editing} handleClose={() => setEditing(false)}
-                                    group={group} setGroup={setGroup} />
-                            </>
+                            <GroupOption group={group} setGroup={setGroup} userGroupContext={userGroupContext} />
                         }
                     </Box>
                 </>}

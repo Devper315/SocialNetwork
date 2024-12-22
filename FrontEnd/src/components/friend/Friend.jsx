@@ -1,4 +1,4 @@
-import { Avatar, Card, CardHeader, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { Avatar, Card, CardHeader, IconButton, Menu, MenuItem, Stack, Typography } from "@mui/material";
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -37,20 +37,19 @@ const Friend = ({ user }) => {
                 },
                 position: "relative"
             }}>
-            <CardHeader
-                avatar={
-                    <Avatar alt={user.fullName} src={user.avatarUrl} sx={{ width: 60, height: 60, cursor: "pointer" }}
-                        onClick={() => navigate(`/profile/${user.id}`)}>
-                        {user.lastName[0]}
-                    </Avatar>}
-                title={
-                    <Typography sx={{
-                        color: '#333', fontWeight: 'bold', fontSize: "17px", marginRight: "30px", cursor: "pointer"
-                    }} onClick={() => navigate(`/profile/${user.id}`)}>
-                        {user.fullName}
-                    </Typography>}
-                sx={{ paddingBottom: 1 }} />
-                
+            <Stack direction="row" spacing={1} alignItems="center" sx={{p: 1}}>
+                <Avatar src={user.avatarUrl} sx={{ width: 60, height: 60, cursor: "pointer",
+                    border: "1px solid #ddd"
+                 }}
+                    onClick={() => navigate(`/profile/${user.id}`)}>
+                    {user.lastName[0]}
+                </Avatar>
+                <Typography sx={{
+                    color: '#333', fontWeight: 'bold', fontSize: "17px", cursor: "pointer"
+                }} onClick={() => navigate(`/profile/${user.id}`)}>
+                    {user.fullName}
+                </Typography>
+            </Stack>
             <IconButton onClick={handleMenuOpen} sx={{ position: "absolute", top: 5, right: 1 }}>
                 <MoreVertIcon sx={{ transform: 'rotate(90deg)' }} />
             </IconButton>

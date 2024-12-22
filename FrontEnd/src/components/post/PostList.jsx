@@ -1,25 +1,38 @@
-import React, { useEffect, useState } from "react";
-import { deletePost, getPosts } from "../../services/postService";
+import React, { useContext, useEffect, useState } from "react";
+import { deletePost, getPosts, getPostsByGroupId, getPostsByUserId } from "../../services/postService";
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import PostPage from "./PostPage";
 import CreatePost from "./CreatePost";
 import { deleteFileFirebase } from "../../configs/firebaseSDK";
 import DialogNotification from "../common/DialogNotification";
+import { AuthContext } from "../../contexts/AuthContext";
 
-const PostList = ({ posts, setPosts, groupId }) => {
+const PostList = ({ posts, setPosts, group, userGroupContext, status, profile }) => {
+    const { user } = useContext(AuthContext)
     const [headLoading, setHeadLoading] = useState(false)
     const [footLoading, setFootLoading] = useState(true)
     const [openDeleteSuccess, setOpenDeleteSuccess] = useState(false)
     const [postToDelete, setPostToDelete] = useState(null)
     const [showConfirmDelete, setShowConfirmDelete] = useState(false)
+    const [canCreate, setCanCreate] = useState(false)
 
     useEffect(() => {
         const fetchPosts = async () => {
-            const response = await getPosts();
+            let response = null
+            if (group) response = await getPostsByGroupId(group.id, status)
+            else if (profile) response = await getPostsByUserId(profile.id)
+            else response = await getPosts()
             setPosts(response);
             setFootLoading(false);
         }
-        fetchPosts();
+        fetchPosts()
+        if (group) {
+            setCanCreate(status !== "PENDING")
+        }
+        else if (profile) {
+            setCanCreate(profile.myProfile)
+        }
+        else setCanCreate(!!user)
     }, [])
 
     const addPostToList = (newPost) => {
@@ -57,15 +70,35 @@ const PostList = ({ posts, setPosts, groupId }) => {
         setPostToDelete(null)
     }
 
+    useEffect(() => {
+        const handleScroll = () => {
+            const isScrolledToBottom =
+                window.innerHeight + window.scrollY >= document.documentElement.scrollHeight;
+            if (isScrolledToBottom) {
+                // console.log('Đã cuộn hết trang!');
+            }
+        }
+        window.onscroll = handleScroll
+        return () => {
+            window.onscroll = null
+        }
+    }, [])
+
     return (
-        <Box sx={{width: "600px", padding: "0 16px 0 16px"}}>
-            <CreatePost addPostToList={addPostToList} setHeadLoading={setHeadLoading} groupId={groupId}/>
+        <Box sx={{ width: "600px" }}>
+            {canCreate &&
+                <CreatePost addPostToList={addPostToList} setHeadLoading={setHeadLoading} group={group}
+                    userGroupContext={userGroupContext} />}
 
             {headLoading && <CircularProgress />}
 
             <Box>
-                {posts.map((post, index) => (
+                {posts.length === 0
+                    && <Typography variant="h6" fontWeight="bold">Chưa có bài viết.</Typography>}
+
+                {posts.length > 0 && posts.map((post, index) => (
                     <PostPage post={post} key={index} editPostInList={editPostInList}
+                        userGroupContext={userGroupContext} removePostFromList={removePostFromList}
                         setShowConfirmDelete={setShowConfirmDelete} setPostToDelete={setPostToDelete} />
                 ))}
 

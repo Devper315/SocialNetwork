@@ -15,9 +15,9 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
-    useEffect(() => {
-        loginRef.current.focus()
-    }, [])
+    // useEffect(() => {
+    //     loginRef.current.focus()
+    // }, [])
 
     const handleInputChange = (event) => {
         const { name, value } = event.target

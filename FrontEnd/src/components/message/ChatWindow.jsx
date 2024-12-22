@@ -77,7 +77,7 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
             content: message,
             status: 'SENT',
             imageUrls: [],
-            time: format(new Date(), 'HH:mm dd/MM/yyyy'),
+            time: format(new Date(), 'HH:mm:ss dd/MM/yyyy'),
         }
         newMessage = await createMessage(newMessage)
         if (messageImages.length > 0) {

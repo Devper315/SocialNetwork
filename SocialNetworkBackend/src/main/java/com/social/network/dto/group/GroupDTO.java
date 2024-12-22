@@ -1,9 +1,11 @@
 package com.social.network.dto.group;
 
-import jakarta.persistence.Column;
+import com.social.network.entity.group.Group;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -13,4 +15,18 @@ public class GroupDTO {
     String name;
     String description;
     String imageUrl;
+    Long createUserId;
+    LocalDateTime createTime;
+    Long totalMember;
+    Long totalPending;
+    Long totalRequest;
+
+    public GroupDTO (Group group){
+        this.id = group.getId();
+        this.name = group.getName();
+        this.description = group.getDescription();
+        this.imageUrl = group.getImageUrl();
+        this.createUserId = group.getCreateUserId();
+        this.createTime = group.getCreateTime();
+    }
 }

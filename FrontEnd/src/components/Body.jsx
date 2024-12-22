@@ -1,4 +1,4 @@
-import react, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Homepage from './common/Homepage';
 import FriendList from './friend/FriendList';
@@ -8,8 +8,7 @@ import Profile from './user/Profile';
 import GroupList from './group/GroupList';
 import GroupDetail from './group/GroupDetail';
 import EmailVerification from './common/EmailVerification';
-import PendingPosts from './group/PendingPosts';
-import { Box, IconButton, MenuItem, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import Sidebar from './Sidebar';
 import { AuthContext } from '../contexts/AuthContext';
 import MenuIcon from "@mui/icons-material/Menu";
@@ -17,7 +16,7 @@ import Login from './common/Login';
 
 const Body = () => {
     const { user } = useContext(AuthContext)
-    const [sidebarOpen, setSidebarOpen] = useState(true)
+    const [sidebarOpen, setSidebarOpen] = useState(false)
 
     const toggleSidebarOpen = () => {
         setSidebarOpen(!sidebarOpen)
@@ -25,7 +24,7 @@ const Body = () => {
 
 
     return (
-        <Box display={"flex"} mt={2}>
+        <Box display={"flex"} mt={10} >
             {user &&
                 <Box position="fixed" textAlign="left">
                     <Tooltip title={sidebarOpen ? "Đóng menu" : "Mở menu"}>
@@ -48,6 +47,7 @@ const Body = () => {
             <Routes>
                 <Route path='/' element={<Homepage />} />
                 <Route path='/login' element={<Login />} />
+                <Route path='/profile/:id' element={<Profile />} />
             </Routes>
 
             <Box ml={sidebarOpen ? "350px" : "230px"} width="900px" transition="0.3s">
@@ -56,11 +56,10 @@ const Body = () => {
                     <Route path='/group' element={<GroupList />} />
                     <Route path='/group-detail/:id' element={<GroupDetail />} />
                     <Route path='/messages' element={<Homepage />} />
-                    <Route path='/profile/:id' element={<Profile />} />
+                    
                     <Route path='/register' element={<Register />} />
                     <Route path='/postpage/:id' element={<PostPage />} />
                     <Route path='/register/verify/' element={<EmailVerification />} />
-                    <Route path="/pending-posts/:groupId" element={<PendingPosts />} />
                 </Routes>
             </Box>
 

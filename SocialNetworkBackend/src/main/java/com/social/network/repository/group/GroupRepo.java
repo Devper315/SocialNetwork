@@ -1,6 +1,7 @@
 package com.social.network.repository.group;
 
 import com.social.network.entity.group.Group;
+import com.social.network.entity.post.PostStatus;
 import com.social.network.entity.user.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -24,4 +25,9 @@ public interface GroupRepo extends JpaRepository<Group, Long> {
     @Modifying
     void deleteById(Long id);
 
+    @Query("SELECT COUNT(gr) FROM GroupRequest gr WHERE gr.group = :group")
+    Long getTotalRequest(Group group);
+
+    @Query("SELECT COUNT(p) FROM Post p WHERE p.group = :group AND p.approvalStatus = :approvalStatus")
+    Long getTotalPendingPost(Group group, PostStatus approvalStatus);
 }

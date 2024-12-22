@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dialog, DialogTitle, DialogContent, IconButton, Typography, Box, CircularProgress } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, IconButton, Typography, Box, CircularProgress, Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Comment from "./Comment";
 import TextInput from "../common/TextInput"
@@ -56,11 +56,17 @@ const CommentList = ({ post, open, onClose }) => {
     }
     return (
         <Dialog open={open} onClose={onClose} fullWidth>
-            <DialogTitle fontWeight={"bold"} display="flex" justifyContent="space-between" alignItems="center">
-                Bình luận cho bài viết của {post.author}
-                <IconButton onClick={onClose}>
-                    <CloseIcon />
-                </IconButton>
+            <DialogTitle
+                sx={{
+                    fontWeight: "bold", display: "flex", justifyContent: "space-between", mb: 1,
+                    alignItems: "center", p: "5px 0px 5px 25px", borderBottom: "1px solid #ddd"
+                }}>
+                Bình luận cho bài viết của {post.author.fullName}
+                <Tooltip title="Đóng">
+                    <IconButton onClick={onClose}>
+                        <CloseIcon />
+                    </IconButton>
+                </Tooltip>
             </DialogTitle>
 
             <DialogContent sx={{ minHeight: "120px" }}>

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -19,7 +20,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class GroupMemberService {
     GroupMemberRepo groupMemberRepo;
-    GroupRepo groupRepo;
 
     public boolean addGroupMember(Group group, User user, String role) {
         GroupMember groupMember = GroupMember.builder()
@@ -40,11 +40,15 @@ public class GroupMemberService {
 
     public List<UserDTO> getByGroup(Group group) {
         List<GroupMember> groupMembers = groupMemberRepo.findByGroup(group);
-        return groupMembers.stream().map(UserDTO::new).toList();
+        return groupMembers.stream().map(UserDTO::new).sorted().toList();
+    }
+
+    public GroupMember getByGroupAndMember(Group group, User user){
+        return groupMemberRepo.findByGroupAndMember(group, user);
     }
 
     public boolean changeMemberRole(Group group, User user, String newRole) {
-        GroupMember groupMember = groupMemberRepo.findByGroupAndMember(group, user);
+        GroupMember groupMember = getByGroupAndMember(group, user);
         groupMember.setRole(GroupRole.valueOf(newRole));
         groupMemberRepo.save(groupMember);
         return true;
@@ -54,4 +58,7 @@ public class GroupMemberService {
         groupMemberRepo.deleteByGroup(group);
     }
 
+    public Long getTotalMember(Group group) {
+        return groupMemberRepo.getTotalMember(group);
+    }
 }

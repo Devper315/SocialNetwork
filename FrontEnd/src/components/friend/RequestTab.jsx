@@ -34,11 +34,8 @@ const RequestTab = () => {
                     requests.map((requestor) => (
                         <ListItem key={requestor.id} sx={{ display: 'flex', alignItems: 'center', padding: 2 }}>
                             <Link to={`/profile/${requestor.id}`} style={{ textDecoration: 'none' }}>
-                                <Avatar
-                                    alt={requestor.fullName}
-                                    src={requestor.avatarUrl}
-                                    sx={{ marginRight: 2, width: 56, height: 56 }}
-                                />
+                                <Avatar src={requestor.avatarUrl}
+                                    sx={{ mr: 2, width: 56, height: 56 }} />
                             </Link>
                             <Box sx={{ flexGrow: 1 }}>
                                 <Link to={`/profile/${requestor.id}`}
@@ -57,10 +54,9 @@ const RequestTab = () => {
                                             padding: '4px 8px',
                                             borderRadius: '16px',
                                             fontWeight: 'bold',
-                                        }}
-                                    >
+                                        }}>
                                         <CheckCircle sx={{ marginRight: 1 }} />
-                                        <Typography>Chấp nhận</Typography>
+                                        <Typography sx={{ mr: 1 }}>Chấp nhận</Typography>
                                     </Box>}
                                 {requestor.status === 'từ chối' &&
                                     <Box
@@ -74,32 +70,26 @@ const RequestTab = () => {
                                             fontWeight: 'bold',
                                         }}>
                                         <Cancel sx={{ marginRight: 1 }} />
-                                        <Typography>Từ chối</Typography>
+                                        <Typography sx={{ mr: 1 }}>Từ chối</Typography>
                                     </Box>}
                             </Box>}
                             {!requestor.status &&
                                 <Box sx={{ display: 'flex', gap: 1 }}>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() => updateFriendRequest(requestor.id, true)}
-                                        sx={{ fontWeight: 'bold' }}
-                                    >
+                                    <Button variant="contained" color="primary"
+                                        onClick={() => updateFriendRequest(requestor.id, true)}>
                                         Chấp nhận
                                     </Button>
-                                    <Button
-                                        variant="outlined"
+                                    <Button variant="outlined"
                                         onClick={() => updateFriendRequest(requestor.id, false)}
                                         sx={{
                                             fontWeight: 'bold',
-                                            borderColor: '#d32f2f', // Đổi màu viền sang màu đỏ đậm hơn
-                                            color: '#d32f2f', // Đổi màu chữ thành đỏ đậm hơn
+                                            borderColor: '#d32f2f', 
+                                            color: '#d32f2f', 
                                             '&:hover': {
-                                                borderColor: '#c62828', // Màu viền khi hover
-                                                backgroundColor: '#ffebee', // Nền màu đỏ nhạt khi hover
+                                                borderColor: '#c62828', 
+                                                backgroundColor: '#ffebee', 
                                             },
-                                        }}
-                                    >
+                                        }} >
                                         Từ chối
                                     </Button>
 
@@ -114,12 +104,8 @@ const RequestTab = () => {
             </List>
             {totalPages > 1 && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
-                    <Pagination
-                        count={totalPages}
-                        page={page}
-                        onChange={(_, newPage) => setPage(newPage)}
-                        color="primary"
-                    />
+                    <Pagination count={totalPages} page={page}
+                        onChange={(_, newPage) => setPage(newPage)} color="primary" />
                 </Box>
             )}
         </>

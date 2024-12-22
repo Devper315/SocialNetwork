@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { fetchMyNotifications, markAsRead } from '../../services/notificationService'
 import { NotificationContext } from '../../contexts/NotificationContext'
 import { handleScroll } from '../../services/infiniteScroll'
-import { IconButton, Tooltip, Dialog, DialogTitle, DialogContent, Typography, Badge } from "@mui/material";
+import { IconButton, Tooltip, Dialog, DialogTitle, DialogContent, Typography, Badge, Box } from "@mui/material";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import '../../assets/styles/Notification.css'
 
@@ -57,7 +57,7 @@ const Notification = () => {
     }
 
     return (
-        <div>
+        <Box>
             <Tooltip title="Thông báo" arrow>
                 <IconButton onClick={toggleDialog} component={Link} to="#" color="inherit">
                     <Badge badgeContent={unreadTotal} color="error" overlap="circular">
@@ -75,12 +75,13 @@ const Notification = () => {
                         top: 50, right: 10, transform: 'translateX(0)'
                     }
                 }}>
-                <DialogTitle>Thông báo</DialogTitle>
+                <DialogTitle sx={{ borderBottom: "1px solid #ddd" }}>
+                    Thông báo
+                </DialogTitle>
                 <DialogContent onScroll={(event) => handleScroll(event, loadMoreNotifications)}>
-                    {notifications.length === 0 && <Typography variant="body2" sx={{ padding: 2 }}>Không có thông báo mới.</Typography>}
+                    {notifications.length === 0 && <Typography variant="h6">Không có thông báo mới.</Typography>}
                     {notifications.length > 0 && notifications.map((notification) => (
-                        <div
-                            key={notification.id}
+                        <Box key={notification.id}
                             onClick={() => handleClickNotification(notification)}
                             className="notification-item"
                             style={{ cursor: 'pointer', padding: '10px', marginBottom: '5px', borderRadius: '5px' }}>
@@ -88,11 +89,11 @@ const Notification = () => {
                                 {notification.content}</Typography><br />
                             <Typography variant="caption" color="textSecondary">
                                 {new Date(notification.time).toLocaleString()}</Typography>
-                        </div>
+                        </Box>
                     ))}
                 </DialogContent>
             </Dialog>
-        </div>
+        </Box>
     )
 }
 

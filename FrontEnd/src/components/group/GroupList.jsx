@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { fetchGroups } from "../../services/groupService"
+import { createGroup, fetchGroups, updateGroup } from "../../services/groupService"
 import { Box, Button, Typography, TextField, Grid, Card, CardMedia, CardContent, InputAdornment, Pagination } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search'
 import AddIcon from '@mui/icons-material/Add'
-import GroupCreateModal from "./GroupCreateModal"
+import GroupDialog from "./GroupDialog"
+import { uploadFileToFirebase } from "../../configs/firebaseSDK"
 
 const GroupList = () => {
     const navigate = useNavigate()
@@ -48,9 +49,19 @@ const GroupList = () => {
         }
     }
 
+    const handleCreateGroup = async (data) => {
+        let newGroup = await createGroup({ ...data, image: null })
+        if (data.image) {
+            const filePath = `group/${newGroup.id}`
+            newGroup.imageUrl = await uploadFileToFirebase(data.image, filePath)
+        }
+        updateGroup(newGroup)
+        setGroups([newGroup, ...groups])
+    }
+
 
     return (
-        <Box sx={{ width: "100%", textAlign: "left" }}>
+        <Box sx={{ width: "100%", textAlign: "left" }} >
             <Button variant="contained" onClick={() => setShowCreate(true)}
                 sx={{ borderRadius: 2 }}>
                 <AddIcon fontSize="small" sx={{ marginRight: 1 }} />
@@ -81,9 +92,9 @@ const GroupList = () => {
                 Danh sách nhóm
             </Typography>
             <Box sx={{
-                    height: "600px", border: "1px solid #ddd", borderRadius: 2,
-                    p: 2, my: 2, backgroundColor: "#f9f9f9",
-                }}>
+                height: "600px", border: "1px solid #ddd", borderRadius: 2,
+                p: 2, my: 2, backgroundColor: "#f9f9f9",
+            }}>
                 <Grid container spacing={3}>
                     {groups.map(group => (
                         <Grid item md={4} key={group.id}>
@@ -118,7 +129,8 @@ const GroupList = () => {
                             onChange={(_, newPage) => setPage(newPage)} color="primary" />
                     </Box>}
             </Box>
-            <GroupCreateModal show={showCreate} handleClose={() => setShowCreate(false)} />
+            <GroupDialog open={showCreate} onClose={() => setShowCreate(false)}
+                onSubmit={handleCreateGroup} />
         </Box>
     )
 }

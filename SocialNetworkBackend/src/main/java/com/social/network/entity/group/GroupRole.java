@@ -1,7 +1,16 @@
 package com.social.network.entity.group;
 
+import lombok.Getter;
+
+@Getter
 public enum GroupRole {
-    OWNER,
-    APPROVER,
-    MEMBER
+    OWNER(3),
+    APPROVER(2),
+    MEMBER(1);
+
+    private final int level;
+
+    GroupRole(int level) {
+        this.level = level;
+    }
 }

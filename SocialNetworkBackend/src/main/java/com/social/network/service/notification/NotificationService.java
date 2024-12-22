@@ -3,6 +3,7 @@ package com.social.network.service.notification;
 import com.social.network.config.JWTDecoder;
 import com.social.network.entity.group.Group;
 import com.social.network.entity.notification.Notification;
+import com.social.network.entity.post.Post;
 import com.social.network.entity.user.User;
 import com.social.network.repository.notification.NotificationRepo;
 import com.social.network.service.user.UserService;
@@ -48,42 +49,42 @@ public class NotificationService {
     public void notifyFriendRequest(User requestor, User recipient) {
         String url = "/profile/" + requestor.getId();
         String content = requestor.getFullName() + " đã gửi lời mời kết bạn.";
-        createNotification(requestor, recipient, content, url);
+        createNotification(recipient, content, url);
     }
 
     public void notifyAcceptFriend(User requestor, User recipient) {
         String url = "/profile/" + requestor.getId();
         String content = requestor.getFullName() + " đã chấp nhận kết bạn";
-        createNotification(requestor, recipient, content, url);
+        createNotification(recipient, content, url);
     }
 
     public void notifyGroupRequest(User requestor, User recipient, Group group) {
-        String url = "/group-detail/" + group.getId();
+        String url = String.format("/group-detail/%s?tab=request", group.getId());
         String content = requestor.getFullName() + " đã gửi yêu cầu tham gia nhóm " + group.getName();
-        createNotification(requestor, recipient, content, url);
+        createNotification(recipient, content, url);
     }
 
-    public void notifyActionGroupRequest(User requestor, User recipient, Group group, boolean accept) {
-        String url = accept ? "/group-detail/" + group.getId() : null;
-        String content = requestor.getFullName() + " đã chấp nhận lời mời tham gia nhóm " + group.getName();
-        createNotification(requestor, recipient, content, url);
+    public void notifyActionGroupRequest(User recipient, Group group, boolean accept) {
+        String url =  "/group-detail/" + group.getId();
+        String action = accept ? "được chấp nhận" : "bị từ chối";
+        String content = String.format("Yêu cầu tham gia nhóm %s của bạn đã %s.", group.getName(), action);
+        createNotification(recipient, content, url);
     }
 
-
-    public void notifyAcceptPost(User requestor, User recipient, Group group) {
-        String url = "/group-detail/" + group.getId();
-        String content = requestor.getFullName() + " đã phê duyệt bài viết của bạn";
-        createNotification(requestor, recipient, content, url);
+    public void notifyAcceptPost(User requestor, Post post) {
+        String url = "/group-detail/" + post.getGroup().getId();
+        String content = String.format("Bài viết trong nhóm %s của bạn đã được duyệt.", post.getGroup().getName());
+        createNotification(post.getAuthor(), content, url);
     }
 
     public void sendPost(User requestor, User recipient, Group group) {
         String url = "/group-detail/" + group.getId();
         String content = requestor.getFullName() + " đã gửi 1 bài viết cần phê duyệt";
-        createNotification(requestor, recipient, content, url);
+        createNotification(recipient, content, url);
     }
 
 
-    private void createNotification(User requestor, User recipient, String content, String url) {
+    private void createNotification(User recipient, String content, String url) {
         Notification notification = Notification.builder()
                 .content(content)
                 .recipient(recipient.getUsername())

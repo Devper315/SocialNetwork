@@ -1,18 +1,23 @@
 import React, { useState } from "react"
-import { Box, Button } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material"
 import PostDialog from "./PostDialog"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import { createPost, updatePost } from "../../services/postService"
 import { uploadFileToFirebase } from "../../configs/firebaseSDK"
 
-const CreatePost = ({ addPostToList, setHeadLoading, groupId }) => {
+const CreatePost = ({ addPostToList, setHeadLoading, group, userGroupContext }) => {
     const [dialogOpen, setDialogOpen] = useState(false)
+    const [approveDialog, setApproveDialog] = useState(false)
 
     const handleCreate = () => setDialogOpen(true)
 
     const handleSubmit = async (data) => {
         setHeadLoading(true)
-        data.groupId = groupId
+        if (group) {
+            data.groupId = group.id
+            if (userGroupContext.member) data.approvalStatus = "PENDING"
+            else data.approvalStatus = "APPROVED"
+        }
         let newPost = await createPost(data)
         if (data.images.length > 0) {
             const uploadPromises = data.images.map(async (image, index) => {
@@ -24,19 +29,17 @@ const CreatePost = ({ addPostToList, setHeadLoading, groupId }) => {
             newPost = {
                 ...newPost, images, newImages: images, deleteImages: []
             }
-            console.log(newPost)
             newPost = await updatePost(newPost)
         }
-        addPostToList(newPost)
+        if (newPost.approvalStatus !== "PENDING") addPostToList(newPost)
+        else setApproveDialog(true)
         setHeadLoading(false)
     }
 
     return (
         <Box sx={{ mb: "20px", textAlign: "left" }}>
-            <Button
-                variant="outlined"
+            <Button variant="outlined" onClick={handleCreate}
                 startIcon={<AddCircleOutlineIcon />}
-                onClick={handleCreate}
                 sx={{
                     fontSize: "16px", fontWeight: "bold",
                     borderRadius: "20px", borderColor: "#1976d2", color: "#1976d2",
@@ -47,9 +50,29 @@ const CreatePost = ({ addPostToList, setHeadLoading, groupId }) => {
                 }}>
                 Tạo mới bài viết
             </Button>
-
             <PostDialog open={dialogOpen} onSubmit={handleSubmit}
                 onClose={() => setDialogOpen(false)} />
+
+            <Dialog open={approveDialog} onClose={() => setApproveDialog(false)}>
+                <DialogTitle sx={{
+                    display: "flex", justifyContent: "space-between", alignItems: "center",
+                    borderBottom: "1px solid #ccc", py: 1
+                }}>
+                    Thông báo
+
+                </DialogTitle>
+                <DialogContent sx={{ mt: 1 }}>
+                    <Typography fontSize={17} sx={{ whiteSpace: "pre-line" }}>
+                        {`Tạo bài viết thành công.
+                        Vui lòng chờ quản trị viên phê duyệt bài viết của bạn.`}
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button color="primary" variant="contained" onClick={() => setApproveDialog(false)}>
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     )
 }

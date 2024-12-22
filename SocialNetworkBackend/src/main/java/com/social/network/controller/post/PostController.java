@@ -3,6 +3,7 @@ package com.social.network.controller.post;
 import com.social.network.dto.post.PostDTO;
 import com.social.network.dto.ApiResponse;
 import com.social.network.entity.post.Post;
+import com.social.network.entity.post.PostStatus;
 import com.social.network.service.image.ImageService;
 import com.social.network.service.post.CommentService;
 import com.social.network.service.post.PostService;
@@ -16,7 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/api/user/post")
+@RequestMapping("/api/post")
 public class PostController {
     PostService postService;
     CommentService commentService;
@@ -57,38 +58,17 @@ public class PostController {
                 .result(postService.updatePost(request))
                 .build();
     }
-    @GetMapping("/group/{groupId}")
-    public ApiResponse<List<PostDTO>> getPostsByGroup(@PathVariable Long groupId) {
-        List<PostDTO> posts = postService.getPostsByGroup(groupId);
-        if (posts.isEmpty()) {
-            return ApiResponse.<List<PostDTO>>builder()
-                    .message("Không có bài viết nào cho nhóm này.")
-                    .build();
-        }
+    @GetMapping("/group")
+    public ApiResponse<List<PostDTO>> getPostsByGroup(
+            @RequestParam Long groupId, @RequestParam PostStatus status) {
         return ApiResponse.<List<PostDTO>>builder()
-                .result(posts)
+                .result(postService.getPostsByGroup(groupId, status))
                 .build();
     }
 
-    @GetMapping("/group/{groupId}/pending-approval/{approvalStatus}")
-    public ApiResponse<List<PostDTO>> getPendingApprovalPostsByGroup(@PathVariable Long groupId,@PathVariable Long approvalStatus) {
-        List<PostDTO> posts = postService.getApprovalPostsByGroup(approvalStatus,groupId);
-        if (posts.isEmpty()) {
-            return ApiResponse.<List<PostDTO>>builder()
-                    .build();
-        }
-        return ApiResponse.<List<PostDTO>>builder()
-                .result(posts)
-                .build();
+    @PatchMapping("/approve")
+    public void approvePost(@RequestParam Long postId, @RequestParam PostStatus approvalStatus) {
+        postService.approvePost(postId, approvalStatus);
     }
 
-    @PatchMapping("/{postId}/approval-status")
-    public PostDTO updateApprovalStatus(@PathVariable Long postId) {
-        return postService.updateApprovalStatus(postId);
-    }
-
-    @GetMapping("/check-user/{postId}")
-    public Long checkUser(@PathVariable Long postId) {
-        return postService.checkUser(postId);
-    }
 }

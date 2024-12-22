@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO {
+public class UserDTO implements Comparable<UserDTO>{
 
     Long id;
 
@@ -68,5 +68,10 @@ public class UserDTO {
         this.fullName = user.getFullName();
         this.avatarUrl = user.getAvatarUrl();
         this.groupRole = member.getRole().toString();
+    }
+
+    @Override
+    public int compareTo(UserDTO o) {
+        return this.lastName.compareTo(o.lastName);
     }
 }

@@ -46,9 +46,9 @@ public class GroupController {
     }
 
     @GetMapping("/detail/{id}")
-    public ApiResponse<Group> getGroupById(@PathVariable Long id) {
-        return ApiResponse.<Group>builder()
-                .result(groupService.getById(id))
+    public ApiResponse<GroupDTO> getGroupById(@PathVariable Long id) {
+        return ApiResponse.<GroupDTO>builder()
+                .result(groupService.getGroupResponse(id))
                 .build();
     }
 
@@ -101,7 +101,7 @@ public class GroupController {
                 .build();
     }
 
-    @PostMapping("/change-role")
+    @PutMapping("/change-role")
     public ApiResponse<Boolean> changeRole(
             @RequestParam Long groupId, @RequestParam Long userId, @RequestParam String newRole) {
         return ApiResponse.<Boolean>builder()
@@ -109,7 +109,7 @@ public class GroupController {
                 .build();
     }
 
-    @PostMapping("/change-owner")
+    @PutMapping("/change-owner")
     public ApiResponse<Boolean> changeOwner(@RequestParam Long groupId, @RequestParam Long userId) {
         return ApiResponse.<Boolean>builder()
                 .result(groupService.changeOwner(groupId, userId))

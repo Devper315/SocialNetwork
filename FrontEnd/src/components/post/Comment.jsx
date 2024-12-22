@@ -14,7 +14,6 @@ const Comment = ({ comment, removeCommentFromList, editCommentInList }) => {
     const { user } = useContext(AuthContext)
     const [isEditing, setIsEditing] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
-    const [showConfirmDelete, setShowConfirmDelete] = useState(false)
     const [zoom, setZoom] = useState(false)
     const [selectedUrl, setSelectedUrl] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
@@ -27,7 +26,6 @@ const Comment = ({ comment, removeCommentFromList, editCommentInList }) => {
 
     const handleClickDelete = (comment) => {
         removeCommentFromList(comment)
-        setShowConfirmDelete(true)
         setShowMenu(false)
     }
 
@@ -58,7 +56,7 @@ const Comment = ({ comment, removeCommentFromList, editCommentInList }) => {
     }
 
     return (
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 1 }}>
             <Box display="flex" gap={1}>
                 <Avatar src={comment.authorAvatar} />
                 <Box >
@@ -69,7 +67,7 @@ const Comment = ({ comment, removeCommentFromList, editCommentInList }) => {
                                 {comment.author}
                             </Typography>
                             <Typography variant="subtitle1" fontSize={13}>
-                                {format(comment.time, 'HH:mm dd/MM/yyyy')}
+                                {format(comment.time, 'HH:mm:ss dd/MM/yyyy')}
                             </Typography>
                         </Box>
                         {!isEditing && !isLoading &&
@@ -83,7 +81,7 @@ const Comment = ({ comment, removeCommentFromList, editCommentInList }) => {
                             <CardMedia component="img" image={comment.imageUrl} onClick={handleZoom}
                                 sx={{
                                     borderRadius: 3, maxHeight: "100px", maxWidth: "100px", objectFit: "cover",
-                                    cursor: 'pointer', marginTop: "10px"
+                                    cursor: 'pointer', marginTop: "5px"
                                 }} />
                             <ZoomImage open={zoom} onClose={handleCloseZoom} imageSrc={selectedUrl} />
                         </>

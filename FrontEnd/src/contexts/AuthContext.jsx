@@ -1,7 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getFirebaseFileURL } from "../configs/firebaseSDK";
 
 
 export const AuthContext = createContext()

@@ -21,7 +21,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "content", length = 65535)
+    @Column(length = 65535)
     String content;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
@@ -33,11 +33,9 @@ public class Post {
     LocalDateTime createdTime;
     LocalDateTime updatedTime;
 
-
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = true)
     Group group;
 
-    @Column(nullable = true)
-    Long approvalStatus;
+    @Enumerated
+    PostStatus approvalStatus;
 }

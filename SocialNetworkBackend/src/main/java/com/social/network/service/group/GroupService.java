@@ -1,13 +1,12 @@
 package com.social.network.service.group;
 
 import com.social.network.dto.group.GroupDTO;
-import com.social.network.dto.group.UserGroupContext;
 import com.social.network.dto.user.UserDTO;
 import com.social.network.entity.group.Group;
+import com.social.network.entity.post.PostStatus;
 import com.social.network.entity.user.User;
 import com.social.network.repository.group.GroupRepo;
 import com.social.network.repository.post.PostRepo;
-import com.social.network.repository.user.UserRepo;
 import com.social.network.service.user.UserService;
 import com.social.network.utils.PageableUtils;
 import lombok.AccessLevel;
@@ -64,6 +63,15 @@ public class GroupService {
         return groupRepo.findById(id).orElse(null);
     }
 
+    public GroupDTO getGroupResponse(Long id){
+        Group group = getById(id);
+        GroupDTO groupDTO = new GroupDTO(group);
+        groupDTO.setTotalMember(groupMemberService.getTotalMember(group));
+        groupDTO.setTotalRequest(groupRepo.getTotalRequest(group));
+        groupDTO.setTotalPending(groupRepo.getTotalPendingPost(group, PostStatus.PENDING));
+        return groupDTO;
+    }
+
     public Group updateGroup(GroupDTO request) {
         Group group = getById(request.getId());
         group.setName(request.getName());
@@ -89,8 +97,8 @@ public class GroupService {
     }
 
     public boolean changeOwner(Long groupId, Long newOwnerId) {
-        Group group = getById(groupId);
-        changeMemberRole(groupId, group.getCreateUserId(), "MEMBER");
+        User owner = userService.getCurrentUser();
+        changeMemberRole(groupId, owner.getId(), "MEMBER");
         changeMemberRole(groupId, newOwnerId, "OWNER");
         return true;
     }
@@ -98,13 +106,17 @@ public class GroupService {
     public boolean changeMemberRole(Long groupId, Long userId, String newRole) {
         Group group = getById(groupId);
         User user = userService.getById(userId);
+        if (newRole.equals("OWNER")){
+            group.setCreateUserId(userId);
+            groupRepo.save(group);
+        }
         return groupMemberService.changeMemberRole(group, user, newRole);
     }
 
     public boolean dissolveGroup(Long groupId) {
         Group group = getById(groupId);
         groupMemberService.removeAllGroupMembers(group);
-        postRepo.deleteByGroupId(groupId);
+        postRepo.deleteByGroup(group);
         groupRepo.delete(group);
         return true;
     }

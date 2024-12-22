@@ -25,7 +25,7 @@ const Header = () => {
     }
     const isMenuOpen = Boolean(anchorEl)
     return (
-        <AppBar position="static" color="primary">
+        <AppBar position="fixed" color="primary">
             <Toolbar>
                 <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
                     {/* Icon Trang chủ */}

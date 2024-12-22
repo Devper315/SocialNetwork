@@ -12,14 +12,12 @@ import java.time.LocalDateTime;
 @Builder
 public class GroupRequestDTO {
     Long id;
-    String groupName;
     LocalDateTime time;
     UserDTO requestor;
 
     public GroupRequestDTO(GroupRequest groupRequest) {
-        this.groupName = groupRequest.getGroup().getName();
-        this.time = LocalDateTime.now();
-        this.requestor = new UserDTO(groupRequest.getRequestor());
         this.id = groupRequest.getId();
+        this.requestor = new UserDTO(groupRequest.getRequestor());
+        this.time = groupRequest.getTime();
     }
 }

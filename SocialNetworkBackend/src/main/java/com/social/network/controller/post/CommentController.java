@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/api/user/post/comments")
+@RequestMapping("/api/post/comments")
 public class CommentController {
     CommentService commentService;
 
