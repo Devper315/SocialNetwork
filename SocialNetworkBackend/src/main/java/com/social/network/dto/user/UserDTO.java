@@ -46,7 +46,7 @@ public class UserDTO implements Comparable<UserDTO>{
 
     String groupRole;
 
-    Boolean myProfile, friend, toSendRequest, hasRequest, sentRequest;
+    String relation;
 
 
     public UserDTO(User user) {

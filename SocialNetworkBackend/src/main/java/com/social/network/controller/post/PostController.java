@@ -66,6 +66,13 @@ public class PostController {
                 .build();
     }
 
+    @GetMapping("/user/{userId}")
+    public ApiResponse<List<PostDTO>> getPostsByUserId(@PathVariable Long userId) {
+        return ApiResponse.<List<PostDTO>>builder()
+                .result(postService.getPostsByUserId(userId))
+                .build();
+    }
+
     @PatchMapping("/approve")
     public void approvePost(@RequestParam Long postId, @RequestParam PostStatus approvalStatus) {
         postService.approvePost(postId, approvalStatus);

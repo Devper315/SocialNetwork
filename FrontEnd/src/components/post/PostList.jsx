@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import { deletePost, getPosts, getPostsByGroupId, getPostsByUserId } from "../../services/postService";
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
-import PostPage from "./PostPage";
-import CreatePost from "./CreatePost";
-import { deleteFileFirebase } from "../../configs/firebaseSDK";
-import DialogNotification from "../common/DialogNotification";
-import { AuthContext } from "../../contexts/AuthContext";
+import React, { useContext, useEffect, useState } from "react"
+import { deletePost, getPosts, getPostsByGroupId, getPostsByUserId } from "../../services/postService"
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material"
+import PostPage from "./PostPage"
+import CreatePost from "./CreatePost"
+import { deleteFileFirebase } from "../../configs/firebaseSDK"
+import DialogNotification from "../common/DialogNotification"
+import { AuthContext } from "../../contexts/AuthContext"
 
 const PostList = ({ posts, setPosts, group, userGroupContext, status, profile }) => {
     const { user } = useContext(AuthContext)
@@ -20,20 +20,23 @@ const PostList = ({ posts, setPosts, group, userGroupContext, status, profile })
         const fetchPosts = async () => {
             let response = null
             if (group) response = await getPostsByGroupId(group.id, status)
-            else if (profile) response = await getPostsByUserId(profile.id)
+            else if (profile){
+                if (profile.id) response = await getPostsByUserId(profile.id)
+                else response = []
+            }
             else response = await getPosts()
-            setPosts(response);
-            setFootLoading(false);
+            setPosts(response)
+            setFootLoading(false)
         }
         fetchPosts()
         if (group) {
             setCanCreate(status !== "PENDING")
         }
         else if (profile) {
-            setCanCreate(profile.myProfile)
+            setCanCreate(profile.relation === "myProfile")
         }
         else setCanCreate(!!user)
-    }, [])
+    }, [profile])
 
     const addPostToList = (newPost) => {
         setPosts([newPost, ...posts])
@@ -73,9 +76,9 @@ const PostList = ({ posts, setPosts, group, userGroupContext, status, profile })
     useEffect(() => {
         const handleScroll = () => {
             const isScrolledToBottom =
-                window.innerHeight + window.scrollY >= document.documentElement.scrollHeight;
+                window.innerHeight + window.scrollY >= document.documentElement.scrollHeight
             if (isScrolledToBottom) {
-                // console.log('Đã cuộn hết trang!');
+                // console.log('Đã cuộn hết trang!')
             }
         }
         window.onscroll = handleScroll
@@ -101,7 +104,6 @@ const PostList = ({ posts, setPosts, group, userGroupContext, status, profile })
                         userGroupContext={userGroupContext} removePostFromList={removePostFromList}
                         setShowConfirmDelete={setShowConfirmDelete} setPostToDelete={setPostToDelete} />
                 ))}
-
                 {footLoading &&
                     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
                         <CircularProgress />
@@ -131,4 +133,4 @@ const PostList = ({ posts, setPosts, group, userGroupContext, status, profile })
     )
 }
 
-export default PostList;
+export default PostList

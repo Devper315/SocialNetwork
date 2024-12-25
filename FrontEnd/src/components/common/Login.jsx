@@ -64,9 +64,9 @@ const Login = () => {
                 )}
 
                 <TextField name="username" label="Tên đăng nhập" fullWidth inputRef={loginRef}
-                    margin="normal" value={form.username} onChange={handleInputChange} />
+                    margin="dense" value={form.username} onChange={handleInputChange} />
                 <TextField name="password" label="Mật khẩu" type="password" fullWidth
-                    margin="normal" value={form.password} onChange={handleInputChange} />
+                    margin="dense" value={form.password} onChange={handleInputChange} />
                 <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}
                     onClick={handleSubmit} disabled={isLoading}>
                     {isLoading ? <CircularProgress size={24} /> : 'Đăng nhập'}

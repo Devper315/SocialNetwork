@@ -94,4 +94,10 @@ public class PostService {
             postRepo.delete(post);
         }
     }
+
+    public List<PostDTO> getPostsByUserId(Long userId) {
+        User user = userService.getById(userId);
+        List<Post> posts = postRepo.findByAuthor(user);
+        return posts.stream().map(PostDTO::new).toList();
+    }
 }

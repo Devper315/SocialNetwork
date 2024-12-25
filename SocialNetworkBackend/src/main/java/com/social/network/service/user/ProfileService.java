@@ -21,17 +21,18 @@ public class ProfileService {
         User requestor = userService.getCurrentUser();
         User user = userService.getById(id);
         UserDTO response = new UserDTO(user);
-        boolean myProfile, friend, toSendRequest, hasRequest, sentRequest;
-        myProfile = requestor.getId().equals(user.getId());
-        friend = friendshipService.existsByUsers(requestor, user);
-        hasRequest = friendRequestService.getRequestByUsers(user, requestor) != null;
-        sentRequest = friendRequestService.getRequestByUsers(requestor, user) != null;
-        toSendRequest = !myProfile && !friend && ! hasRequest && ! sentRequest;
-        response.setMyProfile(myProfile);
-        response.setFriend(friend);
-        response.setHasRequest(hasRequest);
-        response.setToSendRequest(toSendRequest);
-        response.setSentRequest(sentRequest);
+        String relation;
+        if (requestor.getId().equals(user.getId())){
+            relation = "myProfile";
+        } else if (friendshipService.existsByUsers(requestor, user)) {
+            relation = "friend";
+        } else if (friendRequestService.getRequestByUsers(user, requestor) != null) {
+            relation = "hasRequest";
+        } else if (friendRequestService.getRequestByUsers(requestor, user) != null) {
+            relation = "sentRequest";
+        }
+        else relation = "toSendRequest";
+        response.setRelation(relation);
         return response;
     }
 
