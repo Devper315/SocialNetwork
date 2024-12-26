@@ -5,6 +5,7 @@ export const CONFIG = {
 export const API = {
     LOGIN: "/api/auth/login",
     REGISTER: "/api/auth/register",
+    CHANGE_PASSWORD: "/api/auth/change-password",
     FRIEND: "/api/friend",
     SEARCH_FRIEND: "/api/friend/search",
     FRIEND_REQUEST: "/api/friend/request",

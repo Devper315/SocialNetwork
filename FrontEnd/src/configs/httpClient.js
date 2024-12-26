@@ -10,12 +10,13 @@ const httpClient = axios.create({
 
 httpClient.interceptors.request.use(config => {
     const token = localStorage.getItem('token');
-    if (token) {
-        config.headers = {
-            Authorization: `Bearer ${token}`,
-            'ngrok-skip-browser-warning': 'true'
-        }
+    let headers = {
+        'ngrok-skip-browser-warning': 'true'
     }
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
+    config.headers = headers
     return config;
 });
 
@@ -23,6 +24,7 @@ httpClient.interceptors.response.use(
     response => response,
     error => {
         if (error.response.status === 401) {
+            console.log("Có status 401")
             localStorage.removeItem("token")
             window.location.href = '/'
         }

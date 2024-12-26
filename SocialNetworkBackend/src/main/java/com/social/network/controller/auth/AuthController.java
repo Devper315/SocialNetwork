@@ -2,6 +2,7 @@ package com.social.network.controller.auth;
 
 
 import com.social.network.dto.auth.LoginRequest;
+import com.social.network.dto.user.ChangePasswordRequest;
 import com.social.network.dto.user.UserDTO;
 import com.social.network.dto.ApiResponse;
 import com.social.network.dto.auth.LoginResponse;
@@ -12,6 +13,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,6 +42,13 @@ public class AuthController {
     public ApiResponse<Boolean> verifyEmail(@RequestParam String token){
         return ApiResponse.<Boolean>builder()
                 .result(userService.verifyEmail(token))
+                .build();
+    }
+
+    @PutMapping("/change-password")
+    public ApiResponse<Map<String, String>> changePassword(@RequestBody ChangePasswordRequest request){
+        return ApiResponse.<Map<String, String>>builder()
+                .result(userService.changePassword(request))
                 .build();
     }
 }

@@ -25,9 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -97,16 +95,20 @@ public class UserService {
         return true;
     }
 
-    public ApiResponse<String> changePassword(ChangePasswordRequest request, Authentication auth) {
+    public Map<String, String> changePassword(ChangePasswordRequest request) {
+        Map<String, String> response = new HashMap<>();
         User user = getCurrentUser();
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new AppException(ErrorCode.WRONG_CURRENT_PASSWORD);
+            response.put("status", "error");
+            response.put("message", "Mật khẩu hiện tại không chính xác");
         }
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        userRepo.save(user);
-        return ApiResponse.<String>builder()
-                .result("Đổi mật khẩu thành công")
-                .build();
+        else {
+            response.put("status", "success");
+            response.put("message", "Thay đổi mật khẩu thành công");
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            userRepo.save(user);
+        }
+        return response;
     }
 
     public Page<UserDTO> search(String keyword, int page, int size){

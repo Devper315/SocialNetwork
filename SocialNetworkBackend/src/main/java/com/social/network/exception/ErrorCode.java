@@ -17,7 +17,7 @@ public enum ErrorCode {
 	USER_NOT_EXIST(400, "User không tồn tại", HttpStatus.BAD_REQUEST),
 	UNKNOWN_EXCEPTION(999, "uncategorized exception", HttpStatus.BAD_REQUEST),
 	INVALID_PASSWORD(1003, "Mật khẩu có ít nhất 8 ký tự", HttpStatus.BAD_REQUEST),
-	UNAUTHENTICATED(913, "Sai thông tin tài khoản", HttpStatus.UNAUTHORIZED);
+	UNAUTHENTICATED(913, "Sai thông tin tài khoản", HttpStatus.NOT_ACCEPTABLE);
 
 	private int code;
 	private String message;
