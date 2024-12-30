@@ -23,7 +23,13 @@ const uploadFileToFirebase = async(file, filePath) => {
 
 const getFirebaseFileURL = async(filePath) => {
     const storageRef = ref(storage, filePath);
-    return await getDownloadURL(storageRef)
+    let url
+    try {
+        url = await getDownloadURL(storageRef)
+    } catch (error) {
+        url = ''
+    }
+    return url
 }
 
 const deleteFileFirebase = async(filePath) => {

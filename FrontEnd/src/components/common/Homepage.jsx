@@ -7,7 +7,7 @@ const HomePage = () => {
     const [posts, setPosts] = useState([])
 
     return (
-        <Box sx={{ml: "27%"}}>
+        <Box sx={{ml: "28%"}}>
             <PostList posts={posts} setPosts={setPosts} />
         </Box>
     )

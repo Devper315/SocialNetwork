@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Pagination, Box } from '@mui/material';
+import { Pagination, Box, Typography } from '@mui/material';
 import { fetchFriend } from '../../services/friendService';
 import Friend from './Friend';
 
@@ -18,7 +18,8 @@ const FriendTab = () => {
     }, [pagination.page])
 
     return (
-        <>
+        <Box>
+            <Typography variant="h6" fontWeight="bold" textAlign="left" mb={1}>Danh sách bạn bè</Typography>
             <Box display="grid" gap={3}
                 gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))">
                 {friends.map(friend => (
@@ -33,7 +34,7 @@ const FriendTab = () => {
                         color="primary" />
                 </Box>
             )}
-        </>
+        </Box>
     );
 };
 

@@ -28,7 +28,8 @@ const RequestTab = () => {
         fetchData()
     }, [page])
     return (
-        <>
+        <Box>
+            <Typography variant="h6" fontWeight="bold" textAlign="left">Lời mời kết bạn</Typography>
             <List>
                 {requests.length > 0 ? (
                     requests.map((requestor) => (
@@ -97,7 +98,7 @@ const RequestTab = () => {
                         </ListItem>
                     ))
                 ) : (
-                    <Typography textAlign="center" sx={{ fontSize: '1rem', fontWeight: 'bold' }}>
+                    <Typography textAlign="left" sx={{ fontSize: '1rem', fontWeight: 'bold' }}>
                         Không có lời mời kết bạn nào.
                     </Typography>
                 )}
@@ -108,7 +109,7 @@ const RequestTab = () => {
                         onChange={(_, newPage) => setPage(newPage)} color="primary" />
                 </Box>
             )}
-        </>
+        </Box>
     );
 };
 

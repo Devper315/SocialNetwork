@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, TextField, Button, Typography, Pagination, InputAdornment } from '@mui/material';
+import { Box, TextField, Button, Typography, Pagination, InputAdornment, Stack } from '@mui/material';
 import { searchFriend } from '../../services/friendService';
 import SearchIcon from '@mui/icons-material/Search';
 import Friend from './Friend';
@@ -46,10 +46,11 @@ const SearchTab = () => {
     }
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <Stack direction="column" alignItems="left">
+            <Typography variant='h6' textAlign="left" fontWeight="bold">Tìm kiếm bạn bè</Typography>
             <Box sx={{
                 display: 'flex', alignItems: 'center', gap: 2,
-                mb: 2, width: "60%"
+                my: 1, width: "60%"
             }}>
                 <TextField fullWidth inputRef={inputRef} placeholder="Nhập tên bạn..." value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
@@ -74,9 +75,9 @@ const SearchTab = () => {
                 <Box
                     display="grid" gap={3} width="90%"
                     gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))">
-                    {searchResults.map(friend => (
+                    {searchResults.map(friend => 
                         <Friend user={friend} />
-                    ))}
+                    )}
                 </Box>}
             {searchResults && searchResults.length === 0 && <Typography>Không có kết quả tìm kiếm.</Typography>}
 
@@ -86,7 +87,7 @@ const SearchTab = () => {
                         onChange={(_, newPage) => setPage(newPage)} color="primary" />
                 </Box>
             )}
-        </Box>
+        </Stack>
 
     );
 };

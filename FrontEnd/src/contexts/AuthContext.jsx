@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getFirebaseFileURL } from "../configs/firebaseSDK";
 
 
 export const AuthContext = createContext()
@@ -26,10 +27,13 @@ export const AuthProvider = ({ children }) => {
     const getInfoFromToken = async (token) => {
         const payload = jwtDecode(token)
         const claim = payload.customClaim
+        const username = claim.username
+        const avatarUrl = await getFirebaseFileURL(`/avatars/${username}`)
         let loggedInUser = {
             id: claim.id,
             fullName: claim.fullName,
             username: claim.username,
+            avatarUrl
         }
         setUser(loggedInUser)
         setIsLoggedIn(true)

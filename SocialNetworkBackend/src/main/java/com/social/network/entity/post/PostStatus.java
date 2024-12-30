@@ -1,5 +1,5 @@
 package com.social.network.entity.post;
 
 public enum PostStatus {
-    PENDING, APPROVED, REJECTED
+    PENDING, APPROVED, REJECTED0
 }

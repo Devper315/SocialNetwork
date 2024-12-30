@@ -1,29 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Tabs, Tab, Box } from '@mui/material'
 import FriendTab from './FriendTab'
 import RequestTab from './RequestTab'
 import SearchTab from './SearchTab'
+import { MenuContext } from '../../contexts/MenuContext'
 
 const FriendList = () => {
-    const [activeTab, setActiveTab] = useState(0)
-
-    const handleTabChange = (_, tab) => {
-        setActiveTab(tab)
-    }
+    const {friendMenu} = useContext(MenuContext)
 
     return (
-        <>
-            <Tabs value={activeTab} onChange={handleTabChange} variant="fullWidth" >
-                <Tab label="Danh sách bạn bè" sx={{ fontWeight: "bold", textTransform: 'none' }}/>
-                <Tab label="Lời mời kết bạn" sx={{ fontWeight: "bold", textTransform: 'none' }}/>
-                <Tab label="Tìm kiếm bạn bè" sx={{ fontWeight: "bold", textTransform: 'none' }}/>
-            </Tabs>
-            <Box sx={{ marginY: 2}}>
-                {activeTab === 0 && <FriendTab />}
-                {activeTab === 1 && <RequestTab />}
-                {activeTab === 2 && <SearchTab />}
-            </Box>
-        </>
+
+        <Box sx={{ marginY: "4px" }}>
+            {friendMenu === 1 && <FriendTab />}
+            {friendMenu === 2 && <RequestTab />}
+            {friendMenu === 3 && <SearchTab />}
+        </Box>
     )
 }
 

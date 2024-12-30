@@ -97,9 +97,9 @@ const Profile = () => {
                     <Avatar src={profile.avatarUrl} alt="Avatar" sx={{ width: 120, height: 120, mb: 2, cursor: "pointer" }}
                         onClick={() => setZoom(true)} />
                     <ZoomImage open={zoom} onClose={() => setZoom(false)} imageSrc={profile.avatarUrl} />
-                    <Typography variant="h5" sx={{ fontWeight: 'bold', width: "fit-content" }}>
+                    {profile.id && <Typography variant="h5" sx={{ fontWeight: 'bold', width: "fit-content" }}>
                         {`${profile.firstName} ${profile.lastName}`}
-                    </Typography>
+                    </Typography>}
                     {profile.id && profile.relation !== "myProfile" &&
                         <Stack direction="row" alignItems="center" spacing={1}>
                             {["friend", "sentRequest"].includes(profile.relation) &&

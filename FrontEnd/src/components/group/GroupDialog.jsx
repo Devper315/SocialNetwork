@@ -8,6 +8,7 @@ const GroupDialog = ({ open, onClose, onSubmit, group }) => {
     const [selectedImage, setSelectedImage] = useState("")
     const [imagePreview, setImagePreview] = useState("")
     const [form, setForm] = useState({})
+    const saveDisabled = !form.name || !form.description
 
     useEffect(() => {
         if (group)
@@ -70,6 +71,7 @@ const GroupDialog = ({ open, onClose, onSubmit, group }) => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleSubmit} color="primary" variant="contained"
+                    disabled={saveDisabled}
                     sx={{ textTranform: "none", fontWeight: "bold" }}>
                     Lưu
                 </Button>
