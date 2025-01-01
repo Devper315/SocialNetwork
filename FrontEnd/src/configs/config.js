@@ -1,5 +1,5 @@
 export const CONFIG = {
-    BASE_URL: "https://localhost:8080"
+    BASE_URL: "https://639c-118-70-52-54.ngrok-free.app"
 }
 
 export const API = {

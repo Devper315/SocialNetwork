@@ -16,7 +16,7 @@ import Login from './Login';
 
 const Body = () => {
     const { user } = useContext(AuthContext)
-    const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [sidebarOpen, setSidebarOpen] = useState(true)
 
     const toggleSidebarOpen = () => {
         setSidebarOpen(!sidebarOpen)
