@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
 import { AuthContext } from '../../contexts/AuthContext';
-import { MessageStatusTranslation } from '../../translations/MessageStatusTranslation';
 import { format } from 'date-fns';
 import { ChatSocketContext } from '../../contexts/ChatSocketContext';
 import { VideoCallSocketContext } from '../../contexts/VideoCallSocketContext';
@@ -14,6 +13,7 @@ import '../../assets/styles/message/ChatWindow.css';
 import TextInput from '../common/TextInput';
 import { uploadFileToFirebase } from '../../configs/firebaseSDK';
 import ImageGallery from '../common/ImageGallery';
+import { MessageStatusTranslation } from '../../configs/MessageStatusTranslation';
 
 
 const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMessageAsRead }) => {

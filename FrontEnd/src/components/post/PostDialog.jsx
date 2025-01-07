@@ -90,8 +90,7 @@ const PostDialog = ({ open, onClose, onSubmit, post }) => {
                         Thêm ảnh
                         <input type="file" hidden multiple accept="image/*" onChange={handleAddImage} />
                     </Button>
-                    <Box
-                        sx={{
+                    <Box sx={{
                             display: "grid", gap: "8px",
                             gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))"
                         }}>

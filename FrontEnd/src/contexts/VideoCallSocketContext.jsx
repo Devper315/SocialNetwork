@@ -94,7 +94,7 @@ export const VideoCallProvider = ({ children }) => {
             setRemoteCameraOn(data.isCameraOn)
             setRemoteMicOn(data.isMicOn)
         }
-        else if (data.type === 'end' && peerConnection.current){
+        else if (data.type === 'end' && peerConnection.current) {
             stopVideoStream()
             setOpeningVideoCall(false)
             peerConnection.current = null
@@ -222,7 +222,7 @@ export const VideoCallProvider = ({ children }) => {
         stopVideoStream()
         peerConnection.current = null
         setOpeningVideoCall(false)
-        sendSignal({type: "end", recipient: recipientRef.current})
+        sendSignal({ type: "end", recipient: recipientRef.current })
     }
 
     const stopVideoStream = () => {
@@ -336,8 +336,8 @@ export const VideoCallProvider = ({ children }) => {
                 isCameraOn={isCameraOn} toggleCamera={toggleCamera}
                 isMicOn={isMicOn} toggleMic={toggleMic}
                 remoteCameraOn={remoteCameraOn} remoteMicOn={remoteMicOn}
-                sendSignal={sendSignal} action={action} recipientRef={recipientRef} 
-                recipientFullName={recipientFullName}/>
+                sendSignal={sendSignal} action={action} recipientRef={recipientRef}
+                recipientFullName={recipientFullName} />
             <DialogNotification open={showNotify} onClose={() => setShowNotify(false)}
                 content={notification} />
         </VideoCallSocketContext.Provider>

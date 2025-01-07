@@ -28,13 +28,7 @@ public class PostController {
                 .result(postService.getMyPost())
                 .build();
     }
-    @GetMapping("/{id}")
-    public ApiResponse<PostDTO> getPostById(@PathVariable Long id) {
-        PostDTO postResponse = new PostDTO(postService.getById(id));
-        return ApiResponse.<PostDTO>builder()
-                .result(postResponse)
-                .build();
-    }
+
 
     @PostMapping
     public ApiResponse<PostDTO> createPost(@RequestBody PostDTO request){
@@ -42,7 +36,19 @@ public class PostController {
                 .result(postService.createPost(request))
                 .build();
     }
-
+    @GetMapping("/{id}")
+    public ApiResponse<PostDTO> getPostById(@PathVariable Long id) {
+        PostDTO postResponse = new PostDTO(postService.getById(id));
+        return ApiResponse.<PostDTO>builder()
+                .result(postResponse)
+                .build();
+    }
+    @PutMapping
+    public ApiResponse<PostDTO> updatePost(@RequestBody PostDTO request) {
+        return ApiResponse.<PostDTO>builder()
+                .result(postService.updatePost(request))
+                .build();
+    }
     @DeleteMapping("/{id}")
     public void deletePost(@PathVariable Long id) {
         Post post = postService.getById(id);
@@ -51,13 +57,6 @@ public class PostController {
         postService.deletePost(id);
     }
 
-
-    @PutMapping
-    public ApiResponse<PostDTO> updatePost(@RequestBody PostDTO request) {
-        return ApiResponse.<PostDTO>builder()
-                .result(postService.updatePost(request))
-                .build();
-    }
     @GetMapping("/group")
     public ApiResponse<List<PostDTO>> getPostsByGroup(
             @RequestParam Long groupId, @RequestParam PostStatus status) {

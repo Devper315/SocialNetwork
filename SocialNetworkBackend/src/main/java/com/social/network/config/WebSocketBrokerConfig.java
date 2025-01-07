@@ -22,7 +22,6 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
-    JWTDecoder jwtDecoder;
     SocketInterceptors socketInterceptors;
 
     @Override
