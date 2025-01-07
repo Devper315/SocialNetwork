@@ -1,72 +1,72 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Box, IconButton, Typography } from '@mui/material';
-import { AuthContext } from '../../contexts/AuthContext';
-import { format } from 'date-fns';
-import { ChatSocketContext } from '../../contexts/ChatSocketContext';
-import { VideoCallSocketContext } from '../../contexts/VideoCallSocketContext';
-import { createMessage, fetchMessagesByConversationId, updateMessageImage } from '../../services/conversationService';
-import { handleScrollReverse } from '../../services/infiniteScroll';
-import CallIcon from '@mui/icons-material/Call';
-import VideocamIcon from '@mui/icons-material/Videocam';
-import CloseIcon from '@mui/icons-material/Close';
-import '../../assets/styles/message/ChatWindow.css';
-import TextInput from '../common/TextInput';
-import { uploadFileToFirebase } from '../../configs/firebaseSDK';
-import ImageGallery from '../common/ImageGallery';
-import { MessageStatusTranslation } from '../../configs/MessageStatusTranslation';
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { Box, IconButton, Typography } from '@mui/material'
+import { AuthContext } from '../../contexts/AuthContext'
+import { format } from 'date-fns'
+import { ChatSocketContext } from '../../contexts/ChatSocketContext'
+import { VideoCallSocketContext } from '../../contexts/VideoCallSocketContext'
+import { createMessage, fetchMessagesByConversationId, updateMessageImage } from '../../services/conversationService'
+import { handleScrollReverse } from '../../services/infiniteScroll'
+import CallIcon from '@mui/icons-material/Call'
+import VideocamIcon from '@mui/icons-material/Videocam'
+import CloseIcon from '@mui/icons-material/Close'
+import '../../assets/styles/message/ChatWindow.css'
+import TextInput from '../common/TextInput'
+import { uploadFileToFirebase } from '../../configs/firebaseSDK'
+import ImageGallery from '../common/ImageGallery'
+import { MessageStatusTranslation } from '../../configs/MessageStatusTranslation'
 
 
 const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMessageAsRead }) => {
-    const { user } = useContext(AuthContext);
-    const { sendMessageWebSocket } = useContext(ChatSocketContext);
-    const { startVideoCall, startAudioCall } = useContext(VideoCallSocketContext);
-    const [hasMore, setHasMore] = useState(true);
-    const [isAtBottom, setIsAtBottom] = useState(true);
-    const chatBodyRef = useRef(null);
-    const [lastId, setLastId] = useState(0);
+    const { user } = useContext(AuthContext)
+    const { sendMessageWebSocket } = useContext(ChatSocketContext)
+    const { startVideoCall, startAudioCall } = useContext(VideoCallSocketContext)
+    const [hasMore, setHasMore] = useState(true)
+    const [isAtBottom, setIsAtBottom] = useState(true)
+    const chatBodyRef = useRef(null)
+    const [lastId, setLastId] = useState(0)
 
     useEffect(() => {
         const loadFirstMessageList = async () => {
-            const data = await fetchMessagesByConversationId(conversation.id, 0);
-            setHasMore(data.length === 10);
-            setMessageList(data);
+            const data = await fetchMessagesByConversationId(conversation.id, 0)
+            setHasMore(data.length === 10)
+            setMessageList(data)
             if (data.length === 10) {
-                setLastId(data.at(0).id);
-                setIsAtBottom(true);
+                setLastId(data.at(0).id)
+                setIsAtBottom(true)
             }
             if (data.length > 0 && !data.at(-1).isRead) {
-                let lastMessage = data.at(-1);
-                lastMessage.reader = conversation.sender;
-                markMessageAsRead(lastMessage);
+                let lastMessage = data.at(-1)
+                lastMessage.reader = conversation.sender
+                markMessageAsRead(lastMessage)
             }
-        };
-        loadFirstMessageList();
-    }, [conversation]);
+        }
+        loadFirstMessageList()
+    }, [conversation])
 
     const loadMoreMessages = async () => {
-        if (!hasMore) return;
-        const data = await fetchMessagesByConversationId(conversation.id, lastId);
-        setHasMore(data.length === 10);
-        setMessageList([...data, ...messageList]);
+        if (!hasMore) return
+        const data = await fetchMessagesByConversationId(conversation.id, lastId)
+        setHasMore(data.length === 10)
+        setMessageList([...data, ...messageList])
         if (data.length === 10) {
-            setLastId(data.at(0).id);
-            chatBodyRef.current.scrollTop += 50;
+            setLastId(data.at(0).id)
+            chatBodyRef.current.scrollTop += 50
         }
-    };
+    }
 
     useEffect(() => {
-        const chatBody = chatBodyRef.current;
+        const chatBody = chatBodyRef.current
         if (chatBody && isAtBottom) {
-            chatBody.scrollTop = chatBody.scrollHeight - chatBody.clientHeight;
+            chatBody.scrollTop = chatBody.scrollHeight - chatBody.clientHeight
         }
-    }, [messageList]);
+    }, [messageList])
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSend();
+            e.preventDefault()
+            handleSend()
         }
-    };
+    }
 
     const handleSend = async (message, messageImages) => {
         if (!message && messageImages.length === 0) return
@@ -83,7 +83,7 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
         if (messageImages.length > 0) {
             const uploadPromises = messageImages.map((image, index) => {
                 const filename = `message/${newMessage.id}-${index}`
-                return uploadFileToFirebase(image, filename);
+                return uploadFileToFirebase(image, filename)
             })
             const imageUrls = await Promise.all(uploadPromises)
             console.log(imageUrls)
@@ -91,14 +91,14 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
             updateMessageImage(newMessage)
         }
         setMessageList([...messageList, newMessage])
-        sendMessageWebSocket(newMessage);
-    };
+        sendMessageWebSocket(newMessage)
+    }
 
     const scrollReverse = (event) => {
-        const { scrollTop, scrollHeight, clientHeight } = event.target;
-        setIsAtBottom(scrollTop === scrollHeight - clientHeight);
-        handleScrollReverse(event, loadMoreMessages);
-    };
+        const { scrollTop, scrollHeight, clientHeight } = event.target
+        setIsAtBottom(scrollTop === scrollHeight - clientHeight)
+        handleScrollReverse(event, loadMoreMessages)
+    }
 
     return (
         <Box className="chat-window">
@@ -154,7 +154,7 @@ const ChatWindow = ({ conversation, onClose, messageList, setMessageList, markMe
             </Box>
             <TextInput handleSubmit={handleSend} handleKeyDown={handleKeyDown} type="message" />
         </Box>
-    );
-};
+    )
+}
 
-export default ChatWindow;
+export default ChatWindow

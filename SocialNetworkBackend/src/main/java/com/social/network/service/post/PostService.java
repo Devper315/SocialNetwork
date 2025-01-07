@@ -37,8 +37,7 @@ public class PostService {
     }
 
     public List<PostDTO> getMyPost() {
-        User requestor = userService.getCurrentUser();
-        List<Post> posts = postRepo.findAll();
+        List<Post> posts = postRepo.findAllPost(PostStatus.APPROVED);
         return posts.stream().map(PostDTO::new).toList();
     }
 

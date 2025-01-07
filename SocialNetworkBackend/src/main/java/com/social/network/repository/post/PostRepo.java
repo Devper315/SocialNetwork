@@ -17,6 +17,9 @@ public interface PostRepo extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.author = :author AND p.group IS NULL")
     List<Post> findByAuthor(User author);
     List<Post> findByGroupIdAndApprovalStatus(Long groupId, PostStatus approvalStatus);
+
+    @Query("SELECT p FROM Post p WHERE p.approvalStatus IS NULL OR p.approvalStatus = :approvedStatus")
+    List<Post> findAllPost(PostStatus approvedStatus);
     @Transactional
     @Modifying
     void deleteByGroup(Group group);
