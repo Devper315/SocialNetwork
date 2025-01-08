@@ -8,6 +8,7 @@ import com.social.network.entity.post.PostStatus;
 import com.social.network.utils.DateUtils;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,7 +42,6 @@ public class PostDTO {
             this.groupId = post.getGroup().getId();
             this.groupName = post.getGroup().getName();
         }
-
         this.author = new UserDTO(post.getAuthor());
         this.approvalStatus = post.getApprovalStatus();
     }
