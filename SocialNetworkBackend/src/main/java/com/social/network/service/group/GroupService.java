@@ -3,10 +3,13 @@ package com.social.network.service.group;
 import com.social.network.dto.group.GroupDTO;
 import com.social.network.dto.user.UserDTO;
 import com.social.network.entity.group.Group;
+import com.social.network.entity.post.Post;
 import com.social.network.entity.post.PostStatus;
 import com.social.network.entity.user.User;
 import com.social.network.repository.group.GroupRepo;
+import com.social.network.repository.post.CommentRepo;
 import com.social.network.repository.post.PostRepo;
+import com.social.network.service.post.CommentService;
 import com.social.network.service.user.UserService;
 import com.social.network.utils.PageableUtils;
 import lombok.AccessLevel;
@@ -26,6 +29,7 @@ public class GroupService {
     GroupRepo groupRepo;
     UserService userService;
     GroupMemberService groupMemberService;
+    CommentRepo commentRepo;
     PostRepo postRepo;
 
 
@@ -115,8 +119,10 @@ public class GroupService {
 
     public boolean dissolveGroup(Long groupId) {
         Group group = getById(groupId);
-        groupMemberService.removeAllGroupMembers(group);
+        List<Post> posts = postRepo.findByGroup(group);
+        for (Post post: posts) commentRepo.deleteByPost(post);
         postRepo.deleteByGroup(group);
+        groupMemberService.removeAllGroupMembers(group);
         groupRepo.delete(group);
         return true;
     }

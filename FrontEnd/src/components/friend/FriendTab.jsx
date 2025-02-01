@@ -8,7 +8,7 @@ const FriendTab = () => {
     const [pagination, setPagination] = useState({ page: 1, totalPages: null })
 
     const fetchData = async () => {
-        const data = await fetchFriend(pagination.page, 10)
+        const data = await fetchFriend(pagination.page, 12)
         setFriends(data.result || [])
         setPagination({ ...pagination, totalPages: data.totalPages })
     }

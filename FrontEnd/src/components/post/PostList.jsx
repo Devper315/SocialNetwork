@@ -29,14 +29,17 @@ const PostList = ({ posts, setPosts, group, userGroupContext, status, profile })
             setFootLoading(false)
         }
         fetchPosts()
+        console.log(group, profile)
         if (group) {
             setCanCreate(status !== "PENDING")
         }
-        else if (profile) {
+        else if (profile && profile.id) {
             setCanCreate(profile.relation === "myProfile")
         }
-        else setCanCreate(!!user)
-    }, [profile])
+        else {
+            setCanCreate(user && user.id)
+        }
+    }, [profile, user])
 
     const addPostToList = (newPost) => {
         setPosts([newPost, ...posts])

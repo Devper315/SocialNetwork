@@ -20,7 +20,8 @@ const SearchTab = () => {
                 setPage(1)
                 setResetPage(false)
             }
-            const data = await searchFriend(keyword, pageSearch, 5)
+            
+            const data = await searchFriend(keyword, pageSearch, 12)
             setSearchResults(data.result)
             setTotalPages(data.totalPages)
 

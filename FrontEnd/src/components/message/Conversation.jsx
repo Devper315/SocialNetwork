@@ -14,7 +14,7 @@ const Conversation = () => {
         openChatByConversation, unreadTotal } = useContext(ChatSocketContext)
     const [lastUpdate, setLastUpdate] = useState(null)
 
-    const [dialogOpen, setDialogOpen] = useState(false)  // State để điều khiển mở/đóng Dialog
+    const [dialogOpen, setDialogOpen] = useState(false)
 
     const toggleDialog = () => {
         setDialogOpen(!dialogOpen)
@@ -37,7 +37,7 @@ const Conversation = () => {
     }
 
     const handleClickConversation = (conversation) => {
-        setDialogOpen(false)  // Đóng Dialog khi chọn cuộc trò chuyện
+        setDialogOpen(false)  
         openChatByConversation(conversation)
     }
 
@@ -84,14 +84,14 @@ const Conversation = () => {
                                         <CardActionArea
                                             onClick={() => handleClickConversation(conversation)}
                                             sx={{
-                                                padding: '4px 8px', // Thu nhỏ padding
+                                                padding: '4px 8px', 
                                                 '&:hover': {
-                                                    backgroundColor: '#cce7f9', // Hover nhẹ hơn
+                                                    backgroundColor: '#cce7f9', 
                                                 },
                                             }}>
                                             <CardContent sx={{ padding: '4px 8px' }}>
                                                 <Typography
-                                                    variant="body1" // Font size nhỏ hơn
+                                                    variant="body1" 
                                                     sx={{
                                                         fontWeight: conversation.read ? '400' : '700',
                                                         color: conversation.read ? '#757575' : '#1565c0',

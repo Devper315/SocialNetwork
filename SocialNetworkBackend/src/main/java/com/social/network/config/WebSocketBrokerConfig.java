@@ -26,7 +26,7 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic", "/user", "/private");
+        config.enableSimpleBroker( "/user");
         config.setApplicationDestinationPrefixes("/app");
     }
 
@@ -36,23 +36,4 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
                 .addInterceptors(socketInterceptors)
                 .setAllowedOrigins("*");
     }
-
-//    @Override
-//    public void configureClientInboundChannel(ChannelRegistration registration) {
-//        registration.interceptors(new ChannelInterceptor() {
-//            @Override
-//            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-//                StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-//                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-//                    String bearerToken = accessor.getFirstNativeHeader("Authorization");
-//                    if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-//                        String token = bearerToken.substring(7);
-//                        jwtDecoder.decode(token);
-//                    } else
-//                        throw new RuntimeException("Chưa xác thực");
-//                }
-//                return message;
-//            }
-//        });
-//    }
 }

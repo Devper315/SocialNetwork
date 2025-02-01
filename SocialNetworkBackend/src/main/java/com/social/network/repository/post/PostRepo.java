@@ -23,4 +23,6 @@ public interface PostRepo extends JpaRepository<Post, Long> {
     @Transactional
     @Modifying
     void deleteByGroup(Group group);
+
+    List<Post> findByGroup(Group group);
 }

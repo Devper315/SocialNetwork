@@ -51,7 +51,7 @@ const VideoCallPortal = ({ localVideoRef, remoteVideoRef, handleCloseVideoCall, 
             </DialogTitle>
 
             <DialogContent sx={{
-                overflow: 'hidden', height: 1000, width: 1000, py: 0
+                overflow: 'hidden', height: 1000, width: 833, py: 0
             }}>
                 <Box sx={{ position: "relative", height: "100%", width: "100%" }}>
                     <Box sx={{
@@ -63,9 +63,9 @@ const VideoCallPortal = ({ localVideoRef, remoteVideoRef, handleCloseVideoCall, 
                         <CardMedia component="img" image={user ? user.avatarUrl : ""} alt=''
                             sx={{ objectFit: "contain", height: '100%', }} />
                     </Box>
-                    <Box sx={{ height: "100%" }}>
+                    <Box sx={{ height: "100%", width: "100%" }}>
                         <video ref={remoteVideoRef} autoPlay
-                            style={{ display: remoteCameraOn ? "block" : "none" }} />
+                            style={{ display: remoteCameraOn ? "block" : "none"}} />
                         {!remoteCameraOn && <Box sx={{ backgroundColor: "black", height: "100%" }} />}
                     </Box>
 

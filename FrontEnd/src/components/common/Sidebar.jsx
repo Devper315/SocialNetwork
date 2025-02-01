@@ -47,10 +47,6 @@ const Sidebar = ({ setSidebarOpen }) => {
             type: 'group',
             route: '/group',
             icon: GroupIcon,
-            children: [
-                { id: 1, label: 'Danh sách nhóm' },
-                { id: 2, label: 'Nhóm của tôi' }
-            ]
         },
         {
             id: 4,

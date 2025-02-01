@@ -1,6 +1,7 @@
 package com.social.network.service.post;
 
 import com.social.network.dto.post.CommentDTO;
+import com.social.network.entity.group.Group;
 import com.social.network.entity.post.Comment;
 import com.social.network.entity.post.Post;
 import com.social.network.entity.user.User;
@@ -63,6 +64,10 @@ public class CommentService {
     public void deleteAllCommentsByPostId(Long postId) {
         List<Comment> comments = commentRepo.findByPostId(postId);
         commentRepo.deleteAll(comments);
+    }
+
+    public void deleteByPost(Post post) {
+        commentRepo.deleteByPost(post);
     }
 }
 

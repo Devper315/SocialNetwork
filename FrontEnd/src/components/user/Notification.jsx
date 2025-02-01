@@ -48,7 +48,7 @@ const Notification = () => {
             setUnreadTotal(unreadTotal - 1)
         }
         setDialogOpen(false)
-        navigate(notification.navigateUrl)
+        window.location.href = notification.navigateUrl
         setNotifications((prevNotifications) =>
             prevNotifications.map((n) =>
                 n.id === notification.id ? { ...n, read: true } : n
