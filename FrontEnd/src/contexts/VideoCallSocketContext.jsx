@@ -167,12 +167,11 @@ export const VideoCallProvider = ({ children }) => {
                 peerConnection.current.addTrack(track, stream);
             } else {
                 sender.replaceTrack(track);
-
             }
-        });
+        })
         peerConnection.current.ontrack = (event) => {
             remoteVideoRef.current.srcObject = event.streams[0];
-        };
+        }
     }
 
     const sendSignal = (data) => {

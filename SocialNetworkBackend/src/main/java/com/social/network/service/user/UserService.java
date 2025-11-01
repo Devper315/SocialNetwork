@@ -38,6 +38,7 @@ public class UserService {
     EmailService emailService;
 
 
+
     public List<User> getAll() {
         return userRepo.findAll();
     }
